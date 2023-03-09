@@ -1,0 +1,941 @@
+{% extends 'layouts/base.html' %}
+{% load render_table from django_tables2 %} 
+{% block title %} Onboarding {% endblock title %}
+{% block contents %}{% load widget_tweaks %}
+
+
+<!-- Header -->
+<div class="header pb-8 pt-5d-flex align-items-center"
+  style="min-height: 50px; background-image: url(/static/assets/img/theme/Physio-Stock-Image-1080x675.jpeg); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-success opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-12 col-md-10">
+        <!-- <a href="#!" class="btn btn-info">knoepf ohne funktionalität</a>-->
+        <h1 class="display-2 text-white">{{ notification }}</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Body -->
+<div class="container-fluid mt--7">
+  <div class="card card-profile shadow">
+    <div class="card-body pt-0 pt-md-4">
+      <div class="row">
+        <div class="col-8">
+          <h4 class="display-4">Project Data Entry</h4>
+        </div>
+        <div class="col-4 float-end">
+          {% include "includes/navigation_onboarding.html" %}
+        </div>
+        <div class="row justify-content-center mt-4 mb-4">
+          <div class="container" style="z-index: 1;">
+            <ul class="progressbar p-0">
+              <li class="active">Project Creation</li>
+              <li>Volume</li>
+              <li>Pricing Source</li>
+              <li>Pricing Review</li>
+              <li>Conflict Checks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card card-profile shadow">
+    <div class="card-body pt-0">
+      <!-- onboarding-->
+      <!-- slider beginn -->
+
+      <div class="card-profile-stats justify-content-center">
+        <div>
+          <!--- -->
+
+
+          <div class="row">
+
+            <div class="col-xl order-xl-2 mb-5 mb-xl-0">
+
+              <div class="card-body pt-0 pt-md-4">
+                <div class="scrollindicatorheader">
+
+                  <div class="scrollindicator-container">
+                    <div class="scrollindicator-bar" id="myBar"></div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+
+
+                    <form method="post">
+                      {% csrf_token %}
+
+
+                      <!--
+                      {% if enterProjectForm.errors %}
+                      {% for error in enterProjectForm.check.errors %}
+                      <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                      </div>
+                      {% endfor %}
+                      {% endif %}
+ -->
+                      <!--  {{ form.media.js }}-->
+
+
+
+                      <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              <h2>Key Facts</h2>
+                            </button>
+                          </h2>
+                          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                              <div class="card mb-3">
+
+                                <!-- <div class="card mb-3" style="max-width: 540px;">-->
+                                <div class="row g-0">
+                                  <div class="col-md-4">
+                                    <img
+                                      src="https://www.infineon.com/export/sites/default/_images/stage/Stage-Banner_My-Infineon_1280x400px-23.08.jpg_70312763.jpg"
+                                      class="img-fluid rounded-start" alt="...">
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div class="card-body">
+                                      <!--- 
+                                      <h3 class="card-title">Project Key Facts</h3>-->
+                                      <p class="card-text" data-toggle="tooltip"
+                                        title="If required, you can enter multiple regions." data-placement="top">Please
+                                        select the Product Marketer, enter the project's name and the applicable region.
+                                        &#9432;</p>
+
+
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.projectName">Project Name</label>
+                                        {{enterProjectForm.projectName|add_class:"form-control"}}
+                                      </div>
+
+                                      {% if enterProjectForm.projectName.errors %}
+                                      {% for error in enterProjectForm.projectName.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+                                      <br>
+
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.applicationLine">Application Line</label>
+                                        {{enterProjectForm.applicationLine|add_class:"form-control"}}
+                                      </div>
+
+
+                                      {% if enterProjectForm.applicationLine.errors %}
+                                      {% for error in enterProjectForm.applicationLine.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.productMarketer">Marketer</label>
+                                        {{enterProjectForm.productMarketer|add_class:"form-control"}}
+                                      </div>
+
+                                      {% if enterProjectForm.productMarketer.errors %}
+                                      {% for error in enterProjectForm.productMarketer.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+                                      <br>
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.region">Region</label>
+                                        {{enterProjectForm.region|add_class:"form-control"}}
+                                      </div>
+
+                                      {% if enterProjectForm.region.errors %}
+                                      {% for error in enterProjectForm.region.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+
+                                      <br>
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.secondRegion" data-toggle="tooltip"
+                                          title="Not mandatory." data-placement="top">Second Region &#9432;</label>
+                                        {{enterProjectForm.secondRegion|add_class:"form-control"}}
+                                      </div>
+
+                                      {% if enterProjectForm.secondRegion.errors %}
+                                      {% for error in enterProjectForm.secondRegion.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+
+                                      <hr style="  border-top: solid green; !important;">
+                                      <br>
+
+
+
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.estimatedSop">Estimated SOP</label>
+                                        {{enterProjectForm.estimatedSop|add_class:"form-control"}}
+                                      </div>
+                                      {% if enterProjectForm.estimatedSop.errors %}
+                                      {% for error in enterProjectForm.estimatedSop.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+                                      <br>
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.status">Status</label>
+                                        {{enterProjectForm.status|add_class:"form-control"}}
+                                      </div>
+                                      {% if enterProjectForm.status.errors %}
+                                      {% for error in enterProjectForm.status.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+                                      <br>
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.status">Sales Contact</label>
+                                        {{enterProjectForm.salesContact|add_class:"form-control"}}
+                                      </div>
+                                      {% if enterProjectForm.salesContact.errors %}
+                                      {% for error in enterProjectForm.salesContact.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+
+
+                                      <p class="card-text"><small class="text-muted">Mandatory info</small></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+
+                              <!-- 
+                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                      -->
+
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              <h2>Customer Information</h2>
+                            </button>
+                          </h2>
+                          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+
+                              <div class="card mb-3">
+                                <div class="row g-0">
+                                  <div class="col-md-4">
+                                    <img
+                                      src="https://www.infineon.com/export/sites/default/_images/stage/Stage-Banner_PSoC_1280x400px.jpg_70312763.jpg"
+                                      class="img-fluid rounded-start" alt="...">
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div class="card-body">
+                                      <!-- 
+                                      <h3 class="card-title">Customer Data</h3>-->
+                                      <p class="card-text">Please enter the main customer, the end customer and if
+                                        possible, also the OEM information.</p>
+
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.customerMain" data-toggle="tooltip"
+                                          title="Mandatory field. Ship to customer." data-placement="top">Main Customer
+                                          &#9432;</label>
+                                      </div>
+
+
+                                      {% if selectedMainCustomer != None %}
+
+                                      <div class="form-row">
+                                        <input type="text" list="mainCustomers" placeholder="Main Customer"
+                                          class="form-control" name="mainCustomer" value= "{{selectedMainCustomer}}">
+                                        <datalist id="mainCustomers">
+                                          {% for customer in mainCustomers %}
+                                          <option value={{ customer }}>{{ customer }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+
+                                      {% else %}
+
+                                      <div class="form-row">
+                                        <input type="text" list="mainCustomers" placeholder="Main Customer"
+                                          class="form-control" name="mainCustomer">
+                                        <datalist id="mainCustomers">
+                                          {% for customer in mainCustomers %}
+                                          <option value="{{ customer }}">{{ customer }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+
+                                      {% endif %}
+
+                                      <br>
+
+
+
+                                      {% if enterMainCustomerError %}
+                                      <div class="alert alert-danger">
+                                        <strong>Please select a valid main customer. </strong>
+                                      </div>
+                                      {% endif %}
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.endCustomer" data-toggle="tooltip"
+                                          title="Mandatory field. Bill to customer." data-placement="top">End Customer
+                                          &#9432;</label>
+                                      </div>
+
+                                      {% if selectedFinalCustomer != None %}
+                                      <div class="form-row">
+                                        <input type="text" list="finalCustomers" placeholder="End Customer"
+                                          class="form-control" name="finalCustomer" value= "{{selectedFinalCustomer}}">
+                                        <datalist id="finalCustomers">
+                                          {% for customer in finalCustomers %}
+                                          <option value="{{ customer }}">{{ customer }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+
+                                      {% else %}
+
+                                      <div class="form-row">
+                                        <input type="text" list="finalCustomers" placeholder="End Customer"
+                                          class="form-control" name="finalCustomer">
+                                        <datalist id="finalCustomers">
+                                          {% for customer in finalCustomers %}
+                                          <option value="{{ customer }}">{{ customer }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+                                      {% endif %}
+
+                                      <br>
+
+
+                                      {% if enterFinalCustomerError %}
+                                      <div class="alert alert-danger">
+                                        <strong>Please select a valid end customer.</strong>
+                                      </div>
+                                      {% endif %}
+
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.distributors" data-toggle="tooltip"
+                                          title="Optioanl field. Distributor involved in the supply chain of the project."
+                                          data-placement="top">Distributor &#9432;</label>
+                                      </div>
+
+
+                                      <!-- distributor -->
+
+                                      {% if selectedDistributor != None %}
+
+                                      <div class="form-row">
+                                        <input type="text" list="disti" placeholder="Distributor" class="form-control"
+                                          name="distributor" value= "{{selectedDistributor}}">
+                                        <datalist id="disti">
+                                          {% for disti in distributors %}
+                                          <option value="{{ disti }}">{{ disti }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+                                      <br>
+                                      {% else %}
+
+                                      <div class="form-row">
+                                        <input type="text" list="disti" placeholder="Distributor" class="form-control"
+                                          name="distributor">
+                                        <datalist id="disti">
+                                          {% for disti in distributors %}
+                                          <option value="{{ disti }}">{{ disti }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+
+                                      {% endif %}
+
+                                      {% if enterProjectForm.distributor.errors %}
+                                      {% for error in enterProjectForm.distributor.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      <br>
+
+                                      {% endif %}
+                                      
+                                      
+                                      <!-- ems -->
+
+                                      {% if selectedEms != None %}
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.ems" data-toggle="tooltip"
+                                          title="Optional field. If known, please enter the Engineering Manufacturing Services company."
+                                          data-placement="top">EMS &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+                                        <input type="text" list="ems" placeholder="EMS" class="form-control" name="ems" value="{{selectedEms}}">
+                                        <datalist id="ems">
+                                          {% for ems in emss %}
+                                          <option value="{{ ems }}">{{ ems }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+                                      <br>
+
+                                      {% else %}
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.ems" data-toggle="tooltip"
+                                          title="Optional field. If known, please enter the Engineering Manufacturing Services company."
+                                          data-placement="top">EMS &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+                                        <input type="text" list="ems" placeholder="EMS" class="form-control" name="ems">
+                                        <datalist id="ems">
+                                          {% for ems in emss %}
+                                          <option value="{{ ems }}">{{ ems }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+
+                                      {% endif %}
+                                      {% if enterProjectForm.ems.errors %}
+                                      {% for error in enterProjectForm.ems.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      <br>
+
+                                      {% endif %}
+
+                                      <!-- tierOnes -->
+
+                                      {% if selectedTierOne != None %}
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.tierOnes" data-toggle="tooltip"
+                                          title="Optional field. If known, enter the Tier-1."
+                                          data-placement="top">Tier-1 &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+                                        <input type="text" list="tierOne" placeholder="Tier-1" class="form-control"
+                                          name="tierOne" value="{{selectedTierOne}}">
+                                        <datalist id="tierOne">
+                                          {% for tierOne in tierOnes %}
+                                          <option value="{{ tierOne }}">{{ tierOne }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+                                      <br>
+                                      {% else %}
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.tierOnes" data-toggle="tooltip"
+                                          title="Optional field. If known, enter the Tier-1."
+                                          data-placement="top">Tier-1 &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+                                        <input type="text" list="tierOne" placeholder="Tier-1" class="form-control"
+                                          name="tierOne" >
+                                        <datalist id="tierOne">
+                                          {% for tierOne in tierOnes %}
+                                          <option value="{{ tierOne }}">{{ tierOne }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+                                      {% endif %}
+                                      {% if enterProjectForm.tier1.errors %}
+                                      {% for error in enterProjectForm.tier1.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      <br>
+
+                                      {% endif %}
+
+
+                                      <!-- oems -->
+                                      {% if selectedOem != None %}
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.oem" data-toggle="tooltip"
+                                          title="Optional field. If known, please enter the OEM."
+                                          data-placement="top">OEM &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+
+                                        <input type="text" list="oems" class="form-control" value= "{{ selectedOem }}" placeholder="{{ selectedOem.oemName }} " name="oem">
+                                        <datalist id="oems">
+                                          {% for oem in oems %}
+                                          <option value="{{ oem }}">{{ oem }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+
+                                      <br>
+                                      {% else %}
+
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.oem" data-toggle="tooltip"
+                                          title="Optional field. If known, please enter the OEM."
+                                          data-placement="top">OEM &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+
+                                        <input type="text" list="oems" placeholder="OEM" class="form-control" name="oem">
+                                        <datalist id="oems">
+                                          {% for oem in oems %}
+                                          <option value="{{ oem }}">{{ oem }}</option>
+                                          {% endfor %}
+                                        </datalist>
+                                      </div>
+                                      {% endif %}
+
+                                      {% if oemNameError == True %}
+                                      <div class="alert alert-danger">
+                                        <strong>Please enter a valid OEM name by using the shown names. The OEM name cannot have special characters.</strong>
+                                      </div>
+                                      {% endif %}
+
+                                      <!-- 
+                                      {% if enterProjectForm.oem.errors %}
+                                      {% for error in enterProjectForm.oem.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+                                      -->
+                                      <br>
+
+                                      <!-- vpa customer-->
+
+                                      {% if vpaCustomer == True %}
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.oem" data-toggle="tooltip"
+                                          title="Optional field. If a VPA is applicable, please mark the checkbox accordingly."
+                                          data-placement="top">VPA Customer &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+                                        <div>
+                                          <input type="checkbox" id="vpaCustomer" name="vpaCustomer" value="True" checked>
+                                          <label for="vpaCustomer">VPA Customer</label>
+                                        </div>
+                                      </div>
+
+                                      {% else %}
+
+                                      <div class="form-row">
+                                        <label for="enterProjectForm.oem" data-toggle="tooltip"
+                                          title="Optional field. If a VPA is applicable, please mark the checkbox accordingly."
+                                          data-placement="top">VPA Customer &#9432;</label>
+                                      </div>
+                                      <div class="form-row">
+                                        <div>
+                                          <input type="checkbox" id="vpaCustomer" name="vpaCustomer" value="True">
+                                          <label for="vpaCustomer">VPA Customer</label>
+                                        </div>
+                                      </div>
+
+
+
+                                      {% endif %}
+
+                                      <hr style="  border-top: solid green; !important;">
+
+                                      <p class="card-text"><small class="text-muted">Mandatory info</small></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                              <h2>Product Information</h2>
+                            </button>
+                          </h2>
+                          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+
+
+                              <div class="card mb-3">
+                                <div class="row g-0">
+                                  <div class="col-md-4">
+                                    <img
+                                      src="https://www.infineon.com/export/sites/default/_images/stage/Infineon_EE_Keyvisual_StageBanner-mit-Icons_1280x400px.jpg_70312763.jpg"
+                                      class="img-fluid rounded-start" alt="...">
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div class="card-body">
+                                      <!-- 
+                                      <h3 class="card-title">Product info</h3>-->
+                                      <p class="card-text" data-toggle="tooltip"
+                                        title="You can either use the dropdowns or the manual entry of a valid sales name. Selecting both a value from the dropdown and entering a sales name in the text field will lead to an error."
+                                        data-placement="top">Please enter product sales name and the respective
+                                        application. &#9432;</p>
+
+
+                                      <div class="form-row">
+                                        <label for="productSelectionForm2.prodFam" data-toggle="tooltip"
+                                          title="Please select a product family first. We will guide you through the selection of series and package."
+                                          data-placement="top">Product family &#9432;</label>
+                                      </div>
+
+                                      <div class="form-row">
+
+                                        <select class="form-control" autocomplete="off"
+                                          hx-get="/productMarketing/dropdownProductSeries"
+                                          hx-target="#seriesAndSalesName" name="family">
+                                          <option selected> - </option>
+                                          {% for key, value in productFamilies.items %}
+                                          <!-- <option value={{family.pk}}>{{family}}</option> -->
+
+                                          <option value={{key}}>{{value}}</option>
+
+                                          {% endfor %}
+
+                                        </select>
+                                      </div>
+                                      <br>
+
+                                      <!--- 
+                                <div class="form-row">
+                                  {% render_field productSelectionForm2.prodFam class="form-control" autocomplete="off" hx-get="/productMarketing/dropdownProductSeries" hx-target="#seriesAndSalesName" name="productFamily" %}          
+                                </div>
+            
+                                -->
+
+                                      <!--        -->
+
+                                      <div id="seriesAndSalesName">
+                                        {% include 'productMarketing/enterProjectForm/seriesSelect.html' %}
+
+                                        <!-- 
+                                  <div class="form-row">
+                                    <label for="productSelectionForm2.prodSeries">Product series</label>
+                                  </div>
+            
+                                  <div class="form-row">
+                                    {% render_field productSelectionForm2.prodSeries class="form-control" autocomplete="off" hx-get="/productMarketing/dropdownProductSalesName" hx-target="#id_prodSalesName" %}    
+                                  </div>
+            
+            
+                                  <div class="form-row">
+                                    <label for="productSelectionForm2.prodSalesName">Sales Name</label>
+                                  </div>
+            
+                                  <div class="form-row">
+                                  {% render_field productSelectionForm2.prodSalesName class="form-control" autocomplete="on" %}              
+                                  </div>
+                                -->
+                                      </div>
+                                      <!--        -->
+                                      <br>
+
+                                      <div class="form-row">
+                                        <label for="productSelectionForm2.prodFam" data-toggle="tooltip"
+                                          title="Copy and paste a valid sales name. Please stick to the formatting used in the current bottom up or PGS+PL."
+                                          data-placement="top">Alternative: enter sales name as copy & paste
+                                          &#9432;</label>
+                                      </div>
+
+
+                                      {% if selectedSalesName != None %}
+                                      <div class="form-row">
+                                        <input type="text" name="salesNameFreeText" maxlength="300" class="form-control"
+                                          id="salesNameFreeText" value = "{{ selectedSalesName }}" >
+                                      </div>
+
+                                      {% else %}
+                                      <div class="form-row">
+                                        <input type="text" name="salesNameFreeText" maxlength="300" class="form-control"
+                                          id="salesNameFreeText">
+                                      </div>
+                                      {% endif%}
+
+                                      {% if salesNameError %}
+                                      <div class="alert alert-danger">
+                                        <strong>Please enter a valid sales name, either through dropdown or by copying
+                                          and pasting a valid name.</strong>
+                                      </div>
+                                      {% endif %}
+
+                                      <br>
+
+                                      <p class="card-text"><small class="text-muted">RFP not yet available in PGS+? <a
+                                            href="">Create a dummy.</a></small></p>
+
+
+                                      <hr style="  border-top: solid green; !important;">
+
+                                      <br>
+
+                                      <div class="form-row">
+                                        <label for="applicationMainForm.applicationMain">Application Main</label>
+                                      </div>
+                                      <!-- 
+                                        {% render_field applicationMainForm.applicationMain class="form-control" autocomplete="off" hx-get="/productMarketing/dropdownApplicationDetail" hx-target="#id_applicationDetail" %}
+                                      -->
+                                      <div class="form-row">
+
+                                        <select class="form-control" autocomplete="off"
+                                          hx-get="/productMarketing/dropdownApplicationDetail"
+                                          hx-target="#applicationDetailSelect" name="applicationMain">
+                                          <option selected> - </option>
+                                          {% for appMain in applicationMains %}
+
+                                          <option value={{appMain}}>{{appMain}}</option>
+
+                                          {% endfor %}
+
+                                        </select>
+                                      </div>
+
+        
+                                      {% if appMainError == True %}
+                                      <div class="alert alert-danger">
+                                        <strong>Please enter a valid main application. </strong>
+                                      </div>
+                                      {% endif %}
+
+
+                             
+                                      <div id="applicationDetailSelect">
+                                        {% include 'productMarketing/enterProjectForm/appDetail.html' %}
+                                      </div>
+
+                                      <!---
+                                      <div class="form-row">
+                                        {% render_field applicationMainForm.applicationDetail class="form-control" autocomplete="on" %}
+                                      </div>
+                                    -->
+                          
+
+
+
+                                      <hr style="  border-top: solid green; !important;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                      <p class="card-text"><small class="text-muted">Mandatory info</small></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+                      <div class="row justify-content-center">
+                        <div>
+
+
+
+                          <!-- 
+
+                    <div class="form-row">
+                      <label for="enterProjectForm.customerMain">Main Customer</label>
+                      {{enterProjectForm.customerMain|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                      <label for="enterProjectForm.customerMain">Main Customer</label>
+                      {{enterProjectForm.customerMain|add_class:"form-control"}}
+                    </div>
+                  
+                  -->
+
+
+
+
+                          <!--                     <div class="form-row">
+                      <label for="enterProjectForm.applicationMain">Application - Main</label>
+                      {{enterProjectForm.applicationMain|add_class:"form-control"}}
+                  
+
+                    </div>
+
+                    <div class="form-row">
+                      <label for="enterProjectForm.applicationDetail">Application - Detail</label>
+                      {{enterProjectForm.applicationDetail|add_class:"form-control"}}
+                    </div>
+
+                  -->
+
+                          <!-- 
+
+                    <div class="form-row">
+                      <label for="enterProjectForm.spNumber">SP Number</label>
+                      {{enterProjectForm.spNumber|add_class:"form-control"}}
+                    </div>
+                    {% if enterProjectForm.spNumber.errors %}
+                    {% for error in enterProjectForm.spNumber.errors %}
+                    <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    -->
+
+
+
+                          <hr style="  border-top: solid green; !important;">
+
+                          <div class="form-row">
+                            <label for="enterProjectForm.comment">Comments</label>
+                            {{enterProjectForm.comment|add_class:"form-control"}}
+                          </div>
+
+                          {% if enterProjectForm.comment.errors %}
+                          {% for error in enterProjectForm.comment.errors %}
+                          <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                          </div>
+                          {% endfor %}
+                          {% endif %}
+                          <br>
+
+                          <button type="submit" class="btn btn-success">Save and enter volume data</button>
+
+                        </div>
+
+
+                        <!-- general patient data end -->
+
+
+
+
+                      </div>
+                    </form>
+                    <br>
+                    <!--  <input type="submit" value="Speichern" class="btn btn-info">-->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="card card-profile shadow">
+
+</div>
+
+
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+
+{% endblock contents %}
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+<script>
+
+
+  // When the user scrolls the page, execute myFunction
+  window.onscroll = function () { myFunction() };
+
+  function myFunction() {
+    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var scrolled = (winScroll / height) * 100;
+    document.getElementById("myBar").style.height = scrolled + "%";
+  }
+</script>
+
+{% endblock extra_javascript %}

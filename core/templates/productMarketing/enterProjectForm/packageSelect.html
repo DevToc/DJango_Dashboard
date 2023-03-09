@@ -1,0 +1,22 @@
+
+
+<div class="form-row">
+    <label for="productSelectionForm2.prodSeries">Select Package</label>
+  </div>
+
+  <div class="form-row">
+    <select name="package" class="form-control" autocomplete="off" hx-get="/ifx/productMarketing/dropdownProductSalesName/{{family}}/{{series}}" hx-target="#salesName">
+
+      <option selected>---------</option>
+
+        {% for key, value in packages %}
+        <option value={{key}}>{{key}} - {{value}}</option>
+        {% endfor %}          
+
+      </select>
+  </div>
+  <br>
+  <div id="salesName"> 
+    {% include 'productMarketing/enterProjectForm/salesName.html' %}
+  </div>
+

@@ -1,0 +1,349 @@
+{% extends 'layouts/base.html' %}
+{% load render_table from django_tables2 %}
+{% block title %} Onboarding {% endblock title %}
+{% block contents %}{% load widget_tweaks %}
+<!-- Header -->
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="min-height: 200px; background-image: url(/static/assets/img/theme/Physio-Stock-Image-1080x675.jpeg); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-success opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-12 col-md-10">
+        <h1 class="display-2 text-white">Bottom Up Project Overview - CY Based</h1>
+        <!-- <a href="#!" class="btn btn-info">knoepf ohne funktionalität</a>-->
+        <!-- <h1 class="display-2 text-white">{{ notification }}</h1>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Body -->
+<div class="container-fluid mt--7">
+
+  <!-- navigation communication-->
+  <div class="card card-profile shadow">
+
+    <div class="card-body pt-0 pt-md-4">
+      {% include "partials/navigation_boup.html" %}
+    </div>
+  </div>
+
+  <!-- end navigation communication-->
+
+  <div class="row justify-content-center">
+    <div class="col-xl-12 order-xl-2 mb-5 mb-xl-0">
+      <div class="card card-profile shadow">
+
+        <div class="card-body pt-0 pt-md-4">
+          <!-- filter -->
+          <div class="card-profile-stats justify-content-center">  <!-- it was d-flex-->
+            <br>
+
+            <h1> {{ vienna }} </h1>
+
+            
+            <p> {{ projects }} </p>
+
+
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <canvas id="myChart1" width="400" height="400"></canvas>
+            <canvas id="myChart2" width="400" height="400"></canvas>
+            <canvas id="myChart3" width="400" height="400"></canvas>
+            <canvas id="myChart4" width="400" height="400"></canvas>
+<script>
+
+const abc = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(abc, {
+    type: 'line',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+      font: {
+                        size: 40
+                    },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+})
+
+const ctx = document.getElementById('myChart1').getContext('2d');
+const myChart1 = new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [{
+        data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
+    }]
+},
+options: {
+    parsing: {
+        xAxisKey: 'id',
+        yAxisKey: 'nested.value'
+    }
+}
+})
+
+const abcd = document.getElementById('myChart2').getContext('2d');
+const myChart2 = new Chart(abcd, {
+  type: 'line',
+  data: {
+  datasets: [{
+    label: 'Test',
+    data: [{
+      x: -10,
+      y: 0
+    }, {
+      x: 0,
+      y: 10
+    }, {
+      x: 10,
+      y: 5
+    }, {
+      x: 0.5,
+      y: 5.5
+    }],
+    backgroundColor: 'rgb(155, 99, 132)'
+  }],
+},
+options: {
+    scales: {
+      x: {
+        type: 'logarithmic',
+        position: 'bottom'
+      }
+    }
+  }
+  });
+
+const bubbl = document.getElementById('myChart3').getContext('2d');
+const myChart3 = new Chart(bubbl, {
+  type: 'bubble',
+  data: {
+  datasets: [{
+    label: 'Test_bubble',
+    data: [{
+      x: -10,
+      y: 0,
+      r: 80
+    }, {
+      x: 0,
+      y: 10,
+      r: 5
+    }, {
+      x: 10,
+      y: 5,
+      r: 10
+    }, {
+      x: 0.5,
+      y: 5.5,
+      r: 20
+    }],
+    backgroundColor: 'rgb(155, 99, 132)'
+  }],
+},
+options: {
+    scales: {
+      x: {
+        type: 'linear',
+        position: 'right'
+      },
+      y: {
+                ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value, index, ticks) {
+                        return '$' + value;
+                    }
+                }
+            }
+    }
+  }
+  });
+
+  const data3 = {
+        labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April'
+                    ],
+        datasets: [
+            {
+            label: 'Dataset 1',
+            data: [50, 20, 40, 50],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 1)',
+            yAxisID: 'y',
+            },
+            {
+            label: 'Dataset 2',
+            data: [0.80, 0.30, 0.40, 0.60],
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgb(54, 162, 235)',
+            yAxisID: 'y1',
+            }
+        ]
+        };
+
+        const config3 = {
+            type: 'line',
+            data: data3,
+            options: {
+                responsive: true,
+                interaction: {
+                mode: 'index',
+                intersect: false,
+                },
+                stacked: false,
+                plugins: {
+                title: {
+                    display: true,
+                    text: 'Chart.js Line Chart - Multi Axis'
+                }
+                },
+                scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+
+                    // grid line settings
+                    grid: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    },
+                },
+                }
+            },
+            };
+
+            const myChart4 = new Chart(
+                document.getElementById('myChart4'),
+                config3
+                );
+
+  
+// const labels = Utils.months({count: 7});
+// const data = {
+//   labels: labels,
+//   datasets: [{
+//     label: 'My First Dataset',
+//     data: [65, 59, 80, 81, 56, 55, 40],
+//     fill: false,
+//     borderColor: 'rgb(75, 192, 192)',
+//     tension: 0.1
+//   }]
+// };
+</script>
+            <!--
+            <table id="testTable" class="display">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Country</th>
+                      <th>City</th>
+                      <th>Stadium</th>
+                      <th>Capacity</th>
+                      <th>Established on</th>
+                      <th>Record created on</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>NAC Breda</td>
+                      <td>NL</td>
+                      <td>Breda</td>
+                      <td>Rat Verlegh Stadion</td>
+                      <td>19000</td>
+                      <td>19-9-1912</td>
+                      <td>28-02-2022 14:00:00</td>
+                  
+                  </tr>
+
+                  <tr>
+                      <td>Union Sint-Gillis</td>
+                      <td>BE</td>
+                      <td>Vorst</td>
+                      <td>Joseph Marien Stadion</td>
+                      <td>8081</td>
+                      <td>01-11-1897</td>
+                      <td>28-02-2022 13:30:00</td>
+                  
+                  </tr>
+
+                  <tr>
+                      <td>Go Ahead Eagles</td>
+                      <td>NL</td>
+                      <td>Deventer</td>
+                      <td>De Adelaarshorst</td>
+                      <td>10400</td>
+                      <td>02-12-1902</td>
+                      <td>27-11-2021 13:30:00</td>
+                  
+                  </tr>
+
+              </tbody>
+          </table>
+          -->
+
+
+         <!--<table id="boupTable" class="beheertable dezetabel"> --> 
+
+            
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+
+</div>
+
+
+
+{% include "includes/footer.html" %}
+
+</div>
+
+{% endblock contents %}
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+
+
+
+
+{% endblock extra_javascript %}
+
+

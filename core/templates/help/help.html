@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock extra_css %} {% block title %} Help {% endblock title %} {% block breadcrumbs %} {% breadcrumb "Help" "create_project_view" %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <h5 class="h3">Help</h5>
+    <p class="card-title-desc">Here link to tutorials.</p>
+
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+
+{% endblock extra_javascript %}

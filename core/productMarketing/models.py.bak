@@ -1,0 +1,457 @@
+# Francisco Falise, copyright 01/10/2022
+
+from distutils.sysconfig import customize_compiler
+from importlib.metadata import DistributionFinder
+#from distutils.util import copydir_run_2to3
+from django.db import models
+from django.conf import settings
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.deletion import CASCADE, PROTECT
+from django.utils.timezone import now
+import datetime
+from jsignature.fields import JSignatureField
+from django.urls import reverse
+
+from smart_selects.db_fields import ChainedForeignKey
+
+
+
+class Product(models.Model):
+    hfg = models.CharField(max_length=20, blank=True, null=True)   
+    ppos = models.CharField(max_length=30, blank=True, null=True)   
+    rfp = models.CharField(max_length=40, blank=True, null=True)  
+    familyfull = models.CharField(max_length=40, blank=True, null=True)   
+    familydescription = models.CharField(max_length=40, blank=True, null=True)    
+    series = models.CharField(max_length=40, blank=True, null=True)    
+    package = models.CharField(max_length=40, blank=True, null=True)  
+    seriesDescription = models.CharField(max_length=40, blank=True, null=True)    
+    packageDescription = models.CharField(max_length=40, blank=True, null=True)  
+    basicType = models.CharField(max_length=40, blank=True, null=True)
+    availablePGS = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.hfg) + "_" + str(self.ppos) + "_" + str(self.rfp)
+        return str(description)
+
+class SalesName(models.Model):
+    rfp = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='productsalesname', blank=True, null=True )
+    salesName = models.CharField(max_length=40) 
+    dummy = models.BooleanField(default=False, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.salesName) 
+        return str(description)
+
+class ApplicationLine(models.Model):
+    applicationLineShortName = models.CharField(max_length=10) 
+    applicationLineLongName = models.CharField(max_length=20) 
+
+class LegalEntities(models.Model):
+    leShortName = models.CharField(max_length=5) 
+    leLongName = models.CharField(max_length=20) 
+
+
+class marketerMetadata(models.Model):
+
+    name = models.CharField(max_length=40, blank=True, null=True)
+    familyName = models.CharField(max_length=40, blank=True, null=True) 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)   
+    country = models.CharField(max_length=15, blank=True, null=True)
+    legalEntity = models.ForeignKey(LegalEntities, on_delete=models.PROTECT, blank=True, null=True ) 
+    applicationLine = models.ForeignKey(ApplicationLine, on_delete=models.PROTECT, blank=True, null=True ) # default = "ATV.PSE"
+
+
+    def __str__(self):
+        description = str(self.name) + " " + str(self.familyName) #+ str(self.endCustomer) + str(self.product)
+        return str(description)
+
+
+class MainCustomers(models.Model):
+    customerName = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.customerName) 
+        return str(description)
+
+class OEM(models.Model):
+    oemName = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.oemName) 
+        return str(description)
+
+class Tier1(models.Model):
+    tierOneName = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.tierOneName) 
+        return str(description)
+
+class Distributors(models.Model):
+    distributorName = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.distributorName) 
+        return str(description)
+
+class EMS(models.Model):
+    emsName = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.emsName) 
+        return str(description)
+
+class DistiTierOneEMS(models.Model):
+    supplyChainMemberLink = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.supplyChainMemberLink) 
+        return str(description)
+
+## for the dropdown of Final Customers, only the allowable combinations with main customers according to customer relation table should be added
+class FinalCustomers(models.Model):
+    finalCustomerName = models.CharField(max_length=40, blank=True, null=True)
+
+    def __str__(self):
+        description = str(self.finalCustomerName) 
+        return str(description)
+        
+class CustomerRelation(models.Model):
+    mainCustomer =  models.ForeignKey(MainCustomers, on_delete=models.PROTECT, blank=True, null=True )
+    finalCustomer =  models.ForeignKey(FinalCustomers, on_delete=models.PROTECT, blank=True, null=True )
+    valid = models.BooleanField()
+    date = models.DateTimeField(default=now, blank=True, null=True) 
+
+    def __str__(self):
+        description = str(self.finalCustomerName + " - " + self.finalCustomer) 
+        return str(description)
+
+class ApplicationMain(models.Model):
+    appMainDescription = models.CharField(max_length=40, blank=True, null=True) 
+
+    def __str__(self):
+        description = str(self.appMainDescription) 
+        return str(description)   
+
+class ApplicationDetail(models.Model):
+
+    appDetailDescription = models.CharField(max_length=40, blank=True, null=True) 
+    appMain = models.ForeignKey(ApplicationMain, on_delete=models.PROTECT, blank=True, null=True )
+    
+    def __str__(self):
+        description = str(self.appDetailDescription) 
+        return str(description)
+
+class SalesContacts(models.Model):
+
+    name = models.CharField(max_length=40, blank=True, null=True) 
+    deptarment = models.CharField(max_length=40, blank=True, null=True) 
+    
+    def __str__(self):
+        description = str(self.name) 
+        return str(description)
+
+
+class Project(models.Model):
+
+    ALLOWABLE_TYPES_PROJECT_STATUS = (
+        ('100', 'BW (100%)'),
+        ('90', 'DW (90%)'),
+        ('60', 'DI (60%)'),
+        ('40', 'DI (40%)'),
+        ('10', 'OP (10%)'),
+        ('0', 'LO (0%)'),
+    )
+
+    ALLOWABLE_TYPES_REGION = (
+        ('EMEA', 'EMEA'),
+        ('AMERICAS', 'AMERICAS'),
+        ('AP', 'AP'),
+        ('JAPAN', 'JAPAN'),
+        ('GC', 'GC'),
+        ('DIVERSE', 'DIVERSE'),
+    )
+
+    ALLOWABLE_TYPES_DCCHANNEL = (
+        ('direct', 'Direct'),
+        ('distribution', 'Distribution'),
+    ) 
+
+    ALLOWABLE_TYPES_PRICE_STATUS = (
+        ('estim', 'Estimation'),
+        ('quote', 'Quotation'),
+        ('contr', 'Contract'),
+    ) 
+
+    productMarketer = models.ForeignKey(marketerMetadata, on_delete=models.PROTECT) 
+    spNumber = models.IntegerField(blank=True, null=True)
+
+    applicationMain = models.ForeignKey(ApplicationMain, on_delete=models.PROTECT)
+
+    # watchout !! chained field refers to the field here in this table! chained model field refers to the field name in table app detail (Foreing key!)
+    applicationDetail = ChainedForeignKey(
+        ApplicationDetail,
+        chained_field="applicationMain",
+        chained_model_field="appMain",
+        show_all=False,
+        auto_choose=True,
+        sort=True, 
+        on_delete = models.CASCADE
+        )
+
+    familyPriceApplicable = models.BooleanField(default=False, blank=True, null=True)   
+    familyPriceDetails = models.CharField(max_length=50, blank=True, null=True)    
+    user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True)    #productCheck = models.CharField  # entfaellt da DB benutzt wird
+    modifiedDate = models.DateTimeField(default=now, editable=True, blank=True, null=True)
+    creationDate = models.DateTimeField(default=now, editable=False, blank=True, null=True)
+
+    estimatedSop = models.IntegerField(blank=True, null=True) #models.DateField(blank=True, null=True) 
+    status = models.CharField(max_length=15, choices=ALLOWABLE_TYPES_PROJECT_STATUS, default = 0)  
+    region = models.CharField(max_length=10, choices=ALLOWABLE_TYPES_REGION, default = "EMEA")
+    secondRegion = models.CharField(max_length=10, choices=ALLOWABLE_TYPES_REGION,  blank=True, null=True)  
+
+    dcChannel = models.CharField(max_length=12, choices=ALLOWABLE_TYPES_DCCHANNEL, blank=True, null=True)
+    valid = models.BooleanField(default=True, blank=True, null=True)
+    mainCustomer = models.ForeignKey(MainCustomers, on_delete=models.PROTECT, blank=True, null=False) 
+    endCustomer = models.ForeignKey(FinalCustomers, on_delete=models.PROTECT, blank=True, null=False) 
+    salesName = models.ForeignKey(SalesName, on_delete=models.PROTECT, blank=True, null=True)  
+
+    comment = models.CharField(max_length=300, blank=True, null=True)  
+    projectName = models.CharField(max_length=150, default="")   
+    projectDescription = models.CharField(max_length=400, default="",blank=True, null=True)   
+    draft = models.BooleanField(default=True, blank=True, null=True) 
+    priceValidUntil = models.DateField(blank=True, null=True) 
+    priceType = models.CharField(max_length=5, choices=ALLOWABLE_TYPES_PRICE_STATUS, blank=True, null=True)
+
+    ## comment for Saadat: while entering data, if a distributor / ems / tier1 or OEM is not available on the dropdown list, the user should be able to create a new one on the fly 
+    distributor = models.ForeignKey(Distributors, on_delete=models.PROTECT, blank=True, null=True)   
+    ems = models.ForeignKey(EMS, on_delete=models.PROTECT, blank=True, null=True)   
+    tier1 = models.ForeignKey(Tier1, on_delete=models.PROTECT, blank=True, null=True)    
+    oem = models.ForeignKey(OEM, on_delete=models.PROTECT, blank=True, null=True) 
+
+    vpaCustomer = models.CharField(max_length=40, default="",blank=True, null=True)   
+    salesContact = models.ForeignKey(SalesContacts, on_delete=models.PROTECT, blank=True, null=True) 
+
+    projectReviewed = models.BooleanField(default=False, blank=True, null=True)   
+    reviewDate = models.DateField(blank=True, null=True)  
+
+    def __str__(self):
+        description = str(self.mainCustomer) + "_" + str(self.endCustomer) + "_" + str(self.salesName)
+        return str(description)
+
+
+
+class ProjectVolumePrices(models.Model):
+
+    ALLOWABLE_TYPES_VOLUME_SOURCE = (
+        ('Estimation', 'estimation'),
+        ('Customer Information', 'customerInformation'),
+        ('Purchase Order', 'purchaseOrder')
+    ) 
+    
+
+
+    ALLOWABLE_TYPES_PRICE_SOURCES = (
+        ('VPA', 'vpaDb'),
+        ('PRICING OFFICE', 'priceDb'),
+        ('Manual Entry', 'man')
+    ) 
+
+    date = models.DateTimeField(default=now, editable=False, blank=True, null=True) 
+    user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True)   
+    modifiedDate = models.DateTimeField(default=now, editable=False, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=PROTECT, null=True, blank=True, related_name='projectvolumeprices')      
+    valid = models.BooleanField(default=True, blank=True, null=True)  
+    calenderYear = models.SmallIntegerField(default=0, blank=True, null=True) 
+
+    ### volumes 
+    quantity = models.IntegerField(blank=True, null=True) 
+    quantityCustomerEstimation = models.IntegerField(blank=True, null=True) 
+    volumeComment = models.CharField(max_length=60)    
+    source = models.CharField(max_length=30, choices=ALLOWABLE_TYPES_VOLUME_SOURCE, blank=True, null=True) 
+
+
+    ### prices
+    priceSource = models.CharField(max_length=30, choices=ALLOWABLE_TYPES_PRICE_SOURCES, blank=True, null=True) 
+    priceComment = models.CharField(max_length=60, blank=True, null=True, default="")    
+    currency = models.CharField(max_length=3, default="EUR", blank=True, null=True)   
+    price = models.DecimalField(default=0.0, blank=True, null=True, max_digits=15, decimal_places=6) 
+    priceValidityUntil = models.IntegerField(default=2025, blank=True, null=True) 
+    priceSourceComment = models.CharField(max_length=100, blank=True, null=True)    
+
+
+class ProjectVolumeMonth(models.Model): 
+
+    ALLOWABLE_TYPES_VOLUME_SOURCE = (
+        ('Estimation', 'estimation'),
+        ('Customer Information', 'customerInformation'),
+        ('Purchase Order', 'purchaseOrder')
+        ) 
+    calenderYear = models.SmallIntegerField(default=0, blank=True, null=True) 
+    month = models.IntegerField(blank=True, null=True) 
+    quantity = models.IntegerField(blank=True, null=True) 
+    source = models.CharField(max_length=30, choices=ALLOWABLE_TYPES_VOLUME_SOURCE, blank=True, null=True) 
+    date = models.DateTimeField(default=now, editable=False, blank=True, null=True) 
+    user = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True)   
+    modifiedDate = models.DateTimeField(default=now, editable=False, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=PROTECT, null=True, blank=True)
+    valid = models.BooleanField(default=True, blank=True, null=True) 
+
+
+
+### it is understood as the excahnge rate from source into EUR
+
+class Currencies(models.Model):
+    ALLOWABLE_TYPES_CURRENCIES = (
+        ('EUR', 'EUR'),
+        ('USD', 'USD'),
+        ('JPY', 'JPY'),
+        ('MXN', 'MXN'),
+        ('CHF', 'CHF')
+    )  
+    currency = models.CharField(max_length=3, choices=ALLOWABLE_TYPES_CURRENCIES, blank=True, null=True)  
+
+
+class ExchangeRates(models.Model):
+
+    ALLOWABLE_TYPES_CURRENCIES = (
+        ('EUR', 'EUR'),
+        ('USD', 'USD'),
+        ('JPY', 'JPY'),
+        ('MXN', 'MXN'),
+        ('CHF', 'CHF')
+    ) 
+
+    # tbd month, year, day, validty, directionality
+    date = models.DateTimeField(default=now, editable=False) 
+    currency = models.ForeignKey(Currencies, on_delete=models.CASCADE, default = 1)
+    validFrom = models.DateTimeField(default=now, editable=True, blank=True, null=True)    
+    validTo = models.DateTimeField(editable=True, blank=True, null=True)   
+    valid = models.BooleanField( blank=True, null=True) 
+    rate = models.DecimalField(default=0.0, blank=True, null=True, max_digits=15, decimal_places=6) 
+
+
+
+class VhkCy(models.Model):
+    RFP = models.ForeignKey(Product, on_delete=models.CASCADE) 
+    #calendarYear = models.IntegerField() 
+    currency = models.ForeignKey(Currencies, on_delete=models.PROTECT) 
+    cy2020 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2021 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2022 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2023 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2024 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2025 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2026 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2027 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2028 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2029 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2030 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2031 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2032 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2033 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2034 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2035 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2036 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6)
+    cy2037 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2038 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2039 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2040 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2041 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2042 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2043 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2044 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2045 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2046 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6)  
+    cy2047 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2048 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2049 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+    cy2050 = models.DecimalField(default=0.0, blank=True, null=True, max_digits=8, decimal_places=6) 
+
+
+####
+class Dragon(models.Model):
+    transferDate = models.DateTimeField(default=now, editable=False) 
+    TRANSACTION_NUMBER= models.IntegerField(default = -1,blank=True, null=True)
+    OPPORTUNITY_DESCRIPTION= models.CharField(max_length=100, default="fieldMissing", blank=True, null=True) 
+    CUSTOMER_CLASSIFICATION= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    END_CUSTOMER = models.CharField(max_length=30, default="fieldMissing", blank=True, null=True)  #models.ForeignKey(FinalCustomers, on_delete=models.PROTECT, blank=True, null=True) 
+    DC_CHANNEL= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    MARKET_APP= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    FOCUS_PROJECT_FLAG= models.CharField(max_length=10, default="fieldMissing", blank=True, null=True) 
+    OPPORTUNITY_CHANNEL= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DC_REGION_NAME= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    SOCKET_COMMENT= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    ITEM_NUMBER= models.IntegerField(default=-1,blank=True, null=True) 
+    PL= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    HFG= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    RFP_SP_NAME= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    CY_PART_FAMILY= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    CY_PART_NAME= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    MAIN_CUSTOMER= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) # models.ForeignKey(MainCustomers, on_delete=models.CASCADE, blank=True, null=True )
+    DC_CUSTOMER= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    PRODUCT_DESCRIPTION= models.CharField(max_length=100, default="fieldMissing", blank=True, null=True) 
+    COMMENT_SALES_I= models.CharField(max_length=30, default="fieldMissing",blank=True, null=True) 
+    SOCKET_COMPETITOR= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    CREATION_DAY= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    PRODUCT_STATUS_AGGREGATED= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    PRODUCT_STATUS= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    SOCKET_STATUS = models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DESIGN_WIN_CLAIM_STATUS= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    OPPORTUNITY_REASON= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DESIGN_LOSS_DAY= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    LOST_REASON_DESCRIPTION= models.CharField(max_length=100, default="fieldMissing", blank=True, null=True) 
+    SALES_FLAG= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    IFX_RESPONSIBLE= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DESIGN_WIN_EXP_MONTH= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    RAMP_UP_MONTH= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    RAMP_DOWN_MONTH= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    TRAFFIC_LIGHT= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    TRAFFIC_LIGHT_COMMENT= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    APPROVER_1= models.CharField(max_length=30, default="fieldMissing",blank=True, null=True) 
+    APPROVER_2= models.CharField(max_length=30, default="fieldMissing",blank=True, null=True) 
+    DW_APPR_FIN_YEAR= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DW_APPR_FIN_QUARTER= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DW_APPR_FIN_MONTH= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DW_APPR_FIN_DAY= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    BUSINESS_WIN_MONTH= models.CharField(max_length=30, default="fieldMissing",blank=True, null=True) 
+    MAIN_CUSTOMER_NUMBER= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    DW_POT_UW_USD= models.DecimalField(default=0.0, blank=True, null=True, max_digits=15, decimal_places=2) 
+    DW_ACHIEVE_USD= models.DecimalField(default=0.0, blank=True, null=True, max_digits=15, decimal_places=2)    
+    PLANNED_REV_UW_USD= models.DecimalField(default=0.0, blank=True, null=True, max_digits=15, decimal_places=2)
+    LIFETIME_REV_USD= models.DecimalField(default=0.0, blank=True, null=True, max_digits=15, decimal_places=2) 
+    IFX_PRODUCT_QUANTITY=  models.IntegerField(default=-1,  blank=True, null=True)  
+    Item_Internal_Device= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+    Product= models.CharField(max_length=30, default="fieldMissing", blank=True, null=True) 
+ 
+class SalesOpportunities(models.Model):
+    ### functional key
+    mainCustomer = models.ForeignKey(MainCustomers, on_delete=PROTECT, null=True, blank=True,  related_name='salesOpportunityMainCustomer')       
+    finalCustomer = models.ForeignKey(FinalCustomers, on_delete=PROTECT, null=True, blank=True,  related_name='salesOpportunityFinalCustomer')      
+    salesName = models.ForeignKey(SalesName, on_delete=PROTECT, null=True, blank=True,  related_name='salesOpportunitySalesName')  
+
+    ### blablbabla
+    dragonOpportunity = models.ForeignKey(Dragon, on_delete=PROTECT, null=True, blank=True)     
+    applicationMain = models.ForeignKey(ApplicationMain, on_delete=PROTECT, null=True, blank=True,  related_name='salesOpportunityApplicationMain')     
+    applicationDetail = models.ForeignKey(ApplicationDetail, on_delete=PROTECT, null=True, blank=True,  related_name='salesOpportunityApplicationDetail')      
+    assumedProject = models.ForeignKey(Project, on_delete=PROTECT, null=True, blank=True,  related_name='salesOpportunityAssumedProject')    
+    sop = models.SmallIntegerField()
+    status = models.IntegerField()
+    projectName = models.CharField(max_length=50, blank=True, null=True)  
+    modReason = models.CharField(max_length=50, blank=True, null=True)   
+
+class ErrorTypesSalesOpportunities(models.Model):
+    errorType = models.SmallIntegerField(blank=True, null=True) 
+#    evaluationDate = models.DateTimeField(default=now, editable=False) 
+
+class SalesOpportunitiesConflicts(models.Model):
+    dragonOpportunity = models.ForeignKey(Dragon, on_delete=CASCADE, null=True, blank=True)
+    errorType = models.ForeignKey(ErrorTypesSalesOpportunities, on_delete=PROTECT, null=True, blank=True) 
+    evaluationDate = models.DateTimeField(default=now, editable=False) 
+
+class ProjectsToSalesOpportunitiesConflicts(models.Model):
+    errorType = models.ForeignKey(ErrorTypesSalesOpportunities, on_delete=PROTECT, null=True, blank=True) 
+    salesOpportunity = models.ForeignKey(SalesOpportunities, on_delete=PROTECT, null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=PROTECT, null=True, blank=True)
+    evaluationDate = models.DateTimeField(default=now, editable=False) 

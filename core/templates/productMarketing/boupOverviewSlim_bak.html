@@ -1,0 +1,508 @@
+{% extends "base.html" %} {% load static %} {% block title %} Bottom Up {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+<!-- DataTables -->
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %} {% block contents %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center"></div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="col-md-12">
+                                            <div class="page-header-title">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h5 class="m-b-10">
+                                                            <a href="/"><i class="feather icon-home"></i></a> Bottom Up - Key Facts - CY Based
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-md-6">{% include "partials/navigation_boup.html" %}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-block">
+                                        <br />
+
+                                        <table id="boupTable" class="display nowrap" style="width: 100%; overflow-x: auto">
+                                            <thead>
+                                                <tr>
+                                                    <!-- 
+                                                  <th>idApp</th>
+                                                  <th>applicationLine</th>
+                                                  <th>productMarketer</th>
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+                                                                      -->
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+
+                                                    <th>Reviewed</th>
+                                                    <th>Review Date</th>
+                                                    <th>ID_APP</th>
+                                                    <th>AL</th>
+                                                    <th>PM</th>
+                                                    <th>HFG</th>
+                                                    <th>PPOS</th>
+                                                    <th>SP Number</th>
+
+                                                    <th>Application Main</th>
+                                                    <th>Application Detail</th>
+                                                    <th>RFP</th>
+                                                    <th>Sales Name</th>
+                                                    <th>Price Source</th>
+                                                    <th>Family Price Applicable?</th>
+                                                    <th>FP details</th>
+                                                    <th>Price Status</th>
+
+                                                    <th>Currency</th>
+                                                    <th>FX rate</th>
+                                                    <th>Comments</th>
+                                                    <th>Region</th>
+                                                    <th>Project Description</th>
+
+                                                    <th>Main Customer</th>
+                                                    <th>End Customer</th>
+                                                    <th>Distributor</th>
+                                                    <th>Tier One</th>
+                                                    <th>OEM</th>
+                                                    <th>EMS</th>
+                                                    <th>VPA Customer</th>
+
+                                                    <th>Dragon_ID</th>
+                                                    <th>Sales contact</th>
+                                                    <th>Status / Probability</th>
+                                                    <th>Probability</th>
+                                                    <th>SOP</th>
+
+                                                    <th>PPOS in PGS+?</th>
+                                                    <th>Modified by</th>
+                                                    <th>Modification date</th>
+                                                    <th>Creation date</th>
+
+                                                    <th>TIME_BottomUp</th>
+                                                    <th>Basic Type</th>
+                                                    <th>Package</th>
+                                                    <th>Series</th>
+                                                    <th>Gen</th>
+                                                    <th>Series Long</th>
+                                                    <th>Gen Detail</th>
+
+                                                    <th>GM_LifeTime</th>
+                                                    <th>Rev_€_LifeTime</th>
+                                                    <th>Vol_LifeTime</th>
+                                                    <th>Weighted_Vol_LifeTime</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tfoot>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>
+
+                                                    <th>Reviewed?</th>
+                                                    <th>Review Date</th>
+                                                    <th>ID_APP</th>
+                                                    <th>AL</th>
+                                                    <th>PM</th>
+                                                    <th>HFG</th>
+                                                    <th>PPOS</th>
+                                                    <th>SP Number</th>
+
+                                                    <th>Application Main</th>
+                                                    <th>Application Detail</th>
+                                                    <th>RFP</th>
+                                                    <th>Sales Name</th>
+                                                    <th>Price Source</th>
+                                                    <th>Family Price Applicable?</th>
+                                                    <th>FP details</th>
+                                                    <th>Price Status</th>
+
+                                                    <th>Currency</th>
+                                                    <th>FX rate</th>
+                                                    <th>Comments</th>
+                                                    <th>Region</th>
+                                                    <th>Project Description</th>
+
+                                                    <th>Main Customer</th>
+                                                    <th>End Customer</th>
+                                                    <th>Distributor</th>
+                                                    <th>Tier One</th>
+                                                    <th>OEM</th>
+                                                    <th>EMS</th>
+                                                    <th>VPA Customer</th>
+                                                    <th>Dragon_ID</th>
+                                                    <th>Sales contact</th>
+                                                    <th>Status / Probability</th>
+                                                    <th>Probability</th>
+                                                    <th>SOP</th>
+
+                                                    <th>PPOS in PGS+?</th>
+                                                    <th>Modified by</th>
+                                                    <th>Modification date</th>
+                                                    <th>Creation date</th>
+
+                                                    <th>TIME_BottomUp</th>
+                                                    <th>Basic Type</th>
+                                                    <th>Package</th>
+                                                    <th>Series</th>
+                                                    <th>Gen</th>
+                                                    <th>Series Long</th>
+                                                    <th>Gen Detail</th>
+
+                                                    <th>GM_LifeTime</th>
+                                                    <th>Rev_€_LifeTime</th>
+                                                    <th>Vol_LifeTime</th>
+                                                    <th>Weighted_Vol_LifeTime</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+
+                                        <br />
+
+                                        <br />
+                                        <div class="row" style="text-align: center">
+                                            <!-- 
+                                        <canvas id="myChart" width="800" height="600" style="    margin-left: auto; margin-right: auto;"></canvas>
+                                        -->
+
+                                            <div class="col-xl-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title mb-4">Line Chart</h4>
+
+                                                        <div class="row text-center">
+                                                            <div class="col-4">
+                                                                <h5 class="mb-0">86541</h5>
+                                                                <p class="text-muted text-truncate">Volume</p>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <h5 class="mb-0">2541</h5>
+                                                                <p class="text-muted text-truncate">Revenue</p>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <h5 class="mb-0">102030</h5>
+                                                                <p class="text-muted text-truncate">Cost Profit</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <canvas id="lineChart" data-colors='["--bs-primary-rgb, 0.2", "--bs-primary", "--bs-light-rgb, 0.2", "--bs-light"]' height="300"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock contents %} {% block extra_javascript %}
+
+<!-- Required datatable js -->
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<!-- Buttons examples -->
+<script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'libs/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+
+<!-- Responsive examples -->
+<script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+<!-- Datatable init js -->
+<!---
+<script src="{% static 'js/pages/datatables.init.js' %}"></script>  
+-->
+
+<!-- Chart JS -->
+<script src="{% static 'libs/chart.js/dist/Chart.bundle.min.js' %}"></script>
+<!-- 
+<script src="{% static 'js/pages/chartjs.init.js' %}"></script> 
+-->
+
+<!-- Datatable Data Control -->
+
+<script>
+    var totalVolumes = []
+    var totalVolumesWeighted = []
+    var totalRevenues = []
+    var totalRevenuesWeighted = []
+    var totalMargin = []
+    var totalMarginWeighted = []
+    var totalAsps = []
+    var totalAspsWeighted = []
+    var dataForTable = []
+    var years = []
+
+    /*
+  $(document).ready(function() {
+
+    $.ajax({
+      url: "{% url 'boupTableSlimData'%}",
+      method: 'GET',
+      success: function (dataA) {
+          console.log('our data',dataA);
+
+          console.log("data coming", dataA)
+      }
+  });*/
+
+    $(document).ready(function () {
+        // column based search
+        $("#boupTable tfoot th").each(function () {
+            var title = $(this).text()
+
+            if (title != "") {
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />')
+            }
+        })
+
+        var table = $("#boupTable").DataTable({
+            // export buttons
+            dom: "Bflrtip",
+            buttons: ["copy", "csv", "excel", "pdf", "print"],
+
+            // general options
+
+            scrollY: "500px",
+            scrollCollapse: true,
+            paging: true,
+            keys: true,
+            scrollX: true,
+            responsive: false,
+
+            ajax: {
+                processing: true,
+                url: "{% url 'boupTableSlimData' %}",
+                dataSrc: "dataForTable",
+            },
+            //"data": data,
+            columns: [
+                /*
+          { "data": "projectName"},
+          { "data": "salesName"},
+          { "data": "region"},
+          */
+
+                {
+                    targets: 0,
+                    data: "idApp",
+                    //defaultContent: '<a class="btn btn-dark" style:"color: #AB377A" href="patientsManage/{ "data": "idApp"}">Edit [, ].name</a>',
+                    render: function (data) {
+                        let string = '<a class="btn btn-dark" style:"color: #AB377A" href="/ifx/productMarketing/projectEdit/0/' + String(data) + '">Edit </a>'
+                        return string
+                    },
+                },
+
+                {
+                    targets: 1,
+                    data: "idApp",
+
+                    render: function (data) {
+                        console.log("boupTableSlimData data", data)
+                        let string = '<a class="btn btn btn-danger" href="/ifx/productMarketing/deleteProject/' + String(data) + '">Delete </a>'
+                        return string
+                    },
+                },
+
+                {data: "projectReviewed"},
+                {data: "reviewDate"},
+
+                {data: "idApp"},
+
+                {data: "applicationLine"},
+                {data: "productMarketer"},
+                {data: "hfg"},
+                {data: "ppos"},
+                {data: "spNumber"},
+
+                {data: "applicationMain"},
+                {data: "applicationDetail"},
+
+                {data: "rfp"},
+
+                {data: "salesName"},
+                {data: "priceSource"},
+                {data: "familyPriceApplicable"},
+                {data: "familyPriceHelper"},
+                {data: "priceType"},
+
+                {data: "currency"},
+                {data: "fxRate"},
+
+                {data: "comments"},
+                {data: "region"},
+                {data: "projectName"},
+
+                {data: "mainCustomer"},
+                {data: "endCustomer"},
+                {data: "distributor"},
+                {data: "tierOne"},
+                {data: "oem"},
+                {data: "ems"},
+                {data: "vpaCustomer"},
+
+                {data: "dragonId"},
+                {data: "salesContact"},
+                {data: "statusProbability"},
+                {data: "Probability"},
+                {data: "sop"},
+
+                {data: "pposAvailablePgs"},
+                {data: "modifiedBy"},
+                {data: "modifiedDate"},
+                {data: "creationDate"},
+
+                {data: "timeBottomUp"},
+                {data: "basicType"},
+                {data: "package"},
+                {data: "series"},
+                {data: "gen"},
+                {data: "seriesLong"},
+                {data: "genDetail"},
+
+                {data: "gmLifeTime"},
+                {data: "revEurLifeTime"},
+                {data: "volLifeTime"},
+                {data: "volWeightedLifeTime"},
+            ],
+
+            // for search
+
+            initComplete: function () {
+                // Apply the search
+                this.api()
+                    .columns()
+                    .every(function () {
+                        var that = this
+
+                        $("input", this.footer()).on("keyup change clear", function () {
+                            if (that.search() !== this.value) {
+                                that.search(this.value).draw()
+                            }
+                        })
+                    })
+            },
+        })
+    })
+</script>
+
+<!-- Charts custom initialization -->
+
+<script>
+    !(function (l) {
+        "use strict"
+        function r() {}
+        ;(r.prototype.respChart = function (r, o, e, a) {
+            ;(Chart.defaults.global.defaultFontColor = "#8791af"), (Chart.defaults.scale.gridLines.color = "rgba(166, 176, 207, 0.1)")
+            var t = r.get(0).getContext("2d"),
+                n = l(r).parent()
+            function i() {
+                r.attr("width", l(n).width())
+                switch (o) {
+                    case "Line":
+                        new Chart(t, {type: "line", data: e, options: a})
+                        break
+                }
+            }
+            l(window).resize(i), i()
+        }),
+            (r.prototype.init = function () {
+                this.respChart(
+                    l("#lineChart"),
+                    "Line",
+                    {
+                        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October"],
+                        datasets: [
+                            {
+                                label: "Revenue",
+                                fill: !0,
+                                lineTension: 0.5,
+                                backgroundColor: "rgba(85, 110, 230, 0.2)",
+                                borderColor: "#556ee6",
+                                borderCapStyle: "butt",
+                                borderDash: [],
+                                borderDashOffset: 0,
+                                borderJoinStyle: "miter",
+                                pointBorderColor: "#556ee6",
+                                pointBackgroundColor: "#fff",
+                                pointBorderWidth: 1,
+                                pointHoverRadius: 5,
+                                pointHoverBackgroundColor: "#556ee6",
+                                pointHoverBorderColor: "#fff",
+                                pointHoverBorderWidth: 2,
+                                pointRadius: 1,
+                                pointHitRadius: 10,
+                                data: [65, 59, 80, 81, 56, 55, 40, 55, 30, 80],
+                            },
+                            {
+                                label: "Cost Profit",
+                                fill: !0,
+                                lineTension: 0.5,
+                                backgroundColor: "rgba(235, 239, 242, 0.2)",
+                                borderColor: "#ebeff2",
+                                borderCapStyle: "butt",
+                                borderDash: [],
+                                borderDashOffset: 0,
+                                borderJoinStyle: "miter",
+                                pointBorderColor: "#ebeff2",
+                                pointBackgroundColor: "#fff",
+                                pointBorderWidth: 1,
+                                pointHoverRadius: 5,
+                                pointHoverBackgroundColor: "#ebeff2",
+                                pointHoverBorderColor: "#eef0f2",
+                                pointHoverBorderWidth: 2,
+                                pointRadius: 1,
+                                pointHitRadius: 10,
+                                data: [80, 23, 56, 65, 23, 35, 85, 25, 92, 36],
+                            },
+                        ],
+                    },
+                    {scales: {yAxes: [{ticks: {max: 100, min: 20, stepSize: 10}}]}}
+                )
+            }),
+            (l.ChartJs = new r()),
+            (l.ChartJs.Constructor = r)
+    })(window.jQuery),
+        (function () {
+            "use strict"
+            window.jQuery.ChartJs.init()
+        })()
+</script>
+
+{% endblock extra_javascript %}

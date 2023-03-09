@@ -1,0 +1,47 @@
+﻿id;appDetailDescription;appMain
+0;BMS 12V;0
+1;BMS 48v;0
+2;BMS HV;0
+3;BMS - Other;0
+4;INV 48v;1
+5;INV HV;1
+6;INV - Other;1
+7;DCDC HV;2
+8;DCDC LV;2
+9;OBC;2
+10;OBC Connectivity;2
+11;OBC+DCDC integ.;2
+12;PCC - Other;2
+13;EMS Engine;3
+14;EMS Small Engine;3
+15;EMS Trucks;3
+16;EMS - Other;3
+17;TCU ICE;4
+18;TCU xEV;4
+19;Tx Case;4
+20;TCU - Other;4
+21;FCEV sub-app;5
+22;FCEV - Other;5
+23;Aux -Fans HV;6
+24;Aux -Fans LV;6
+25;Aux -Pumps HV;6
+26;Aux -Pumps LV;6
+27;Aux - Other;6
+28;eSound;7
+29;Domain Cont.;7
+30;PSE - Other;7
+31;Placeholder 1 out of 15;8
+32;Placeholder 2 out of 15;8
+33;Placeholder 3 out of 15;8
+34;Placeholder 4 out of 15;8
+35;Placeholder 5 out of 15;8
+36;Placeholder 6 out of 15;8
+37;Placeholder 7 out of 15;8
+38;Placeholder 8 out of 15;8
+39;Placeholder 9 out of 15;8
+40;Placeholder 10 out of 15;8
+41;Placeholder 11 out of 15;8
+42;Placeholder 12 out of 15;8
+43;Placeholder 13 out of 15;8
+44;Placeholder 14 out of 15;8
+45;Placeholder 15 out of 15;8

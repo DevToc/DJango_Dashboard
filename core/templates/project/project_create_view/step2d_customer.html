@@ -1,0 +1,323 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'libs/spreadsheet/dist/css/jquery.jexcel.css' %}" />
+<link rel="stylesheet" href="{% static 'libs/spreadsheet/dist/css/jquery.jcalendar.css' %}" />
+
+{% endblock extra_css %} {% block title %} Customer volume Entry {% endblock title %} {% block breadcrumbs %} {% if editMode == False %} {% breadcrumb "Project Entry" "project_management_all_view" %} {% breadcrumb "New Project - Customer Volumes" %} {% else %} {% breadcrumb "Project Edit" 'project_deepdive' projectId=projectId %} {% breadcrumb "Edit Customer Volumes" %} {% endif %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <div class="row justify-content-center">
+        {% if editMode == False %}
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Project Creation</li>
+                <li class="active">Volume Entry</li>
+                <li>Pricing Entry</li>
+                <li>Done</li>
+            </ul>
+        </div>
+
+        {% else %}
+        <div class="tab text-center">
+            <a href="{% url 'project_deepdive' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive' %} active{% endif %}">OVERVIEW</a>
+            <a href="{% url 'edit_project_key_facts' projectId %}" class="tablinks">PROJECT DETAILS <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_volume_view' %}" class="tablinks active">VOLUME <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_pricing_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_pricing_view' %} active {% endif %}">PRICING <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'project_deepdive_history' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive_history' %} active {% endif %}">PROJECT HISTORY</a>
+        </div>
+        {% endif %} If possible, please enter volumes as estimated by the customer. Else, skip this step.
+        <form method="post">
+            {% csrf_token %}
+            <div class="mt-4">
+                {{ form.media.js }}
+                <div class="row">
+                    {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                    <div class="col-12 mb-3">
+                        <div class="mt-4">
+                            <div class="accordion" id="createVolume">
+                                <div class="row" id="manualDiv" style="display: none">
+                                    <h5 class="card-title">Enter Your Values</h5>
+                                    <div class="col-2">
+                                        <i data-toggle="tooltip" data-placement="top" title="Press the tab key in order to add more columns. The first row is for the years. The second row is for the quantities." class="bx bx-info-circle mx-1" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="overflow-scroll">
+                                        <div id="excel"></div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">{{form.excelData|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3" style="display: none">{{form.startOfProduction|as_crispy_field}}</div>
+                                    <input type="hidden" id="thisIsCustomersData" name="thisIsCustomersData" value="1" />
+                                </div>
+                            </div>
+                            <!-- end accordion -->
+                        </div>
+                    </div>
+
+                    {% if editMode == False %}
+                    <div id="submitBtn" style="display: none">
+                        <div class="d-flex flex-column align-items-center">
+                            <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Next Step</button>
+                            <button type="button" id="month" class="btn btn-secondary save-skip bg-green mb-3" onclick="window.location.href='{% url 'create_pricing_view' %}';" href="{% url 'create_pricing_view' %}" value="Automatic">Skip</button>
+                            <button type="submit" name="save_n_continue" class="text-pinkish-red anchor-btn"><i class="bx bx-save"></i> Save & Continue Later</button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div id="submitBtn" style="display: none">
+                        <div class="mb-3 text-center">
+                            <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Save</button>
+                            <a href="{% url 'project_deepdive' projectId %}" class="btn btn-secondary save-baseline mb-3">Discard changes</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- end accordion -->
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+<!-- <script src="{% static 'libs/select2/dist/js/select2.min.js'%}"></script> -->
+<script src="{% static 'libs/spreadsheet/dist/js/jquery.jexcel.js' %}"></script>
+<script src="{% static 'libs/spreadsheet/dist/js/jquery.csv.min.js' %}"></script>
+<script src="{% static 'libs/spreadsheet/dist/js/excel-formula.min.js' %}"></script>
+<script src="{% static 'libs/spreadsheet/dist/js/jquery.jcalendar.js' %}"></script>
+<script>
+
+
+    function isPositiveInteger(str) {
+    if (typeof str !== 'string') {
+        return false;
+    }
+
+    const num = Number(str);
+
+    if (Number.isInteger(num) && num > 0) {
+        return true;
+    }
+
+    return false;
+    }
+
+    // data can be used to prefill
+    var data1 = [["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], []]
+    const options = {
+        data: data1,
+        csvFileName: "Product Marketing",
+        minSpareCols: 0,
+        allowInsertRow: false,
+        // funcitons
+        onchange: function () {
+            var value = $("#excel").jexcel("getData", false)
+            var years = value[0].filter((n) => n)
+            var volumes = value[1].filter((n) => n)
+            const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN"]
+            var allowableYears = []
+
+            // until 2050
+            var yearBasis = 2019
+            for(var i=0; i < 30; i++) {
+                allowableYears.push(String(yearBasis))
+                yearBasis = yearBasis + 1
+            }
+
+            // reset all cells
+            for(var i=0; i < value[0].length; i++) {
+                const column = i + 1
+                const cell = columns[i] + "1"
+                $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                $("#excel").jexcel('setStyle', cell, 'color', 'black');
+            }
+            for(var i=0; i < value[1].length; i++) {
+                const column = i + 1
+                const cell = columns[i] + "2"
+                $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                $("#excel").jexcel('setStyle', cell, 'color', 'black');
+            }
+
+            var yearsForCellHighlight =  value[0]
+            var volumesForCellHighlight = value[1]
+
+            while (yearsForCellHighlight.length) {                      // Loop while there are still entries
+                const last = yearsForCellHighlight[yearsForCellHighlight.length - 1];   // Get the last entry without removing it
+                if (last !== "" && last !== "\r") {     // Is this one to remove?
+                    break;                              // No, stop
+                }
+                --yearsForCellHighlight.length;                         // Yes, remove and keep looping
+            }
+
+            while (volumesForCellHighlight.length) {                      // Loop while there are still entries
+                const last = volumesForCellHighlight[volumesForCellHighlight.length - 1];   // Get the last entry without removing it
+                if (last !== "" && last !== "\r") {     // Is this one to remove?
+                    break;                              // No, stop
+                }
+                --volumesForCellHighlight.length;                         // Yes, remove and keep looping
+            }
+
+
+            // to do: highlight cells with wrong characters...
+            for(var i=0; i < volumesForCellHighlight.length; i++) {
+                // check if an integer. if not, highlight the cell in red
+                console.log("cecking", volumesForCellHighlight[i])
+                if (isPositiveInteger(volumesForCellHighlight[i]) == false) {
+                    const column = i + 1
+                    const cell = columns[i] + "2"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'red');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'white');
+
+                    console.log("wrong cell", cell)
+                } else {
+                    const column = i + 1
+                    const cell = columns[i] + "2"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'black');
+
+                }
+            }
+
+            // to do: highlight cells with wrong characters...
+            for(var i=0; i < yearsForCellHighlight.length; i++) {
+                // check if an integer. if not, highlight the cell in red
+                console.log("cecking", yearsForCellHighlight[i])
+                if ((isPositiveInteger(yearsForCellHighlight[i]) == false)||(allowableYears.includes(yearsForCellHighlight[i]) == false))  {
+                    const column = i + 1
+                    const cell = columns[i] + "1"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'red');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'white');
+
+                    console.log("wrong cell", cell)
+                } else {
+                    const column = i + 1
+                    const cell = columns[i] + "1"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'black');
+
+                }
+            }
+
+
+            // if decimals entered, clean...
+            for(var i=0; i < volumes.length; i++) {
+                volumes[i] = volumes[i].replace(",", '.');
+            }
+
+            for(var i=0; i < years.length; i++) {
+                years[i] = years[i].replace(",", '.');
+            }
+
+            $("#id_excelData").val(`${years} \n${volumes}`)
+            console.log("volumes value", volumes)
+            console.log("years value", years)
+            $("#jexcel_label_0").html("Year")
+            $("#jexcel_label_1").html("Quantity")
+
+
+
+        },
+    }
+    //$("#excel").jexcel(options)
+    var formulas = {
+        /**
+         * Custom method: SUM - Example: =SUM(C1:C10), =SUM(A1,A2,A3)
+         *
+         * @param string formula
+         * @return total
+         */
+        sum: function (formula) {
+            // Get main table id
+            var id = $(this.instance).prop("id")
+            // Total to be returned
+            var total = 0
+            // Check sum type
+            var d = formula.split(/:/)
+            // Which sum to be used
+            if (d.length < 2) {
+                // Explode by comman and sum all columns in the formula
+                d = formula.split(",")
+                $.each($(d), function (k, v) {
+                    v = parseInt($("#" + id).jexcel("getValue", v))
+                    total += v
+                })
+            } else {
+                t1 = d[0].match(/[a-zA-Z]+/g)
+                t2 = d[1].match(/[a-zA-Z]+/g)
+                // Sum vertical or horizontal
+                if (t1[0] == t2[0]) {
+                    // Some all cells in a vertical way
+                    co = t1
+                    t1 = d[0].match(/[0-9]+/g)
+                    t2 = d[1].match(/[0-9]+/g)
+                    for (i = t1; i <= t2; i++) {
+                        v = parseInt($("#" + id).jexcel("getValue", co + i))
+                        total += v
+                    }
+                } else {
+                    // Som all cells in a horizontal way
+                    t1 = $("#" + id)
+                        .jexcel("id", d[0])
+                        .split("-")
+                    t2 = $("#" + id)
+                        .jexcel("id", d[1])
+                        .split("-")
+
+                    for (i = t1[0]; i <= t2[0]; i++) {
+                        v = parseInt($("#" + id).jexcel("getValue", i + "-" + t1[1]))
+                        total += v
+                    }
+                }
+            }
+
+            try {
+                return total
+            } catch (e) {
+                return null
+            }
+        },
+    }
+
+
+
+    $(document).ready(function () {
+        $("#manualDiv").show(100)
+        $("#submitBtn").show(100)
+
+        $("#manual").click(function () {
+        })
+
+        var dataCondition =  {{ dataCondition }}
+        console.log("dataCondition", dataCondition)
+
+        var years = {{ years }}
+        var volumes = {{ volumes }}
+
+        console.log("BByears and volumes", years, volumes)
+        console.log("BBdata condition", dataCondition)
+        // if prefill data available, use it.
+        if (dataCondition == 1) {
+            data1[0] = years // [2020, 2021] //years
+            data1[1] = volumes //[1, 2] //,volumes
+        } else {
+            if (years.length == 0) {
+                years = [2020, 2021, 2022, 2023, 2024]
+            }
+            data1[0] = years // [2020, 2021] //years
+        }
+
+        console.log("data1", data1)
+        $("#excel").jexcel(options)
+
+        $("#jexcel_label_0").html("Year")
+        $("#jexcel_label_1").html("Quantity")
+
+    })
+</script>
+<script>
+    var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://"
+    var url = wsProtocol + window.location.host + "/ws/project/view/" + "{{ projectId|safe }}/" + "{{ request.user.id }}/"
+    var chatSocket = new WebSocket(url)
+</script>
+{% endblock extra_javascript %}

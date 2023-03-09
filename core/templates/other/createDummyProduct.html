@@ -1,0 +1,258 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock extra_css %} {% block title %} Project Creation {% endblock title %} {% block breadcrumbs %} {% breadcrumb "Project Entry" "create_project_view" %} {% breadcrumb "New Dummy Product" %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <h5 class="h3">Dummy Product Entry</h5>
+    <p class="card-title-desc">Required fields are marked with *</p>
+    <div class="row justify-content-center">
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Select Dummy Type</li>
+                <li class="active">Details</li>
+            </ul>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mt-4">
+                {{ form.media.js }}
+
+                <div class="row">
+
+                    <!-- consistency validation errors -->
+                    {% if createSalesNameSuccess == False %} {% for error in creationInformation %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+
+                    {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                    <br>
+                    In order to automate the matching with Product Master Data (PGS+), please configure your dummy product as accurately as you can.
+                    The selection of available HFG, PPOS and Basic Types is filtered by the selected Product Family. PPOS and Basic Type are required for the correct computation of Gross Margin. If unknown, please enter your best guess or the closest configuration.
+                    <br>
+
+                    <div class="col-12 mb-3">
+                        <div class="mt-4">
+                            <div class="accordion" id="createVolume">
+                                <div class="row" id="automaticDiv">
+                                    <div class="col-md-4 col-lg-3">{{form.product_family|as_crispy_field}}</div>
+                                    <!--
+                                    <div class="col-md-4 col-lg-3">{{form.product_series|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.product_package|as_crispy_field}}</div>
+                                    -->
+                                    <div class="col-md-4 col-lg-3">{{form.product|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.new_sales_name|as_crispy_field}}</div>
+                                </div>
+
+                                <div class="row" id="automaticDiv">
+
+                                    <div class="col-md-4 col-lg-3">{{form.hfg|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.ppos|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.basicType|as_crispy_field}}</div>
+
+                                </div>
+                            </div>
+                            <!-- end accordion -->
+                        </div>
+                    </div>
+
+                    <div id="submitBtn">
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+
+                        <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Create Product</button>
+                    </div>
+
+                    {% if createSalesNameSuccess == True %} {% for error in creationInformation %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+
+                </div>
+
+                <!-- end accordion -->
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+
+<script src="{% static 'libs/select2/dist/js/select2.min.js'%}"></script>
+<script>
+    
+
+    $(document).ready(function () {
+        // select2 on sales name
+
+        var product_family = $("#id_product_family")
+        //var product_series = $("#id_product_series")
+        //var product_package = $("#id_product_package")
+        var ppos = $("#id_ppos")
+        var basicType = $("#id_basicType")
+        var hfg = $("#id_hfg")
+
+        product_family.select2({
+            width: "100%",
+        })
+
+        /*
+        product_series.select2({
+            width: "100%",
+        })
+        product_package.select2({
+            width: "100%",
+        })*/
+
+        hfg.select2({
+            width: "100%",
+        })
+
+        ppos.select2({
+            width: "100%",
+        })
+
+        basicType.select2({
+            width: "100%",
+        })
+
+
+        // initial load of hfgs due to select2 behaviour
+        product_family.on("select2:open", function () {
+            console.log("hfg values1")
+
+            // now feed hfg, ppos, basic type for correct VHK and TCM mapping 
+            $.post("{% url 'hfg_json' %}", {query: this.value}, function (data, status) {
+                var hfgValues = data.hfg
+                var pposValues = data.ppos
+                var basicTypesValues = data.basicTypes
+                console.log("hfg values", hfgValues)
+
+                hfg.empty().trigger("change")
+                basicType.empty().trigger("change")
+                ppos.empty().trigger("change")
+
+                var newOptionsHfg = [new Option("---------", "", true, true)]
+                hfgValues.forEach((element) => {
+                    newOptionsHfg.push(new Option(element, element, false, false))
+                })
+                hfg.append(newOptionsHfg).trigger("change")
+            })
+        })
+
+
+        // select series
+        /*
+        product_family.on("select2:select", function () {
+            console.log("prod fam sel")
+            $.post("{% url 'series_list_json' %}", {query: this.value}, function (data, status) {
+                console.log("prod fam select")
+                var series = data.data
+                product_series.empty().trigger("change")
+                var newOptions = [new Option("---------", "", true, true)]
+                //newOptions.push(new Option("Unknown / Dummy", 999999999, false, false))
+                series.forEach((element, key) => {
+                    newOptions.push(new Option(element.text, element.id, false, false))
+                })
+                product_series.append(newOptions).trigger("change")
+            })
+
+        })*/
+
+        
+        product_family.on("select2:select", function () {
+            console.log("hfg values1")
+
+            // now feed hfg, ppos, basic type for correct VHK and TCM mapping 
+            $.post("{% url 'hfg_json' %}", {query: this.value}, function (data, status) {
+                var hfgValues = data.hfg
+                var pposValues = data.ppos
+                var basicTypesValues = data.basicTypes
+                console.log("hfg values", hfgValues)
+
+                hfg.empty().trigger("change")
+                basicType.empty().trigger("change")
+                ppos.empty().trigger("change")
+
+                var newOptionsHfg = [new Option("---------", "", true, true)]
+                hfgValues.forEach((element) => {
+                    newOptionsHfg.push(new Option(element, element, false, false))
+                })
+                hfg.append(newOptionsHfg).trigger("change")
+            })
+        })
+
+        // select hfg
+        hfg.on("select2:select", function () {
+            /* now feed hfg, ppos, basic type for correct VHK and TCM mapping */
+            $.post("{% url 'ppos_json' %}", {query: this.value}, function (data, status) {
+                console.log("checking hfg input")
+                var pposValues = data.ppos
+                
+                basicType.empty().trigger("change")
+                ppos.empty().trigger("change")
+
+                var newOptionsPpos = [new Option("---------", "", true, true)]
+                pposValues.forEach((element) => {
+                    newOptionsPpos.push(new Option(element, element, false, false))
+                })
+                ppos.append(newOptionsPpos).trigger("change")
+            })
+        })
+
+        // when a ppos is selected
+        ppos.on("select2:select", function () {
+            console.log("feeding ppos into back end", this.value)
+            /* now feed hfg, ppos, basic type for correct VHK and TCM mapping */
+            $.post("{% url 'basicType_json' %}", {query: this.value}, function (data, status) {
+                    var basicTypeValues = data.basicType
+                    
+                    basicType.empty().trigger("change")
+
+                    var newOptionsBasicType = [new Option("---------", "", true, true)]
+                    basicTypeValues.forEach((element) => {
+                        newOptionsBasicType.push(new Option(element, element, false, false))
+                    })
+                    basicType.append(newOptionsBasicType).trigger("change")
+                })
+        })
+
+        
+        // select packages
+        /*
+        product_series.on("select2:select", function () {
+            console.log("prod series select")
+            $.post("{% url 'package_list_json' %}", {query: this.value}, function (data, status) {
+                var packages = data.data
+                product_package.empty().trigger("change")
+                var newOptions = [new Option("---------", "", true, true)]
+                //newOptions.push(new Option("Unknown / Dummy", 999999999, false, false))
+                packages.forEach((element, key) => {
+                    newOptions.push(new Option(element.text, element.id, false, false))
+                })
+                product_package.append(newOptions).trigger("change")
+
+            })
+            
+        })*/
+
+
+
+
+    })
+
+</script>
+
+
+{% endblock extra_javascript %}

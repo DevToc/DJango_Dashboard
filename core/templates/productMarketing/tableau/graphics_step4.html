@@ -1,0 +1,239 @@
+
+{% load widget_tweaks %}
+
+<!-- Body -->
+
+
+    <div>
+
+    <canvas id="chartAspFamily" width="10" height="10"></canvas>
+    <canvas id="chartBusinessPerformanceByDevice" width="10" height="10"></canvas>
+    <canvas id="chartGMRevenueByCustomer" width="10" height="10"></canvas>
+
+
+<!--   
+    {% for d in year_gm %}
+    {{ d }}
+   {% endfor %}
+--> 
+
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+
+
+<script src="{{ ASSETS_ROOT }}/plugins/chart.js/dist/chart.min.js"></script>
+<script src="{{ ASSETS_ROOT }}/plugins/chart.js/dist/chart.extension.js"></script>
+
+
+<script>
+
+    // Mid-low-level Analyzer: Same customer, Same Family, Different Prices
+    const dataAspFamily = {    //49 is year and 54 is gm
+        datasets: [{
+        label: 'Endcustomer 1',
+        backgroundColor: 'rgba(110, 179, 174, 1)',
+            borderColor: 'rgba(110, 179, 174, 1)',
+        data: [{
+            x: {{ year_gm.49.0 }},
+            y: {{ year_gm.54.0 }}
+            }, {
+            x: {{ year_gm.49.1 }},
+            y: {{ year_gm.54.1 }}
+            }, {
+            x: {{ year_gm.49.2 }},
+            y: {{ year_gm.54.2 }}
+            }, {
+            x: {{ year_gm.49.3 }},
+            y: {{ year_gm.54.3 }}
+            }, {
+            x: {{ year_gm.49.4 }},
+            y: {{ year_gm.54.4 }}
+            }, {
+            x: {{ year_gm.49.5 }},
+            y: {{ year_gm.54.5 }}
+            }, {
+            x: {{ year_gm.49.6 }},
+            y: {{ year_gm.54.6 }}
+            }, {
+            x: {{ year_gm.49.7 }},
+            y: {{ year_gm.54.7 }}
+            }, {
+            x: {{ year_gm.49.8 }},
+            y: {{ year_gm.54.8 }}
+            }],
+        }]
+        };
+        
+    const configAspFamily = {
+        type: 'line',
+        data: dataAspFamily,
+        options: {
+            layout: { padding: 300 },
+            scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "ASP €"
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Year"
+                            }
+                        }
+                    },
+            plugins: {
+                title: {
+                display: true,
+                text: 'ASP family level',
+                    }
+                }
+            }
+        };
+
+   
+
+    const chartAspFamily = new Chart(
+        document.getElementById('chartAspFamily'),
+        configAspFamily
+        );
+
+</script>
+
+
+<script>  // 50 is volume, 52 is prices, 56 is wRev
+const dataBusinessPerformanceByDevice = {
+    datasets: [{
+        label: 'First Year',
+        data: [{
+        x: {{ year_gm.50.0 }}, 
+        y: {{ year_gm.56.0 }},
+        r: {{ year_gm.52.0 }}
+        }],
+        backgroundColor: 'rgb(110, 179, 174)'
+        }, {
+        label: 'Second Year',
+        data: [{
+        x: {{ year_gm.50.1 }}, 
+        y: {{ year_gm.56.1 }},
+        r: {{ year_gm.52.1 }}
+        }],
+        backgroundColor: 'rgb(78, 121, 167)'
+        },
+        {
+        label: 'Third Year',
+        data: [{
+        x: {{ year_gm.50.2 }}, 
+        y: {{ year_gm.56.2 }},
+        r: {{ year_gm.52.2 }}
+        }],
+        backgroundColor: 'rgb(118, 159, 59)'
+        },
+        {
+        label: 'Forth Year',
+        data: [{
+        x: {{ year_gm.50.3 }}, 
+        y: {{ year_gm.56.3 }},
+        r: {{ year_gm.52.3 }}
+        }],
+        backgroundColor: 'rgb(155, 99, 132)'
+        }],
+    }
+
+const configBusinessPerformanceByDevice = {
+                type: 'bubble',
+                data: dataBusinessPerformanceByDevice,
+                options: {
+                    layout: { padding: 300 },
+                    scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                        display: true,
+                        text: "Cum. Vol_w"
+                        },
+                        ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return value + "M";
+                                    }
+
+                    },},
+                    y: {
+                        title: {
+                        display: true,
+                        text: "5 year GM%"
+                        },
+                                ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return value + "%";
+                                    }
+                                }
+                            }
+                    },
+                    plugins: {
+                        title: {
+                        display: true,
+                        text: 'Cum. Vol. and 5-Year-GM% by Device',
+                            }
+                        }
+                }
+                };
+
+    const chartBusinessPerformanceByDevice = new Chart(
+        document.getElementById('chartBusinessPerformanceByDevice'),
+        configBusinessPerformanceByDevice
+    );
+
+
+</script>
+
+
+
+<script>
+const ctx = document.getElementById('chartGMRevenueByCustomer').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels:  [{{ year_gm.49.0 }},{{ year_gm.49.1 }},{{ year_gm.49.2 }},{{ year_gm.49.3 }},{{ year_gm.49.4 }},{{ year_gm.49.5 }}],
+        datasets: [{
+            label: 'Volume',
+            data: [{{ year_gm.50.0 }},{{ year_gm.50.1 }},{{ year_gm.50.2 }},{{ year_gm.50.3 }},{{ year_gm.50.4 }},{{ year_gm.50.5 }}]
+,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+
+
+{% endblock extra_javascript %}
+
+

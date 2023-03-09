@@ -1,0 +1,461 @@
+{% extends 'base.html' %} {% load widget_tweaks %} {% load static custom_tags %} {% load currency %} {% currency_context %} {% block title %} Compare Baselines {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+<style>
+    .mt-10 {
+        margin-top: 10px !important;
+    }
+    .mt-30 {
+        margin-top: 30px !important;
+    }
+    .mt-50 {
+        margin-top: 50px !important;
+    }
+    .card {
+        box-shadow: none !important;
+    }
+    .color-pink {
+        background-color: #ab377a !important;
+        color: white;
+    }
+    .new_label {
+        border: 1px solid;
+        border-radius: 30px;
+        width: 140px;
+        text-align: center;
+        padding: 7px;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+    }
+    .save-baseline {
+        width: 174px !important;
+        margin-top: 30px !important;
+        border-radius: 30px !important;
+        background-color: #ab377a !important;
+        border: none !important;
+        font-size: 18px !important;
+    }
+    .center {
+        text-align: center !important;
+    }
+
+    label {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+    .tablinks {
+        color: #ab377a;
+        font-weight: bold !important;
+        padding: 12px 30px;
+        font-size: 15px !important;
+        border-bottom: 5px solid;
+        cursor: pointer;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .accordion-header {
+        text-align: center;
+    }
+    .tab-container {
+        min-height: 500px;
+    }
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        /* border: 1px solid #ccc; */
+        border-top: none;
+    }
+    /* Create an active/current tablink class */
+    .tab button.active {
+        border-bottom: 6px solid #ab377a;
+    }
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+        border-bottom: 6px solid #edd2e2;
+        width: 220px;
+    }
+    .tab {
+        overflow: hidden;
+        padding: 0px 10px;
+    }
+    .big-text {
+        font-family: "Source Sans Pro";
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 60px !important;
+        line-height: 75px;
+        text-align: center;
+        color: rgba(30, 30, 30, 0.1);
+        margin-right: 35px;
+        position: relative;
+        top: 10px;
+    }
+    .chart-header {
+        font-size: 26px;
+        padding-left: 60px !important;
+        color: black;
+    }
+    .baseline-table {
+        width: 100%;
+        border: 1px solid;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .baseline-table table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+    th {
+        padding: 2px;
+        background: #fbfbff;
+    }
+    td {
+        padding: 5px;
+        border-top: 1px solid !important;
+        border-right: 1px solid !important;
+    }
+    td:last-child {
+        border-right: none !important;
+    }
+    .float-right {
+        float: right;
+    }
+    .align-right {
+        float: right;
+        clear: both;
+    }
+    .text-gray {
+        color: #a7a7a7;
+    }
+    .text-bold {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .text-regular {
+        font-weight: 400;
+        font-size: 16px;
+    }
+</style>
+{% endblock extra_css %} 
+
+{% block breadcrumbs %}
+{% breadcrumb "Baseline Management" 'snapshotList' %} 
+{% breadcrumb "Compare Baselines" %}
+{% endblock breadcrumbs %}
+{% block contents %}
+
+  <div class="card-body">
+    <h3 class="h3">Compare Baselines</h3>
+    <div class="col-12">
+        <div class="tab">
+            {% if tab == 'inspect' %}
+            <button class="tablinks" data-tab="baselines" onclick="openTab('baselines')">BASELINE SELECTION</button>
+            <button class="tablinks" data-tab="inspect" id="defaultOpen" onclick="openTab('inspect')">INSPECT</button>
+            {% else %}
+            <button class="tablinks" data-tab="baselines" id="defaultOpen" onclick="openTab('baselines')">BASELINE SELECTION</button>
+            <button class="tablinks" data-tab="inspect">INSPECT</button>
+            {% endif %}
+        </div>
+        <div class="tab-container">
+            <div id="baselines" class="tabcontent">
+                <form method="POST" action="snapshotCompare" id="snapshotCompare">
+                    {% csrf_token %}
+                    <div class="baselines">
+                        <div class="row mt-30">
+                            <h2><label class="big-text">1</label> Baseline 1<i class="bx bx-info-circle" aria-hidden="true"></i></h2>
+                            <hr />
+                        </div>
+                        <div class="row mt-30">
+                            <label>Select a baseline</label>
+                            <div class="col-4">
+                                <select class="form-control" name="baseline1" id="baseline1" onchange="handleSubmit()">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-30">
+                            <h2><label class="big-text">2</label> Baseline 2 <i class="bx bx-info-circle" aria-hidden="true"></i></h2>
+                            <hr />
+                        </div>
+                        <div class="row mt-30">
+                            <label>Select a baseline</label>
+                            <div class="col-4">
+                                <select class="form-control" name="baseline2" id="baseline2" onchange="handleSubmit()">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-30 center">
+                            <button class="btn btn-secondary save-baseline" type="submit" id="compare_submit" disabled>COMPARE</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="inspect" class="tabcontent">
+                <div class="float-right">
+                    <select name="years" id="years" class="btn" onchange="changeYear()"></select>
+                </div>
+                <div class="row mt-50">
+                    <div class="col-6 chart-header">Revenue</div>
+                    <div class="col-6 chart-header">Gross Profit</div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <canvas id="revenue"></canvas>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <canvas id="profit"></canvas>
+                    </div>
+                </div>
+                <div class="row justify-right">
+                    <div class="col-md-12"></div>
+                    <div class="col-md-12 mt-50 col-sm-12">
+                        <div class="baseline-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Baseline ID</th>
+                                        <th>Name</th>
+                                        <th>Total Revenue (w)</th>
+                                        <th>Delta Rev</th>
+                                        <th>Total GM (w)</th>
+                                        <th>Delta GM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ snapshot1.id }}</td>
+                                        <td>{{ snapshot1.snapshotName }}</td>
+                                        <td>{{CURRENCY.symbol}}{{ snapshot1revenue|currency:CURRENCY.code }}</td>
+
+                                        <td>-</td>
+                                        <td>{{ snapshot1grossMargin|currency:CURRENCY.code }}</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ snapshot2.id }}</td>
+                                        <td>{{ snapshot2.snapshotName }}</td>
+                                        <td>{{CURRENCY.symbol}}{{ snapshot2revenue|currency:CURRENCY.code }}</td>
+                                        <td>{{ deltaWrev }} %</td>
+                                        <td>{{CURRENCY.symbol}}{{ snapshot2grossMargin|currency:CURRENCY.code }}</td>
+                                        <td>{{ deltaGm }} %</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-md-3 mt-30 col-sm-12">
+                        <div class="align-right">
+                            <div class="text-bold">
+                                <span class="text-gray">#{{ snapshot1.id }} - </span>
+                                <span>Baseline 1 - {{ snapshot1.snapshotName }} </span>
+                                <span>{{ snapshot1.tag.tagName }}</span>
+                            </div>
+                            <div class="text-regular">
+                                <i class=""></i>
+                                <span>{{ snapshot1.snapshotComments }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mt-30 col-sm-12">
+
+                        <div class="align-right mt-10">
+                            <div class="text-bold">
+                                <span class="text-gray">#{{ snapshot2.id }} - </span>
+                                <span>Baseline 2 - {{ snapshot2.snapshotName }} </span>
+                                <span>{{ snapshot2.tag.tagName }}</span>
+                            </div>
+                            <div class="text-regular">
+                                <i class=""></i>
+                                <span>{{ snapshot2.snapshotComments }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock contents %}
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+
+<!-- Chart JS -->
+<script src="{% static 'libs/chart.js/Chart.bundle.min.js' %}"></script>
+
+<script>
+    // init chart
+    const ctxRevenue = document.getElementById("revenue")
+    const ctxProfit = document.getElementById("profit")
+    let revenue = null
+    let profit = null
+    let revenueValuesBaseline2
+    let revenueValuesBaseline1
+    let profitValuesBaseline1
+    let profitValuesBaseline2
+    let years
+    if ("{{tab}}" == "inspect") {
+        revenueValuesBaseline1 = JSON.parse("{{revenueValuesBaseline1}}")
+        revenueValuesBaseline2 = JSON.parse("{{revenueValuesBaseline2}}")
+        profitValuesBaseline1 = JSON.parse("{{profitValuesBaseline1}}")
+        profitValuesBaseline2 = JSON.parse("{{profitValuesBaseline2}}")
+        years = JSON.parse("{{years}}")
+        console.log("years", revenueValuesBaseline1, revenueValuesBaseline2, profitValuesBaseline1, profitValuesBaseline2, years)
+
+        // add years in dropdown
+        let options = ""
+        let i
+        for (i = 0; i < Math.floor(years.length / 10); i++) {
+            options += `<option value="${i}">${years[i * 10]} - ${years[i * 10 + 9]}</option>`
+        }
+        if (i * 10 < years.length) options += `<option value="${i}">${years[i * 10]} - ${years[years.length - 1]}</option>`
+        $("#years").html(options)
+
+        const dataRevenue = {
+            datasets: [
+                {
+                    label: "Baseline 1",
+                    data: revenueValuesBaseline1.slice(0, 10),
+                    // order: 2,
+                    borderColor: "rgb(255, 99, 132)",
+                    backgroundColor: "#93349547",
+                    borderWidth: 1,
+                    borderRadius: 2,
+                    borderSkipped: false,
+                },
+                {
+                    label: "Baseline 2",
+                    data: revenueValuesBaseline2.slice(0, 10),
+                    type: "line",
+                    // order: 1,
+                    fill: false,
+                    borderColor: "#AB377A",
+                },
+            ],
+            labels: years.slice(0, 10),
+        }
+        const dataProfit = {
+            datasets: [
+                {
+                    label: "Baseline 1",
+                    data: profitValuesBaseline1.slice(0, 10),
+                    // order: 2,
+                    borderColor: "rgb(153, 102, 255)",
+                    backgroundColor: "#b09fa245",
+                    borderWidth: 1,
+                },
+                {
+                    label: "Baseline 2",
+                    data: profitValuesBaseline2.slice(0, 10),
+                    type: "line",
+                    // order: 1,
+                    fill: false,
+                    borderJoinStyle: "bevel",
+                    borderColor: "#AB377A",
+                },
+            ],
+            labels: years.slice(0, 10),
+        }
+
+        const configRevenue = {
+            type: "bar",
+            data: dataRevenue,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+                plugins: {
+                    tooltip: true,
+                },
+            },
+        }
+        const configProfit = {
+            type: "bar",
+            data: dataProfit,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        }
+
+        revenue = new Chart(ctxRevenue, configRevenue)
+        profit = new Chart(ctxProfit, configProfit)
+    }
+    function changeYear() {
+        const id = Number($("#years").val())
+        // revenue chart udpate
+        revenue.data.datasets[0].data = revenueValuesBaseline1.slice(id * 10, id * 10 + 10)
+        revenue.data.datasets[1].data = revenueValuesBaseline2.slice(id * 10, id * 10 + 10)
+        revenue.data.labels = years.slice(id * 10, id * 10 + 10)
+        revenue.update()
+        // profit chart udpate
+        profit.data.datasets[0].data = profitValuesBaseline1.slice(id * 10, id * 10 + 10)
+        profit.data.datasets[1].data = profitValuesBaseline2.slice(id * 10, id * 10 + 10)
+        profit.data.labels = years.slice(id * 10, id * 10 + 10)
+        profit.update()
+    }
+    function getSnapshots() {
+        // get all snapshots
+        $.ajax({
+            url: "./snapshots",
+            method: "GET",
+            success: function (data) {
+                console.log("snapshots", data)
+                const snapshots = data.map((el) => {
+                    return `<option value="${el.id}">${el.snapshotName}</option>`
+                })
+                $("#baseline1, #baseline2").append(snapshots)
+            },
+        })
+    }
+
+    function handleSubmit() {
+        const baseline1 = $("#baseline1").val()
+        const baseline2 = $("#baseline2").val()
+        if (baseline1 && baseline2) {
+            $("#compare_submit").prop("disabled", false)
+        }
+    }
+    // tags script
+    function openTab(cityName) {
+        var i, tabcontent, tablinks
+        tabcontent = document.getElementsByClassName("tabcontent")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none"
+        }
+        tablinks = document.getElementsByClassName("tablinks")
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "")
+        }
+        document.getElementById(cityName).style.display = "block"
+        $('button[data-tab="' + cityName + '"]')[0].className += " active"
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click()
+    getSnapshots()
+</script>
+
+{% endblock extra_javascript %}

@@ -1,0 +1,62 @@
+
+{% load widget_tweaks %}
+
+
+<!-- Body -->
+
+
+
+
+
+
+  <div class="row justify-content-center mt-4 mb-4">
+    <div class="container" style="z-index: 1;">
+      <ul class="progressbar p-0">
+        <li class="active" >Project Creation</li>
+        <li class="active" >Volume</li>
+        <li class="active" >Pricing Source</li>
+        <li class="active" >Pricing Review</li>
+        <li class="active">Overview</li>
+      </ul>
+    </div>
+  </div>
+
+
+
+
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+      <div>
+
+      
+  <img src="data:image/jpeg;base64,{{ revenueMarginPlotBase64 }}" alt="Revenue and Gross Margin">
+  <img src="data:image/jpeg;base64,{{ FYrevenueBase64 }}" alt="Revenue and Gross Margin FY">
+  <img src="data:image/jpeg;base64,{{ volumePricePlotBase64 }}" alt="Volume and Prices">
+  <img src="data:image/jpeg;base64,{{ MonthVolumeBase64 }}" alt="Prices Adjustment">
+
+
+  {% include "productMarketing/tableau/graphics_step4.html" %} 
+
+</div>
+
+
+
+
+    </div>
+  </form>
+
+  <br>
+
+  <a href="/ifx/productMarketing/boupSaveAndSubmit/{{projectId}}" class="btn btn btn-success">Save and submit</a>
+
+  <br>
+  <br>
+  <a href="/ifx/productMarketing/boupSaveAsDraft/{{projectId}}" class="btn btn btn-warning">Save as a draft</a>
+
+
+
+
+
+  

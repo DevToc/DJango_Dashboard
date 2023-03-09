@@ -1,0 +1,251 @@
+{% extends "base.html" %} {% load static custom_tags %} {% block title %} Bottom Up {% endblock %} {% block breadcrumbs %} {% breadcrumb "VRFC Export" %} {% endblock breadcrumbs %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'libs/ce-master/dist/jspreadsheet.css' %}" />
+<link rel="stylesheet" href="{% static 'libs/ce-master/dist/jsuites.css' %}" />
+{% endblock extra_css %} {% block contents %}
+<!-- [ Main Content ] start -->
+
+<div class="d-flex justify-content-between flex-wrap">
+    <div class="mb-3">
+        <div class="text-gray-dark">The full Bottom Up table is shown in two views. The first one shows only the key facts and also unsubmitted projects (drafts). The full bottom up shows the table as you know it from Excel. It shows only submitted projects. You can download it as a CSV, Excel or PDF file.</div>
+    </div>
+</div>
+<hr />
+
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body min-vh-75">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row pb-5">
+                            <div class="col-12">
+                                {% include "partials/navigation_boup.html" %}
+                                <!-- datatable  -->
+                                <div class="col-lg-12">
+                                    <h4 class="card-title">Aggregated Volume</h4>
+
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>MC</th>
+                                                    <th>EC</th>
+                                                    <th>RFP</th>
+                                                    {% for item in project_vol_aggr_list %}
+                                                    <th>{{item.fiscal_year|safe}}<br />FQ{{item.fiscal_quarter}}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{obj_data.mc}}</td>
+                                                    <td>{{obj_data.ec}}</td>
+                                                    <td>{{obj_data.rfp}}</td>
+                                                    {% for item in project_vol_aggr_list %}
+                                                    <td>{{item.total_quantity}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mt-5">
+                                    <h4 class="card-title">Underlying Projects</h4>
+
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Application Main</th>
+                                                    <th>Application Detail</th>
+                                                    <th>RFP</th>
+
+                                                    {% for header in project_vol_aggr_list|generate_header %}
+                                                    <th>{{header}}</th>
+                                                    {% endfor %}
+
+                                                    <th>Edit</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for item in projects %}
+                                                <tr>
+                                                    <td>{{item.applicationMain.appMainDescription}}</td>
+                                                    <td>{{item.applicationDetail.appDetailDescription}}</td>
+                                                    <td>{{item.sales_name.rfp.rfp}}</td>
+
+                                                    {% for value in item.projectvolumemonth_set.all|pvm_filter %}
+                                                    <td>{{value.quantity}}</td>
+                                                    {% endfor %}
+
+                                                    <td>
+                                                        <div class="d-flex gap-2">
+                                                            <a href="{% url 'project_deepdive' item.id %}" class="btn btn-outline-success waves-effect waves-light">Edit</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 mt-5">
+                                    <h4 class="card-title">Orders on hand</h4>
+                                    <p>Delta to Agg. Volume</p>
+
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    {% for item in order_delta_volume %}
+                                                    <th>{{item.fiscal_year|safe}} <br />FQ{{item.fiscal_quarter}}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    {% for item in orders_on_hand_aggr_list %}
+                                                    <td>{{item.quantity}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr>
+                                                    {% for item in order_delta_volume %}
+                                                    <td>{{item.quantity_diff}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mt-5">
+                                    <h4 class="card-title">Sales Forecast</h4>
+                                    <p>Delta to Agg. Volume</p>
+
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    {% for item in sales_forecast_delta_volume %}
+                                                    <th>{{item.fiscal_year|safe}} <br />FQ{{item.fiscal_quarter}}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    {% for item in sales_forecast_aggr_list %}
+                                                    <td>{{item.quantity}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr>
+                                                    {% for item in sales_forecast_delta_volume %}
+                                                    <td>{{item.quantity_diff}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mt-5">
+                                    <h4 class="card-title">Last PM Forecast</h4>
+                                    <p>Delta to Agg. Volume</p>
+
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    {% for item in pm_forecast_delta_volume %}
+                                                    <th>{{item.fiscal_year|safe}} <br />FQ{{item.fiscal_quarter}}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    {% for item in pm_forecast_aggr_list %}
+                                                    <td>{{item.quantity}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr>
+                                                    {% for item in pm_forecast_delta_volume %}
+                                                    <td>{{item.quantity_diff}}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <h4 class="card-title mb-4">Marketing Forecast vs Orders vs Sales Forecast</h4>
+
+                                <div id="line_chart_datalabel" data-colors='["--bs-primary", "--bs-success", "--bs-danger"]' class="apex-charts" dir="ltr"></div>
+
+                                <!--end card-->
+                            </div>
+                            <div class="col-12 overflow-scroll">
+                                <div id="userInput"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- [ Main Content ] end -->
+{% endblock contents %} {% block extra_javascript %}
+<!-- apexcharts -->
+<script src="{% static 'libs/apexcharts/apexcharts.min.js' %}"></script>
+
+<script src="{% static 'libs/ce-master/dist/index.js' %}"></script>
+<script src="{% static 'libs/ce-master/dist/jsuites.js' %}"></script>
+
+<script>
+    $(function () {
+        const headers = "{{ project_vol_aggr_list|generate_header|join:',' }}".split(",")
+        var options = {
+                chart: {height: 380, type: "line", zoom: {enabled: !1}, toolbar: {show: !1}},
+                colors: ["#556ee6", "#34c38f", "#b432dc"],
+                dataLabels: {enabled: !1},
+                stroke: {width: [3, 3], curve: "straight"},
+                series: [
+                    {name: "Project Volume Month", data: '{{ charts_data.project_vol_aggr_list|join:","}}'.split(",")},
+                    {name: "Orders On Hand", data: '{{ charts_data.orders_on_hand_aggr_list|join:","}}'.split(",")},
+                    {name: "Sales Forecast", data: '{{ charts_data.sales_forecast_aggr_list|join:","}}'.split(",")},
+                ],
+                title: {text: "Average High & Low Temperature", align: "left", style: {fontWeight: "500"}},
+                grid: {row: {colors: ["transparent", "transparent"], opacity: 0.2}, borderColor: "#f1f1f1"},
+                markers: {style: "inverted", size: 6},
+                xaxis: {categories: headers, title: {text: "Year & Quarter"}},
+                yaxis: {title: {text: "Quantity"}},
+                legend: {position: "top", horizontalAlign: "right", floating: !0, offsetY: -25, offsetX: -5},
+                responsive: [{breakpoint: 600, options: {chart: {toolbar: {show: !1}}, legend: {show: !1}}}],
+            },
+            chart = new ApexCharts(document.querySelector("#line_chart_datalabel"), options)
+        chart.render()
+        // initiate jexcel
+        var volumes = '{{ charts_data.project_vol_aggr_list|join:","}}'.split(",")
+        var orders = '{{ charts_data.orders_on_hand_aggr_list|join:","}}'.split(",")
+        // Calculate the delta of both lists and add it to the data array
+
+        var delta = volumes.map((item, index) => {
+            return `=${jexcel.getColumnNameFromId([index, 0])}-${jexcel.getColumnNameFromId([index, 1])}`
+        })
+
+        var jexcelData = [volumes, orders, delta]
+        const columns = headers.map((item) => ({title: item, width: "80px"}))
+        jspreadsheet(document.getElementById("userInput"), {
+            data: jexcelData,
+            columns: columns,
+            rowHeader: [{type: "text", title: "XXX"}],
+            updateTable: function (el, cell, x, y, source, value, label) {
+                if (y == 1 || y == 2) {
+                    cell.classList.add("readonly")
+                }
+            },
+        })
+    })
+</script>
+{% endblock extra_javascript %}

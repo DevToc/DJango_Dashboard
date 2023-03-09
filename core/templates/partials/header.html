@@ -1,0 +1,19 @@
+{% load static %} {% block header%}
+<header id="page-topbar">
+    <div class="navbar-header">
+        <div class="d-flex">
+            <!-- LOGO -->
+            <div class="navbar-brand-box d-flex justify-content-start">
+                <button type="button" class="btn btn-sm font-size-16 header-item me-md-4" id="vertical-menu-btn">
+                    <i class="fa fa-fw fa-bars"></i>
+                </button>
+                <a href="{% url 'dashboard_view' %}" class="logo logo-dark">
+                    <span class="logo-lg">
+                        <img src="{% static 'images/brand/ifx.png' %}" alt="" height="40" />
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+{% endblock %}

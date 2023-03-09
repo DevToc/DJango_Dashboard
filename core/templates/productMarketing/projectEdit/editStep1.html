@@ -1,0 +1,368 @@
+{% load widget_tweaks %}
+
+
+
+
+<div>
+<canvas id="myChart" width="400" height="600" style="margin-left: auto; margin-right: auto;"></canvas>
+</div>
+<div class="row" style="text-align: center;">
+
+
+</div>
+          <div class="row">
+            <div>
+
+            <div class="col-xl order-xl-2 mb-5 mb-xl-0">
+              <div class="card-body pt-0 pt-md-4">
+           
+                {% if volumeConfirmation == True %}
+                <form method="post">
+
+                  <div class="row">
+                    <div class="col">
+                      <div class="row justify-content-center">
+                        <h1>Confirm volumes</h1>
+                        <br>
+                      </div>
+                      {% csrf_token %}
+                      <hr style="  border-top: solid green; !important;">
+                      <br>
+                      <div class="row justify-content-center">
+                        <div>
+                          <div class="row my-4">
+                            <div class="col-12">
+                              <div class="custom-control custom-control-alternative custom-checkbox">
+                                <input hidden class="custom-control-input" checked="checked" id="manualEntry"
+                                  type="checkbox" value="True" name="manualEntry">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2020</label>
+                            {{volumeForm.v20|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2021</label>
+                            {{volumeForm.v21|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2022</label>
+                            {{volumeForm.v22|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2023</label>
+                            {{volumeForm.v23|add_class:"form-control"}}
+                          </div>
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2024</label>
+                            {{volumeForm.v24|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2025</label>
+                            {{volumeForm.v25|add_class:"form-control"}}
+                          </div>
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2026</label>
+                            {{volumeForm.v26|add_class:"form-control"}}
+                          </div>
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2027</label>
+                            {{volumeForm.v27|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2028</label>
+                            {{volumeForm.v28|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2029</label>
+                            {{volumeForm.v29|add_class:"form-control"}}
+                          </div>
+
+                          <div class="form-row">
+                            <label for="form_1.diagnose">CY 2029</label>
+                            {{volumeForm.v30|add_class:"form-control"}}
+                          </div>
+
+                          <hr style="  border-top: solid green; !important;">
+                          <br>
+
+
+
+                          <button type="submit" class="btn btn-success">Save and enter price data</button>
+
+                        </div>
+
+
+
+
+
+
+                      </div>
+                      <br>
+                    </div>
+                  </div>
+                </form>
+
+                {% else %}
+                <form method="post">
+
+                  <div class="row">
+                    <div class="col">
+                      <div class="row justify-content-center">
+                        <!-- <h1>Volume Entry</h1>-->
+                        <br>
+                      </div>
+
+                      <!--- 
+                    <div class="row justify-content-center">
+                      <a href="/onboarding_step2/select" class="btn btn-warning">Bestehender Patient auswählen</a>
+                    </div>
+                    -->
+                      <hr style="  border-top: solid green; !important;">
+
+                      <!---  marketer estimated volumes -->
+
+                      <button type="button" class="collapsible">
+                        <h2>My volume estimates</h2>
+                      </button>
+
+                      <div class="content-collapsible">
+                        <br>
+                        <h4>Enter your estimated volumes for this project.</h4>
+
+
+                        <br>
+                        <h4>Copy and paste your Excel data!</h4>
+
+                        <br>
+                        <div class="form-row">
+                          <!-- <input type="textArea" id="excelData" name="excelData"><br>-->
+                          <textarea id="excelData" name="excelData" rows="8" cols="80">
+                      </textarea>
+
+                        </div>
+                        <br>
+
+                       
+
+                      </div>
+
+
+                      <hr style="  border-top: solid green; !important;">
+
+
+                      <button type="button" class="collapsible">
+                        <h2>Customer volume estimates</h2>
+                      </button>
+    
+                      <div class="content-collapsible">
+                       <br>
+                        <h4>Excel input for customer estimated volumes</h4>
+    
+    
+    
+                        <br>
+                        <h4>Copy and paste your Excel data!</h4>
+    
+                        <br>
+                        <div class="form-row">
+                          <!-- <input type="textArea" id="excelData" name="excelData"><br>-->
+                          <textarea id="excelDataCustomer" name="excelDataCustomer" rows="8" cols="80">
+                    </textarea>
+    
+                        </div>
+                        <br>
+                        <!-- 
+                        <button type="submit" class="btn btn-success">Save and review </button>
+                        -->
+                        <br>
+                      </div>
+                      <hr style="  border-top: solid green; !important;">
+
+
+                      <button type="button" class="collapsible">
+                        <h2>Automatic volume creation</h2>
+                      </button>
+                      <div class="content-collapsible">
+
+                        <br>
+
+                        {% csrf_token %}
+
+                        <!-- 
+                      <div class="form-row">
+                        <label for="volumeAutomaticForm.distributionType">Distribution Type</label>
+                        {{volumeAutomaticForm.distributionType|add_class:"form-control"}}
+                      </div>
+                      -->
+
+                        <!-- 
+
+                        // removed upon Pedros request
+                      <h4>Please select a volume distribution type!</h4>
+
+                      <select name="distributionType" class="form-control" autocomplete="off" hx-get="/productMarketing/distributionConfigurator/{{projectId}}" hx-target="#distributionConfigurator" name="distributionType">
+                        <option selected> - </option>
+                        <option value="poisson">Poisson</option>
+                        <option value="gamma">Gamma</option>
+                        <option value="chi">Chi-Squared</option>
+                        <option value="normal">Gauss</option>
+                      </select>
+  
+                      {% if volumeAutomaticForm.distributionType.errors %}
+                      {% for error in volumeAutomaticForm.distributionType.errors %}
+                      <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                      </div>
+                      {% endfor %}
+                      {% endif %}
+
+
+                      <div id="distributionConfigurator"> 
+                        -->
+
+
+                        <div class="form-row">
+                          <label>Start of Production</label>
+                          {{volumeAutomaticForm.startOfProduction|add_class:"form-control"}}
+
+                        </div>
+                        {% if volumeAutomaticForm.startOfProduction.errors %}
+                        {% for error in volumeAutomaticForm.startOfProduction.errors %}
+                        <div class="alert alert-danger">
+                          <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+
+                        <div class="form-row">
+                          <label for="volumeAutomaticForm.peakVolume">Total Volume</label>
+                          {{volumeAutomaticForm.totalVolume|add_class:"form-control"}}
+                        </div>
+
+                        {% if volumeAutomaticForm.totalVolume.errors %}
+                        {% for error in volumeAutomaticForm.totalVolume.errors %}
+                        <div class="alert alert-danger">
+                          <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <div class="form-row">
+                          <label for="volumeAutomaticForm.peakYear">Peak Year</label>
+                          {{volumeAutomaticForm.peakYear|add_class:"form-control"}}
+                        </div>
+
+                        {% if volumeAutomaticForm.peakYear.errors %}
+                        {% for error in volumeAutomaticForm.peakYear.errors %}
+                        <div class="alert alert-danger">
+                          <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <br>
+                        <!--- 
+                        <button type="submit" class="btn btn-success">Save and review generated distribution</button>
+                        -->
+
+
+
+
+                      </div>
+
+
+
+
+
+                    </div>
+
+
+                  </div>
+                  <hr style="  border-top: solid green; !important;">
+
+                  <br>
+                  <button type="submit" class="btn btn-success">Save and review </button>
+                  <br>
+
+
+              </div>
+              <br>
+            </div>
+          
+            {% endif %}
+          </form>
+
+          </div>
+          
+
+
+
+
+
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+
+
+<script src="{{ ASSETS_ROOT }}/plugins/chart.js/dist/chart.min.js"></script>
+<script src="{{ ASSETS_ROOT }}/plugins/chart.js/dist/chart.extension.js"></script>
+
+
+
+
+<script>
+
+const ctx = document.getElementById('myChart');
+const labels = [
+2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044];
+
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'Planned Revenue',
+    backgroundColor: 'rgb(255, 99, 132)',
+    borderColor: 'rgb(255, 99, 132)',
+    data: {{ volumes }},
+  }]
+};
+
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    responsive: false,
+    maintainAspectRatio: true,
+
+    layout: {
+    padding: {                
+      top: 20                
+    }
+  },
+  legend: {
+    display: true,
+  },
+    maintainAspectRatio: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'asdddd'
+      }
+    },
+  }
+};
+
+const myChart = new Chart(ctx, config);
+
+</script>
+
+
+
+{% endblock extra_javascript %}

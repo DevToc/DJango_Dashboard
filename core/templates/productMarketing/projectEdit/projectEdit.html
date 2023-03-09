@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %} Project Edit {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}{% endblock extra_css %}
+
+{% block contents %}
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ breadcrumb ] start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                          
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ breadcrumb ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Main Content ] start -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="col-md-12">
+                                                <div class="page-header-title">
+                                                    <h5 class="m-b-10"><a href="/"><i class="feather icon-home"></i></a>  Project Edit</h5>
+            
+
+                                                    
+                                                </div>
+                                             
+                                            </div>
+
+
+                                        </div>
+                                        <div class="card-block">
+
+                                          
+
+
+
+
+
+
+                                          <div class="row">
+                                            <div class="col-4">
+                                              {% if step == 0 %}
+                                              <h2 >Edit a project - Key Facts</h2>
+                                              {% elif step == 1 %}
+                                    
+                                              <h2 >Edit a project - Volumes</h2>
+                                              {% elif step == 2 %}
+                                              <h2 >Edit a project - Pricing</h2>
+                                              {% elif step == 3 %}
+                                              <h2 >Edit a project - Pricing</h2>
+                                              {% elif step == 4 %}
+                                              <h2>Edit a project - Metrics</h2>
+                                              {% endif %}
+                                            </div>
+                                            <div class="col-8 float-end">
+                                              <nav class="navbar nav-pills navbar-light navbar-expand-lg nav-fill bg-transparent float-end">
+                                                <!--  navbar-light -->
+                                                <!-- <a class="navbar-brand" href="communication.html">Kommunikation - Home</a>-->
+                                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                                                  <span class="navbar-toggler-icon"></span>
+                                                </button>
+                                                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                                                  <div class="navbar-nav bg-light">
+                                                    <a class="btn btn-success m-2"href="/ifx/productMarketing/projectEdit/0/{{ projectId }}"> Key Facts</a>     
+                                                    <a class="btn btn-success m-2" href="/ifx/productMarketing/projectEdit/1/{{ projectId }}"> Volume</a>     
+                                                    <a class="btn btn-success m-2" href="/ifx/productMarketing/projectEdit/2/{{ projectId }}"> Pricing</a>     
+                                                    <a class="btn btn-success m-2" href="/ifx/productMarketing/projectEdit/4/{{ projectId }}"> Metrics</a>     
+                                                    <a class="btn btn-success m-2" href="/ifx/productMarketing/projectEdit/5/{{ projectId }}"> Product Master Data</a>     
+                                    
+                                                    <!-- <a class="nav-item nav-link" href="communication_filter.html">Detailübersicht </a>-->
+                                                  </div>
+                                                </div>
+                                              </nav>      
+                                            </div>
+                                          </div>
+
+
+
+
+
+
+
+
+
+
+
+                                          <br>
+
+                                          {% if notification == "Project data stored." %}
+
+                                          <h4 class="text-red" style="color: green;">{{ notification }}</h4>
+                                          <br>
+                                          {% else %}
+
+                                          <h4 class="text-red" style="color: red;">{{ notification }}</h4>
+                                          <br>
+                                          {% endif %}
+
+                                          {% if step == 0 %}
+                                          {% include "productMarketing/projectEdit/editStep0.html" %}
+                                          {% elif step == 1 %}
+                                
+                                          {% include "productMarketing/projectEdit/editStep1.html" %}
+                                          {% elif step == 2 %}
+                                          {% include "productMarketing/projectEdit/editStep2.html" %}
+                                          {% elif step == 3 %}
+                                          {% include "productMarketing/projectEdit/editStep3.html" %}
+                                          {% elif step == 4 %}
+                                          {% include "productMarketing/projectEdit/editStep4.html" %}
+                                          {% elif step == 5 %}
+                                          {% include "productMarketing/projectEdit/editStep5.html" %}
+
+                                          {% endif %}
+      
+
+                                          <br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Main Content ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock contents %}
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+
+
+
+{% endblock extra_javascript %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

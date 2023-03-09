@@ -1,0 +1,31 @@
+<!-- <a class="btn btn-success m-2" href="/ifx/productMarketing/boupOverviewSlim"> Slim view</a>     
+  <a class="btn btn-success m-2" href="/ifx/productMarketing/boupOverview"> Full Bottom Up</a>      -->
+
+<div class="row mb-3 animateSlideDown">
+    <ul class="nav nav-tabs nav-tabs-custom nav-justified col-md-8 fs-18">
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'project_overview' %}active{% endif %}" href="{% url 'project_overview' %}">
+                <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                <span class="d-none d-sm-block">Project Overview</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'project_overview_full' %}active{% endif %}" href="{% url 'project_overview_full' %}">
+                <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                <span class="d-none d-sm-block">Full Bottom Up</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'boup_forecast' %}active{% endif %}" href="{% url 'boup_forecast' %}">
+                <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                <span class="d-none d-sm-block">SnOp Forecast</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'vrfc_values' %}active{% endif %}" href="{% url 'vrfc_values' %}">
+                <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                <span class="d-none d-sm-block">VRFC Values</span>
+            </a>
+        </li>
+    </ul>
+</div>

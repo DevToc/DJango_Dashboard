@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load custom_tags custom_tags static crispy_forms_tags %}
+
+{% block title %} Baseline Management {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+<link href="{% static 'libs\select2\css\select2.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock extra_css %}
+{% block breadcrumbs %} {% breadcrumb "Baseline Management" %} {% endblock breadcrumbs %}
+{% block contents %}
+<div class="snapshot-list card-body">
+  <h3 class="h3">Project Baseline</h3>
+  <div class="row section1">
+    <div class="col-md-6 col-sm-12 header-text">
+      Review created baselines, compare them and create a new baseline.
+    </div>
+    <div class="col-md-6 col-sm-12 right "><a href=""> </a>
+      <!-- <a href="snapshotDeepdive"><button class="btn new-snapshot">Deepdive</button></a> -->
+      <!-- <a href="snapshotCompare"><button class="btn new-snapshot">Compare Snapshot</button></a> -->
+      <a href="newSnapshot"><button class="btn new-snapshot">+New Baseline Freeze</button></a>
+    </div>
+  </div>
+  <hr>
+  <div class="tab">
+    <button class="tablinks" data-tab="baselines" onclick="openTab('baselines')" id="defaultOpen">All Baselines</button>
+    <a href="snapshotCompare"><button class="tablinks" data-tab="compare">Compare</button></a>
+    <button class="tablinks filter" data-tab="filter" onclick="openTabAndHide('filter')"><i class="bx bx-filter"></i>All filters</button>
+  </div>
+  <div class="tab-container">
+    <div id="baselines" class="tabcontent">
+      <div class="baselines"></div>
+      <div class="pagination">
+        <ul> <!--pages or li are comes from javascript --> </ul>
+      </div>
+      <div class="no-data">No data to show...</div>
+    </div>
+
+    <div id="compare" class="tabcontent">
+      <h3>Paris</h3>
+      <p>Paris is the capital of France.</p>
+    </div>
+
+    <div id="filter" class="tabcontent">
+      <div class="filter-container">
+        <div class="row">
+          <div>
+            <button class="btn float-right" onclick="clearFilter()">X</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-sm-12">
+            <label for="tags">Tags</label>
+            <select id="tags" class="form-control" multiple placeholder="Choose Tags" data-allow-clear="1">
+              <option></option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-sm-12">
+            <label for="users">User</label>
+            <select id="users" class="form-control" multiple placeholder="Choose Users" data-allow-clear="1">
+              <option></option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-sm-12">
+            <label for="mindate">Min date</label>
+            <input type="date" id="min-date" class="form-control">
+          </div>
+          <div class="ms-4 col-md-4 col-sm-12">
+            <label for="maxdate">Max date</label>
+            <input type="date" id="max-date" class="form-control">
+          </div>
+          <div class="row justify-center">
+            <button onclick="handleFilter()" class="btn btn-secondary submit-filter">FILTER</button>
+            <button onclick="clearFilter()" class="btn btn-secondary clear-filter">CLEAR FILTER</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  {% csrf_token %}
+  <!-- [ Main Content ] end -->
+
+{% endblock contents %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+<script src="{% static 'libs\select2\js\select2.min.js'%}"></script>
+<script>
+  const countPerPage = 10;
+  let oriTableData = []
+  let tableData = []
+  let tagList = []
+  let userList = []
+
+  $(document).ready(function () {
+  })
+
+
+  $(function () {
+  $('select').each(function () {
+    $(this).select2({
+      width: "100%",
+      placeholder: $(this).attr('placeholder'),
+      allowClear: Boolean($(this).data('allow-clear')),
+    });
+  });
+});
+
+  // get all tags
+  $.ajax({
+      url: "./snapshotTagList",
+      method: 'GET',
+      success: function (data) {
+        getUsers();
+        tagList = data
+        const tags = data.map(el => {
+          return `<option value="${el.id}">${el.tagName}</option>`;
+        })
+        $("#tags").append(tags)
+      }
+  });
+  function getUsers() {
+     // get all users
+    $.ajax({
+        url: "./snapshotUserList",
+        method: 'GET',
+        success: function (data) {
+          getSnapshots();
+          userList = data
+          const users = data.map(el => {
+            return `<option value="${el.id}">${el.username}</option>`;
+          })
+          $("#users").append(users)
+        }
+    });
+  }
+
+  function getSnapshots() {
+    // get all snapshots
+    $.ajax({
+        url: "./snapshots",
+        method: 'GET',
+        success: function (data) {
+
+          oriTableData = data;
+          tableData = data;
+          refreshTable();
+          tableData = oriTableData;
+          refreshTable();
+          openTab("baselines")
+        }
+    });
+
+  }
+
+  function handleFilter() {
+    const tags = $("#tags").val();
+    const users = $("#users").val();
+    const minDate = $("#min-date").val();
+    const maxDate = $("#max-date").val();
+
+    tableData = oriTableData.filter(el =>
+      (users.includes(el.user.toString()) || !users.length) &&
+      (tags.includes(el.tag.toString()) || !tags.length) &&
+      ((el.date).slice(0, 10) >= minDate || !minDate) &&
+      ((el.date).slice(0, 10) <= maxDate || !maxDate)
+    );
+    refreshTable();
+    openTab("baselines")
+  }
+
+  function refreshTable() {
+    const totalPages = Math.ceil(tableData.length/countPerPage)
+
+    if(totalPages) {
+      pagination(totalPages, 1);
+      $(".baselines").show();
+      $(".pagination").show();
+      $(".no-data").hide();
+    }
+    else {
+      $(".baselines").hide();
+      $(".pagination").hide();
+      $(".no-data").show();
+
+    }
+  }
+  function pagination(totalPages, page) {
+    const showPages = 4;
+    createPagination(totalPages, page, showPages);
+  }
+
+  function createSnapshotHtml(page) {
+    const start = (page - 1) * countPerPage;
+    const snapshotHtml = tableData.slice(start, start + countPerPage).map(el => {
+      let filteredTag = tagList.filter(tag => tag.id == el.tag);
+      let filteredUser = userList.filter(user => user.id == el.user);
+            return `<div class="baseline">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                          <span class="check"><input type="checkbox"></span>
+                          <span id="id">#${el.id}</span><span> - </span>
+                          <span id="name"><a href="/ifx/productMarketing/view_snapshot/${el.id}">${el.snapshotName}</a></span>
+                          <span id="label"><i class="bx bx-clock"></i> in-progress</span>
+                          <span id="bookmark"><i class="bx bx-bookmark"></i></span>
+                        </div>
+                        <div class="controle col-md-6 col-sm-12">
+                          <button class="view"><a href="/ifx/productMarketing/view_snapshot/${el.id}"><i class="bx bx-search"></i> View</a></button>
+                          <button class="download"><a href="/ifx/productMarketing/snapshots/${el.id}"><i class="bx bx-download"></i> Download</a></button>
+                          <button class="delete" onclick="deleteSnapshot(${el.id}, ${page})"><i class="bx bx-trash"></i> Delete</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12 detail">
+                          <div><i class="bx bx-book"></i> Application Line</div>
+                          <div><i class="bx bx-tag"></i> ${filteredTag.length && filteredTag[0].tagName}</div>
+                          <div><i class="bx bx-user"></i> ${filteredUser.length && filteredUser[0].username}</div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-12 mt-10">
+                          <span>Comment here </span><span> update 4d ago</span>
+                        </div>
+                      </div>
+                    </div>`
+          })
+
+    $(".baselines").html(snapshotHtml)
+  }
+
+  function createPagination(totalPages, page, showPages){
+    if(tableData.length == (page - 1) * countPerPage) {
+      const totalPages = Math.ceil(tableData.length/countPerPage)
+      pagination(totalPages, page -1);
+      return;
+    }
+    createSnapshotHtml(page)
+    const element = document.querySelector(".pagination ul");
+      let liTag = '';
+      let active;
+      let beforePage = page;
+      let afterPage = page;
+
+      if(page > 1){ //show the prev button if the page value is greater than 1
+        liTag += `<li class="btn prev" onclick="createPagination(${totalPages}, ${page - 1}, ${showPages})"><span><i class="fas fa-angle-left"></i></span></li>`;
+      }
+
+      if(page > 2 && page < totalPages){ //if page value is less than 2 then add 1 after the previous button
+        liTag += `<li class="first numb" onclick="createPagination(${totalPages}, 1, ${showPages})"><span>1</span></li>`;
+        if(page > 3 && totalPages > showPages ){ //if page value is greater than 3 then add this (...) after the first li or page
+          liTag += `<li class="dots"><span>...</span></li>`;
+        }
+      }
+
+      // how many pages or li show before the current li
+      if (page > 2 && page == totalPages) {
+        beforePage = beforePage - 2;
+      } else if (page == totalPages - 1) {
+        beforePage = beforePage - 1;
+      }
+      // how many pages or li show after the current li
+      if (page == 1) {
+        afterPage = afterPage + 2;
+      } else if (page == 2) {
+        afterPage  = afterPage + 1;
+      }
+
+      for (var plength = beforePage; plength <= afterPage; plength++) {
+        if (plength > totalPages) { //if plength is greater than totalPage length then continue
+          continue;
+        }
+        if (plength == 0) { //if plength is 0 than add +1 in plength value
+          plength = plength + 1;
+        }
+        if(page == plength){ //if page is equal to plength than assign active string in the active variable
+          active = "active";
+        }else{ //else leave empty to the active variable
+          active = "";
+        }
+        liTag += `<li class="numb ${active}" onclick="createPagination(${totalPages}, ${plength}, ${showPages})"><span>${plength}</span></li>`;
+      }
+
+      if(afterPage < totalPages){ //if page value is less than totalPage value by -1 then show the last li or page
+
+        if(showPages < totalPages && page < totalPages - 2){ //if page value is less than totalPage value by -2 then add this (...) before the last li or page
+          liTag += `<li class="dots"><span>...</span></li>`;
+        }
+        liTag += `<li class="last numb" onclick="createPagination(${totalPages}, ${totalPages}, ${showPages})"><span>${totalPages}</span></li>`;
+      }
+
+      if (page < totalPages) { //show the next button if the page value is less than totalPage(20)
+        liTag += `<li class="btn next" onclick="createPagination(${totalPages}, ${page + 1}, ${showPages})"><span><i class="fas fa-angle-right"></i></span></li>`;
+      }
+      element.innerHTML = liTag; //add li tag inside ul tag
+
+    }
+
+  function deleteSnapshot(id, page){
+
+    const csrfToken = $("[name=csrfmiddlewaretoken]").val();
+    $.ajax({
+      url: "./deleteSnapshot/" + id,
+      method: 'DELETE',
+      beforeSend: function (xhr){
+        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+      },
+      success: function () {
+        // remove record from table
+        tableData = tableData.filter(el => el.id != id);
+        const totalPages = Math.ceil(tableData.length/countPerPage)
+        if(totalPages){
+          pagination(totalPages, page);
+        }
+        else{
+          document.querySelector(".pagination ul").innerHTML = '';
+          $(".no-data").show();
+        }
+
+      }
+    });
+  }
+
+
+  function clearFilter() {
+    $("#min-date, #max-date").val('');
+    $("#tags, #users").val('').change();
+    tableData = oriTableData;
+    refreshTable();
+    openTab("baselines")
+  }
+  // tags script
+  function openTab(tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "").replace(" hide", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  $('button[data-tab="' + tabName + '"]')[0].className += " active";
+}
+
+function openTabAndHide(tabName) {
+  openTab(tabName);
+  $('button[data-tab="' + tabName + '"]')[0].className += " hide";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
+
+
+{% endblock extra_javascript %}
+

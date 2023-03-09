@@ -1,0 +1,49 @@
+
+{% load widget_tweaks %}
+
+
+<div class="form-row">
+<label >Start of Production</label>
+{{volumeAutomaticForm.startOfProduction|add_class:"form-control"}}
+
+</div>
+{% if volumeAutomaticForm.startOfProduction.errors %}
+{% for error in volumeAutomaticForm.startOfProduction.errors %}
+<div class="alert alert-danger">
+<strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+
+<div class="form-row">
+    <label for="volumeAutomaticForm.peakVolume">Total Volume</label>
+    {{volumeAutomaticForm.totalVolume|add_class:"form-control"}}
+</div>
+
+{% if volumeAutomaticForm.totalVolume.errors %}
+{% for error in volumeAutomaticForm.totalVolume.errors %}
+<div class="alert alert-danger">
+<strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="form-row">
+    <label for="volumeAutomaticForm.peakYear">Peak Year</label>
+    {{volumeAutomaticForm.peakYear|add_class:"form-control"}}
+</div>
+
+{% if volumeAutomaticForm.peakYear.errors %}
+{% for error in volumeAutomaticForm.peakYear.errors %}
+<div class="alert alert-danger">
+<strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+<br>
+
+<button type="submit" class="btn btn-success">Save and review generated distribution</button>
+
+

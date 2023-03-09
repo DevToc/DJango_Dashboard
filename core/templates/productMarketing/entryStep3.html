@@ -1,0 +1,172 @@
+
+
+{% load widget_tweaks %}
+
+
+
+    <div class="row justify-content-center mt-4 mb-4">
+      <div class="container" style="z-index: 1;">
+        <ul class="progressbar p-0">
+          <li class="active" >Project Creation</li>
+          <li class="active" >Volume</li>
+          <li class="active" >Pricing Source</li>
+          <li class="active">Pricing Review</li>
+          <li>Conflict Checks</li>
+        </ul>
+      </div>
+    </div>
+
+
+
+
+                    <h1 class="display-2 text-red">{{ notification }}</h1>
+
+                    {% if pricesExisted == True %}
+                    <h3>We found already existing data for this project. If needed, modify the existing values.</h3>
+                    <br>
+
+                    {% endif %}
+                    <!--- 
+                    <div class="row justify-content-center">
+                      <a href="/onboarding_step2/select" class="btn btn-warning">Bestehender Patient auswählen</a>
+                    </div>
+                    -->
+
+
+                    <form method="post">
+                      {% csrf_token %}
+                      <div class="row justify-content-center">
+                        <div>
+                           <!-- {% for field in patient_form %}
+                                <div class="form-row">
+                                  <label class="label-control" for="{{ field.auto_id }}">{{field.label}}</label>
+                                  {{field|add_class:"form-control"}}
+                                </div>
+                            {% endfor %}-->
+
+                  <!-- general patient data begin -->
+                  {% if check %}
+                  <div class="alert alert-danger">
+                    <strong>Please enter prices from {{ sop }} to including {{ eop }}. </strong>
+                  </div>
+                  {% endif %}
+
+
+                  <div class="form-row">
+                    <label for="form_1.diagnose">Currency</label>
+                    {{priceConfirmationForm.currency|add_class:"form-control"}}
+                  </div>
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2020</label>
+                      {{priceConfirmationForm.v20|add_class:"form-control"}}
+                    </div>
+
+                    <div class="form-row">
+                        <label for="form_1.diagnose">CY 2021</label>
+                        {{priceConfirmationForm.v21|add_class:"form-control"}}
+                      </div>
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2022</label>
+                      {{priceConfirmationForm.v22|add_class:"form-control"}}
+                    </div>
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2023</label>
+                      {{priceConfirmationForm.v23|add_class:"form-control"}}
+                    </div>
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2024</label>
+                      {{priceConfirmationForm.v24|add_class:"form-control"}}
+                    </div>              
+
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2025</label>
+                      {{priceConfirmationForm.v25|add_class:"form-control"}}
+                    </div>
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2026</label>
+                      {{priceConfirmationForm.v26|add_class:"form-control"}}
+                    </div>
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2027</label>
+                      {{priceConfirmationForm.v27|add_class:"form-control"}}
+                    </div>
+
+                    <div class="form-row">
+                        <label for="form_1.diagnose">CY 2028</label>
+                        {{priceConfirmationForm.v28|add_class:"form-control"}}
+                    </div>
+
+                    <div class="form-row">
+                        <label for="form_1.diagnose">CY 2029</label>
+                        {{priceConfirmationForm.v29|add_class:"form-control"}}
+                    </div>
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2030</label>
+                      {{priceConfirmationForm.v30|add_class:"form-control"}}
+                  </div>
+
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2031</label>
+                      {{priceConfirmationForm.v31|add_class:"form-control"}}
+                  </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2032</label>
+                        {{priceConfirmationForm.v32|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2033</label>
+                        {{priceConfirmationForm.v33|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2034</label>
+                        {{priceConfirmationForm.v34|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2035</label>
+                        {{priceConfirmationForm.v35|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2036</label>
+                        {{priceConfirmationForm.v36|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2037</label>
+                        {{priceConfirmationForm.v37|add_class:"form-control"}}
+                    </div>
+
+                      <div class="form-row">
+                        <label for="form_1.diagnose">CY 2038</label>
+                        {{priceConfirmationForm.v38|add_class:"form-control"}}
+                    </div>
+
+                    <div class="form-row">
+                      <label for="form_1.diagnose">CY 2039</label>
+                      {{priceConfirmationForm.v39|add_class:"form-control"}}
+                  </div>
+
+                  <div class="form-row">
+                    <label for="form_1.diagnose">CY 2040</label>
+                    {{priceConfirmationForm.v40|add_class:"form-control"}}
+                </div>
+
+
+
+                    <hr style="  border-top: solid green; !important;">
+                    <br>
+
+                    <button type="submit" class="btn btn-success">Save price data</button>
+
+                  </div>
+

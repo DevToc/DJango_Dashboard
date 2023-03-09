@@ -1,0 +1,712 @@
+{% extends 'base.html' %} {% load widget_tweaks custom_tags %} {% load l10n %} {% load currency %} {% currency_context %} {% load static %} {% block title %} Page Blank {% endblock %}
+
+<!-- breadcrumb -->
+{% block breadcrumbs %} {% breadcrumb "Project Management" "project_management_all_view" %} {% breadcrumb "Project Deep Dive" %} {% endblock breadcrumbs %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+<style>
+    .mt-10 {
+        margin-top: 10px !important;
+    }
+    .mt-30 {
+        margin-top: 30px !important;
+    }
+    .mt-50 {
+        margin-top: 50px !important;
+    }
+    .card {
+        box-shadow: none !important;
+    }
+    .color-pink {
+        background-color: #ab377a !important;
+        color: white;
+    }
+    .new_label {
+        border: 1px solid;
+        border-radius: 30px;
+        width: 140px;
+        text-align: center;
+        padding: 7px;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+    }
+    .save-baseline {
+        width: 174px !important;
+        margin-top: 30px !important;
+        border-radius: 30px !important;
+        background-color: #ab377a !important;
+        border: none !important;
+        font-size: 18px !important;
+    }
+    .center {
+        text-align: center !important;
+    }
+    label {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+    .tablinks {
+        color: #ab377a;
+        font-weight: bold !important;
+        padding: 12px 30px;
+        font-size: 15px !important;
+        border-bottom: 5px solid;
+        cursor: pointer;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .accordion-header {
+        text-align: center;
+    }
+    .tab-container {
+        min-height: 500px;
+    }
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        /* border: 1px solid #ccc; */
+        border-top: none;
+    }
+    /* Create an active/current tablink class */
+    .tab a.active {
+        border-bottom: 6px solid #ab377a;
+    }
+    .tab a {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+        border-bottom: 6px solid #edd2e2;
+        width: 220px;
+    }
+    .tab a:hover {
+        color: #ab377a;
+    }
+    .tab {
+        overflow: hidden;
+        padding: 0px 10px;
+    }
+    .big-text {
+        font-family: "Source Sans Pro";
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 60px !important;
+        line-height: 75px;
+        text-align: center;
+        color: rgba(30, 30, 30, 0.1);
+        margin-right: 35px;
+        position: relative;
+        top: 10px;
+    }
+    .chart-header {
+        font-size: 26px;
+        padding-left: 60px !important;
+        color: black;
+    }
+    .baseline-table {
+        width: 100%;
+        border: 1px solid;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .baseline-table table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+    th {
+        padding: 2px;
+        background: #fbfbff;
+    }
+    td {
+        padding: 5px;
+        border-top: 1px solid !important;
+        border-right: 1px solid !important;
+    }
+    td:last-child {
+        border-right: none !important;
+    }
+    .float-right {
+        float: right;
+    }
+    .align-right {
+        float: right;
+        clear: both;
+    }
+    .text-gray {
+        color: #a7a7a7;
+    }
+    .text-bold {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .text-regular {
+        font-weight: 400;
+        font-size: 16px;
+    }
+</style>
+{% endblock extra_css %} {% block contents %}
+
+<div class="card-body">
+    <div class="col-12">
+        <div class="tab text-center">
+            <a href="{% url 'project_deepdive' project.id %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive' %} active{% endif %}">OVERVIEW</a>
+            <a href="{% url 'edit_project_key_facts' project.id %}" class="tablinks {% if request.resolver_match.url_name == 'edit_project_key_facts' %} active {% endif %}">PROJECT DETAILS <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_volume_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_volume_view' %} active {% endif %}">VOLUME <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_pricing_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_pricing_view' %} active {% endif %}">PRICING <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'project_deepdive_history' project.id %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive_history' %} active {% endif %}">PROJECT HISTORY</a>
+        </div>
+
+        <div class="tab-container">
+            <div>
+                <div class="row mt-10">
+                    {% if projectLevelErrors %} {% for error in projectLevelErrors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                </div>
+
+                <div class="row mt-6">
+                    {% if successMessages %} {% for error in successMessages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <div class="col-12">
+                        <div class="row mb-4">
+                            <div class="baseline-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Project ID</th>
+                                            <th>AL</th>
+                                            <th>Application Main</th>
+
+
+                                            <th>Main Customer <i data-toggle="tooltip" data-placement="top" title="Bill To Customer." class="bx bx-info-circle" aria-hidden="true"></i>
+                                            </th>
+                                            <th>End Customer <i data-toggle="tooltip" data-placement="top" title="Ship To Customer, as in SnOp Tool." class="bx bx-info-circle" aria-hidden="true"></i>
+                                            </th>
+                                            <th>HFG</th>
+
+                                            <th>RFP</th>
+                                            <th>Product Sales Name</th>
+                                            <th>Project Status <i data-toggle="tooltip" data-placement="top" title="According to Infineon's official status (Dragon)." class="bx bx-info-circle" aria-hidden="true"></i>
+                                            </th>
+                                            <th>Contractual Currency </th>
+                                            <th>FX-Rate </th>
+
+                                            <th>Marketer </th>
+
+                                            <th>Modified Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ project.id|stringformat:"s"}}</td>
+                                            <td>{{project.applicationLine}}</td>
+                                            <td>{{project.applicationMain}}</td>
+
+
+                                            <td>{{project.mainCustomer}}</td>
+                                            <td>{{project.finalCustomer}}</td>
+                                            <td>{{ project.sales_name.rfp.hfg }}</td>
+
+                                            <td>{{project.sales_name.rfp.rfp}}</td>
+                                            <td>{{project.sales_name}}</td>
+                                            <td> {{project.status }}</td>
+                                            <td>{{projectCurrency}}</td>
+                                            <td>{{fxRate}}</td>
+
+                                            <td>{{project.productMarketer}}</td>
+
+                                            <td>{{project.modifiedDate}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                    <div class="col-12">
+                        <div class="row mt-6">
+                            <div class="col-6 chart-header">Revenue and Gross Margin (weighted) <i data-toggle="tooltip" data-placement="top" title="You can switch currencies in the top right of the screen." class="bx bx-info-circle" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-6 chart-header">Volume (weighted) and Price </div>
+                            <div class="float-right">
+                                <select name="years" id="years" class="btn" onchange="changeYear()"></select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row mb-4">
+                            <div class="col-md-6 col-sm-12">
+                                <canvas id="revenue"></canvas>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <canvas id="profit"></canvas>
+                            </div>
+                        </div>
+                        <div class="row justify-right">
+                            <div class="col-12">
+                                <div class="baseline-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Project ID</th>
+                                                <th>Draft <i data-toggle="tooltip" data-placement="top" title="If False, this project is active in the Bottom Up table. Otherwise, this project is not active in the Bottom Up computation and needs to be activated." class="bx bx-info-circle" aria-hidden="true"></i>
+                                                </th>
+                                                <th>Model Filler <i data-toggle="tooltip" data-placement="top" title="Is this a dummy project? Used for market modell fillers." class="bx bx-info-circle" aria-hidden="true"></i>
+                                                </th>
+    
+    
+                                                <th>Name</th>
+                                                <th>Status Probability</th>
+                                                <th>Total Volume</th>
+                                                <th>Weighted Volume</th>
+                                                <th>Total Revenue</th>
+                                                <th>Weighted Revenue</th>
+                                                <th>Average ASP</th>
+                                                <th>Cost</th>
+                                                <th>Gross Margin</th>
+                                                <th>Total Weighted Gross Margin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ project.id|stringformat:"s" }}</td>
+                                                <td>{{ project.draft }}</td>
+                                                <td>{{project.dummy}}</td>
+
+                                                <td>{{ project.projectName }}</td>
+                                                <td>{{ project.status.statusDisplay }}</td>
+                                                <td>{{ sumVolume }}</td>
+                                                <td>{{ sumWeightedVolume }}</td>
+
+                                                {% if sumRevenue == "N/A" %}
+                                                <!-- if value is N/A -->
+                                                <td>{{sumRevenue}}</td>
+                                                {% else %}
+                                                <!-- else value is valid -->
+                                                <td>{{CURRENCY.symbol}}{{ sumRevenue|currency:CURRENCY.code }}</td>
+
+                                                {% endif %}
+                                                <!-- endif -->
+
+                                                {% if sumWeightedRevenue == "N/A" %}
+                                                <!-- if value is N/A -->
+                                                <td>{{sumWeightedRevenue}}</td>
+                                                {% else %}
+                                                <!-- else value is valid -->
+                                                <td>{{CURRENCY.symbol}}{{ sumWeightedRevenue|currency:CURRENCY.code }}</td>
+                                                {% endif %}
+                                                <!-- endif -->
+
+                                                {% if averageAsp == "N/A" %}
+                                                <!-- if value is N/A -->
+                                                <td>{{averageAsp}}</td>
+                                                {% else %}
+                                                <!-- else value is valid -->
+
+                                                <td>{{CURRENCY.symbol}}{{ averageAsp|currency:CURRENCY.code }}</td>
+                                                {% endif %}
+                                                <!-- endif -->
+
+                                                {% if sumCost == "N/A" %}
+                                                <!-- if value is N/A -->
+                                                <td>{{sumCost}}</td>
+                                                {% else %}
+                                                <!-- else value is valid -->
+
+                                                <td>{{CURRENCY.symbol}}{{ sumCost|currency:CURRENCY.code }}</td>
+                                                {% endif %}
+                                                <!-- endif -->
+
+                                                {% if sumGrossMargin == "N/A" %}
+                                                <!-- if value is N/A -->
+                                                <td>{{sumGrossMargin}}</td>
+                                                {% else %}
+                                                <!-- else value is valid -->
+
+                                                <td>{{CURRENCY.symbol}}{{ sumGrossMargin|currency:CURRENCY.code }}</td>
+                                                {% endif %}
+                                                <!-- endif -->
+
+                                                {% if sumWeightedGrossMargin == "N/A" %}
+                                                <!-- if value is N/A -->
+                                                <td>{{sumWeightedGrossMargin}}</td>
+                                                {% else %}
+                                                <!-- else value is valid -->
+                                                <td>{{CURRENCY.symbol}}{{ sumWeightedGrossMargin|currency:CURRENCY.code }}</td>
+                                                {% endif %}
+                                                <!-- endif -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <h3>Comments:</h3>
+                <h5>{{project.comment}}</h5>
+            </div>
+            <div class="row mt-20 mb-2">
+                <h3>Project Details:</h3>
+            </div>
+
+            <div class="row mb-4">
+                <div class="baseline-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SOP <i data-toggle="tooltip" data-placement="top" title="Start of Production." class="bx bx-info-circle" aria-hidden="true"></i>
+                                </th>
+                                <th>VPA Customer</th>
+                                <th>Disti</th>
+                                <th>Tier 1</th>
+                                <th>EMS <i data-toggle="tooltip" data-placement="top" title="Engineering Manufacturing Services supplier, if any." class="bx bx-info-circle" aria-hidden="true"></i>
+                                </th>
+                                <th>First Region</th>
+                                <th>Supporting Region</th>
+                                <th>Price valid until <i data-toggle="tooltip" data-placement="top" title="if available, until when is this price committed by the customer (contractually)." class="bx bx-info-circle" aria-hidden="true"></i>
+                                </th>
+                                <th>Marketer <i data-toggle="tooltip" data-placement="top" title="Marketer responsible for this project." class="bx bx-info-circle" aria-hidden="true"></i>
+                                </th>
+                                <th>Creation date</th>
+                                <th>Modified by</th>
+                                <th>Mod reason <i data-toggle="tooltip" data-placement="top" title="Reason for modification." class="bx bx-info-circle" aria-hidden="true"></i>
+                                </th>
+                                <th>Project reviewed <i data-toggle="tooltip" data-placement="top" title="Was this project reviewed within the last six months?" class="bx bx-info-circle" aria-hidden="true"></i>
+                                </th>
+                                <th>Review date</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ project.estimatedSop|stringformat:"s" }}</td>
+                                {% if project.vpaCustomerProject == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.vpaCustomerProject }}</td>
+                                {% endif %}
+
+
+                                {% if project.distributor == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.distributor }}</td>
+                                {% endif %}
+                                {% if project.tier1 == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.tier1 }}</td>
+                                {% endif %}
+
+                                {% if project.ems == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.ems }}</td>
+                                {% endif %}
+
+                                <td>{{ project.region }}</td>
+
+                                {% if project.secondRegion == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.secondRegion }}</td>
+                                {% endif %}
+
+                                {% if project.priceValidUntil == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.priceValidUntil }}</td>
+                                {% endif %}
+                                
+                                <td>{{ project.productMarketer }}</td>
+                                <td>{{ project.creationDate }}</td>
+                                <td>{{ project.user }}</td>
+                                
+                                {% if project.modReason == None %}
+                                <!-- if value is N/A -->
+                                <td>N/A</td>
+                                {% else %}
+                                <!-- else value is valid -->
+                                <td>{{project.modReason }}</td>
+                                {% endif %}                                
+                                <td>{{ project.projectReviewed }}</td>
+                                <td>{{ project.reviewDate }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <br />
+            {% if messages %} {% for message in messages %}
+            <!-- 
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                -->
+            {% if message.tags == "alert-danger" %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ message }}</div>
+            {% else %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ message }}</div>
+            {% endif %} {% endfor %} {% endif %} {% if project.draft == True %}
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="/project/boupSaveAndSubmit/{{project.id}}" class="btn btn btn-success">Submit to Bottom Up</a>
+                <a href="{% url 'delete_project' project.id %}" class="btn btn btn-danger">Delete Project</a>
+                <a href="{% url 'review_project' project.id %}" class="btn btn btn-primary">Mark as Reviewed</a>
+
+            </div>
+            {% else %}
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="/project/boupSaveAsDraft/{{project.id}}" class="btn btn btn-warning">Remove from Bottom Up and convert in a draft</a>
+                <a href="{% url 'delete_project' project.id %}" class="btn btn btn-danger">Delete Project</a>
+                <a href="{% url 'review_project' project.id %}" class="btn btn btn-primary">Mark as Reviewed</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock contents %}
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+
+<!-- Chart JS -->
+<script src="{% static 'libs/chart.js/Chart.bundle.min.js' %}"></script>
+
+<script>
+
+      // init chart
+      const ctxRevenue = document.getElementById('revenue');
+      const ctxProfit = document.getElementById('profit');
+      let revenue
+      let profit
+      let revenueValuesBaseline1
+      let profitValuesBaseline1
+      let years
+
+
+      $(document).ready(function () {
+        // convert comma seperated string into
+
+        revenueValuesBaseline1 =  "{% for item in weightedRevenue %}{{item|currency:CURRENCY.code|safe}},{% endfor %}".split(",")
+        profitValuesBaseline1 =  "{% for item in weightedGrossMargin %}{{item|currency:CURRENCY.code|safe}},{% endfor %}".split(",")
+        quantitiesArray =  "{% for item in weightedVolume %}{{item|safe}},{% endfor %}".split(",")
+        pricesArray =  "{% for item in prices %}{{item|currency:CURRENCY.code|safe}},{% endfor %}".split(",")
+        years =  "{% for item in years %}{{item|safe}},{% endfor %}".split(",")
+
+          // add years in dropdown
+          let options = ''
+          let i
+          for(i=0;i< Math.floor(years.length/10);i++) {
+              options += `<option value="${i}">${years[i * 10]} - ${years[i * 10 + 9]}</option>`;
+          }
+          if(i * 10 < years.length) options += `<option value="${i}">${years[i * 10]} - ${years[years.length - 1]}</option>`;
+          $("#years").html(options);
+
+
+          const dataRevenue = {
+              datasets: [{
+                  label: 'Revenue (w)',
+                  data: revenueValuesBaseline1.slice(0, 10),
+                  // order: 2,
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: '#93349547',
+                  borderWidth: 1,
+                  borderRadius: 2,
+                  borderSkipped: false,
+              },
+              {
+                    label: "Gross Margin (w)",
+                    data: profitValuesBaseline1.slice(0, 10),
+                    type: "line",
+                    // order: 1,
+                    fill: false,
+                    borderColor: "#AB377A",
+                },
+            ],
+              labels: years.slice(0, 10)
+          };
+
+          const dataProfit = {
+              datasets: [{
+                  label: 'Volume (w)',
+                  data: quantitiesArray.slice(0, 10),
+                  yAxisID: 'A',
+                  // order: 2,
+                  borderColor: 'rgb(153, 102, 255)',
+                  backgroundColor: '#b09fa245',
+                  borderWidth: 1
+              },
+              {
+                    label: "ASP",
+                    data: pricesArray.slice(0, 10),
+                    type: "line",
+                    yAxisID: 'B',
+                    // order: 1,
+                    fill: false,
+                    borderColor: "#AB377A",
+                },
+            
+            ],
+              labels: years.slice(0, 10)
+          };
+
+          const configRevenue = {
+              type: 'bar',
+              data: dataRevenue,
+              options: {
+              responsive: true,
+              scales: {
+                  yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value, index, values) {
+                        return '{{CURRENCY.symbol}}' + value;
+                        }
+                    }
+                    }]
+              },
+              plugins: {
+                  tooltip: true
+              }
+              }
+          };
+          const configProfit = {
+              type: 'bar',
+              data: dataProfit,
+              options: {
+              responsive: true,
+              /*
+              scales: {
+                  y: {
+                  beginAtZero: true
+                  }
+              }*/
+              scales: { // Shouldn't be an array.
+                yAxes: [
+                    {
+                    display: true,
+                    position: 'left',
+                    type: "linear",
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Quantity',
+                            beginAtZero: true,
+                        },
+                    id: "A", // incorrect property name.
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value, index, values) {
+                        return '{{CURRENCY.symbol}}' + value;
+                        }
+                    }
+                    },
+                    {
+                        scaleLabel: {
+                                display: true,
+                                labelString: 'ASP',
+                                beginAtZero: true,
+                            },
+                        display: true, // Hopefully don't have to explain this one.
+                        type: "linear",
+                        position:"right",
+                        gridLines: {
+                            display: false
+                        },
+                        id: "B" // incorrect property name.
+                        }]
+                    } // Shouldn't be an array.
+
+
+
+              }
+          };
+
+
+          revenue = new Chart(ctxRevenue, configRevenue);
+          profit = new Chart(ctxProfit, configProfit);
+
+      })
+
+
+      function changeYear() {
+        const id = Number($("#years").val());
+        // revenue chart udpate
+        revenue.data.datasets[0].data = revenueValuesBaseline1.slice(id * 10, id * 10 + 10);
+        revenue.data.datasets[1].data = profitValuesBaseline1.slice(id * 10, id * 10 + 10);
+
+        revenue.data.labels = years.slice(id * 10, id * 10 + 10)
+        revenue.update();
+        // profit chart udpate
+        profit.data.datasets[0].data = quantitiesArray.slice(id * 10, id * 10 + 10);
+        profit.data.datasets[1].data = pricesArray.slice(id * 10, id * 10 + 10);
+
+        profit.data.labels = years.slice(id * 10, id * 10 + 10)
+        profit.update();
+      }
+      function getSnapshots() {
+          // get all snapshots
+          $.ajax({
+              url: "./snapshots",
+              method: 'GET',
+              success: function (data) {
+                console.log('snapshots',data);
+                const snapshots = data.map(el => {
+                  return `<option value="${el.id}">${el.snapshotName}</option>`;
+                })
+                $("#baseline1, #baseline2").append(snapshots)
+              }
+          });
+
+        }
+
+        function handleSubmit() {
+          const baseline1 = $("#baseline1").val();
+          if(baseline1) {
+            $("#deepdive_submit").prop('disabled', false)
+          }
+        }
+
+        //getSnapshots();
+    // JS to load websocket
+    /*
+      var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    var url = wsProtocol  + window.location.host + '/ws/project/view/' + '{{ project.id }}/';
+      var chatSocket = new WebSocket(url);
+      */
+</script>
+
+{% endblock extra_javascript %}

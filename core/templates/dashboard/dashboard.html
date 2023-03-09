@@ -1,0 +1,245 @@
+{% extends 'base.html' %} {% load static custom_tags %} {% block breadcrumbs %} {% breadcrumb "PM Forecasting Tool" %} {% endblock breadcrumbs %} {% block contents %}
+<div class="container-fluid min-vh-100 dashboard-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="row border-2 border-bottom">
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 animateSlideDown">
+                    <div class="mini-stats-wid">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="bx bx-group text-green text-shadow-green" style="font-size: 50px"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0 h1" id="total_projects">
+                                        0 <span><i class="bx bx-trending-up text-green"></i></span>
+                                    </h4>
+                                    <p class="text-muted fw-medium">Total Projects</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 animateSlideDown">
+                    <div class="mini-stats-wid">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="mdi mdi-chart-pie text-yellow text-shadow-yellow" style="font-size: 50px"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0 h1" id="revenue">
+                                        $0 <span><i class="bx bx-trending-up text-green"></i></span>
+                                    </h4>
+                                    <p class="text-muted fw-medium">Revenue</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 animateSlideDown">
+                    <div class="mini-stats-wid">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="mdi mdi-briefcase-variant text-red text-shadow-red" style="font-size: 50px"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0 h1" id="draft_project">
+                                        0 <span><i class="bx bx-trending-up text-green"></i></span>
+                                    </h4>
+                                    <p class="text-muted fw-medium">Draft Projects</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 animateSlideDown">
+                    <div class="mini-stats-wid">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="mdi mdi-cart-plus text-pink text-shadow-pink" style="font-size: 50px"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0 h1" id="pending_items">
+                                       0 <span><i class="bx bx-trending-down text-red"></i></span>
+                                    </h4>
+                                    <p class="text-muted fw-medium">Pending Items</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      {% if projectErrors %}
+      <div class="col-12 col-lg-6 border-1 padding-2">
+        <h4 class="dashboard-title">Projects that need your attention</h4>
+        <div class="table-responsive project-attention">
+          <table class="table align-middle table-nowrap mb-0">
+            <thead>
+              <tr>
+                <td><input type="checkbox"> No.</td>
+                <td>Name</td>
+                <td>Score</td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for error in projectErrors %}
+              <tr>
+                <td>
+                  {%if error.error_ids|cut:" "|split|length >= 5%}
+                    <span class="circle-icon bg-lightred"></span>
+                  {%elif error.error_ids|cut:" "|split|length >= 3%}
+                    <span class="circle-icon bg-lightyellow"></span>
+                  {%elif error.error_ids|cut:" "|split|length >= 1%}
+                    <span class="circle-icon bg-lightblue"></span>
+                  {%else%}
+                    <span class="circle-icon bg-lightgreen"></span>
+                  {%endif%}
+                </td>
+                <td>
+                  <a class="text-dark" href="{% url 'project_deepdive' error.project.id %}"><div class="project-name">{{error.project}}</div></a>
+                  <span class="project-subtext">No undocumented quotations!</span>
+                </td>
+                <td>
+                  <div class="skillBarContainer">
+                    <span class="skillBarValue value-80"></span><span class="value">{{error.error_ids|cut:" "|split|length}}%</span>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      <div class="col-12 col-lg-6 border-1 padding-2">
+        <h4 class="dashboard-title">My Top Projects</h4>
+        <div class="table-responsive top-projects">
+          <table class="table align-middle table-nowrap mb-0 " id="project_table">
+            <thead>
+              <tr>
+                <td>Project</td>
+                <td>End Customer</td>
+                <td>Gross Margin</td>
+                <td>Revenue</td>
+           </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <button class="btn btn-primary see-all-projects">See all</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <canvas id="chart"></canvas>
+
+    </div>
+  </div>
+{% endblock contents %} {% block extra_javascript %}
+<script src="{% static 'libs/chart.js/chart.js' %}"></script>
+<script>
+  $.ajax({
+    url: "./ifx/productMarketing/loginDashboard",
+    method: 'GET',
+    success: function (data) {
+      console.log(data);
+      $("#total_projects").text(Number(data.jsonTop["Total Projects"]));
+      $("#revenue").text("$"+Number(data.jsonTop["Revenue"]).toLocaleString());
+      $("#draft_project").text(Number(data.jsonTop["Draft Projects"]).toLocaleString());
+      $("#pending_items").text(Number(data.jsonTop["Pending Items"]).toLocaleString());
+
+      let templateRow;
+      let rows=data.jsonMiddleRight;
+      console.log('rows', rows)
+      for(let i=0;i<rows["Project Id"].length;i++)
+      {
+        const gm = isNaN(rows["gm"][i]) ? row["gm"][i] : 0;
+        const color = gm > 50 ? 'green' : 'red';
+        const direction = gm > 50 ? 'up' : gm < 30 ? 'down' : ''
+        templateRow=`<tr>
+                <td>${rows["Project Id"][i]}</td>
+                <td>${rows["endCustomerNames"][i]}</td>
+                <td>
+                ${gm}%
+                  <i class="bx bx-trending-${direction} text-${color}"></i>
+                </td>
+                <td>${"$"+Math.round(Number(rows["rev"][i]))}</td>
+              </tr>`;
+        $("#project_table tbody").append(templateRow);
+      }
+      const DATA_COUNT = data.jsonBottom["Years"].length;
+      const labels = [];
+      for (let i = 0; i < DATA_COUNT; ++i) {
+        labels.push(data.jsonBottom["Years"][i].toString());
+      }
+      let datapoints=[];
+      for(let i=0; i<data.jsonBottom["Total Revenue"].length;i++)
+      {
+        datapoints.push(Number(data.jsonBottom["Total Revenue"][i]))
+      }
+      const dt = {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Revenue sum of active projects',
+            data: datapoints,
+            borderColor: '#63B4FF',
+            backgroundColor: 'rgb(99, 180, 255, 0.5)',
+            fill: true,
+            cubicInterpolationMode: 'monotone'
+          }
+        ]
+      };
+      const config = {
+        type: 'line',
+        data: dt,
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Landing Page Chart'
+            },
+          },
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+            x: {
+              display: true,
+              title: {
+                display: true,
+                text: 'Calender Year'
+
+              }
+            },
+            y: {
+              display: true,
+              title: {
+                display: true,
+                text: '{{CURRENCY.symbol}}'
+              }
+            }
+          }
+        },
+      };
+
+      const chart = new Chart(
+        document.getElementById('chart'),
+        config
+    );
+    },
+    error: (err) => {
+      console.log(err);
+    }
+  });
+</script>
+{% endblock extra_javascript %}

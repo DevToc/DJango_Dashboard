@@ -1,0 +1,3504 @@
+{% extends 'base.html' %} {% load static %} {% block contents %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'libs\bootstrap-4.6.2-dist\css\bootstrap.min.css'%}" type="text/css">
+<link href="{% static 'libs\select2\css\select2.min.css'%}" rel="stylesheet" type="text/css" />
+{% endblock extra_css %}
+
+
+<div class="snapshot-list  card-body">
+    <div class="d-flex justify-content-between flex-wrap">
+        <div class="mb-3">
+            <h3 class="h3 title-over-bootstrap">Analytics</h3>
+            <div class="subscription-over-bootstrap">Review high level forecasting KPIs and the product master data
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="tab">
+        <button class="tablinks active" data-tab="dashboard" onclick="openTab('dashboard')">Dashboard</button>
+        <button class="tablinks" data-tab="datasource" onclick="openTab('datasource')">Data Sources</button>
+    </div>
+    <div class="tab-container">
+        <div id="dashboard" class="tabcontent">
+          <div style="display: flex">
+            <div style="width: 200px;">
+              <select name="currency" id="currency">
+                <option value="eur">EUR</option>
+                <option value="usd">USD</option>
+              </select>
+            </div>
+            <div style="width: 200px;">
+              <select name="chartType" id="chartType">
+                <option value="CY">CY Graph</option>
+                <option value="FY">FY Graph</option>
+              </select>
+            </div>
+          </div>
+            <div id="AnalyticsGraphCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                <ol class="carousel-indicators">
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="1"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="2"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="3"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="4"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="5"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="6"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="7"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="8"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="9"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="10"></li>
+                    <li data-target="#AnalyticsGraphCarousel" data-slide-to="11"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <h2>Mid-Low-Level-Analyzer: Same customer, same family, different prices.</h2>
+                        <br>
+                        <div class="card-body d-block w-100">
+
+                            <div class="row border-4 border-bottom">
+                                <div class="col-3">
+                                    <canvas id="chartAspFamily" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-3">
+                                    <canvas id="chartAspSilicon" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-3">
+                                    <canvas id="chartAspPackage" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-3" id="1_item_filter">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_1" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_1" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_1"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer" multiple placeholder=""
+                                            id="endcustomer_1" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Mid-Low-Level-Analyzer: Which Customer Pays Less?</h2>
+                        <br>
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-2 left-filter" id="2_item_filter_left">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_2_left" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_2_left" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_2_left"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer" multiple placeholder=""
+                                            id="endcustomer_2_left" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <canvas id="chartAspCnd" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-4">
+                                    <canvas id="chartAspPbyD" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-2 right-filter" id="2_item_filter_right">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_2_right" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_2_right" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_2_right"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Mid-Low-Level-Analyzer: At Which Customer Does a Device Have More Business?</h2>
+                        <br>
+
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-2 left-filter" id="3_item_filter_left">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_3_left" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_3_left" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_3_left"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer" multiple placeholder=""
+                                            id="endcustomer_3_left" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <canvas id="chartAspByCustomerAndDevice1" width="10" height="4"></canvas>
+                                    <canvas id="chartVolumeForecast" width="10" height="4"></canvas>
+                                </div>
+                                <div class="col-4">
+                                    <canvas id="chartGMRevenue" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-2 right-filter" id="3_item_filter_right">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_3_right" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_3_right" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_3_right"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer" multiple placeholder=""
+                                            id="endcustomer_3_right" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Mid-Low-Level-Analyzer: At Which Customer is a Device More Profitable?</h2>
+                        <br>
+
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-2 left-filter" id="4_item_filter_left">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_4_left" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_4_left" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_4_left"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer" multiple placeholder=""
+                                            id="endcustomer_4_left" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <canvas id="chartASPPackage1" width="10" height="4"></canvas>
+                                    <canvas id="chartVHKbyProductLevelPackage" width="10" height="4"></canvas>
+                                </div>
+                                <div class="col-4">
+                                    <canvas id="chartGMRevenueByCustomer" width="10" height="10"></canvas>
+                                </div>
+                                <div class="col-2 right-filter" id="4_item_filter_right">
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family" multiple id="family_4_right" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon" multiple id="silicon_4_right" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package" multiple placeholder="" id="package_4_right"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer" multiple placeholder=""
+                                            id="endcustomer_4_right" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Mid-Low-Level-Analyzer: Assuming that the Max. Price. Is Used, GM Will Be Like?</h2>
+                        <br>
+
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="chartNumberOfProjectsAndGMHypothesis" width="100" height="30"></canvas>
+                                </div>
+                                <div class="col-3" id="5_item_filter">
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">Family</label>
+                                        <select name="family_5" multiple id="family_5" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="  mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon_5" multiple id="silicon_5" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="  mt-20">
+                                        <label for="" class="col-12">Package</label>
+                                        <select name="package_5" multiple placeholder="" id="package_5"
+                                            class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class="  mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer_5" multiple placeholder=""
+                                            id="endcustomer_5" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>High-Level-Analyzer: Cash Cow or Poor Dog - Business Performance by Device</h2>
+                        <br>
+
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="chartBusinessPerformanceByDevice" width="100" height="30"></canvas>
+                                </div>
+                                <div class="col-3 threeFilter" >
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Year</label>
+                                        <select name="year_6" id="year_6" class="col-7">
+                                        </select>
+                                    </div>
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon_6" multiple id="silicon_6" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer_6" multiple placeholder=""
+                                            id="endcustomer_6" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>High-Level-Analyzer: Cash Cow or Poor Dog - Business Performance by Customer</h2>
+                        <br>
+
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="chartBusinessPerformanceByCustomer" width="100" height="30"></canvas>
+                                </div>
+                                <div class="col-3 threeFilter" >
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Year</label>
+                                        <select name="year_7" id="year_7" class="col-7">
+                                        </select>
+                                    </div>
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon_7" multiple id="silicon_7" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer_7" multiple placeholder=""
+                                            id="endcustomer_7" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>High-Level-Analyzer: Cash Cow or Poor Dog - Business Performance by Customer and Device</h2>
+                        <br>
+
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="chartBusinessPerformanceByDeviceAndCustomer" width="100"
+                                        height="30"></canvas>
+                                </div>
+                                <div class="col-3 threeFilter"  >
+                                    <div class="mt-20">
+                                        <label for="" class="col-12">Year</label>
+                                        <select name="year_8" id="year_8" class="col-7">
+                                        </select>
+                                    </div>
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">Silicon</label>
+                                        <select name="silicon_8" multiple id="silicon_8" class="col-7" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                    <div class=" mt-20">
+                                        <label for="" class="col-12">End Customer</label>
+                                        <select name="endcustomer_8" multiple placeholder=""
+                                            id="endcustomer_8" class="col-7 form-control multiple_first_item"
+                                            data-allow-clear="1">
+                                            <option value='-2' class="ignore">all</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2><bold>Basic graph view:</bold> Business development over time (Y-2 to y+20) <br/> Views for Volume / Revenue / Price / Gross Margin</h2>
+                        <br>
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="dashboardXX" width="100"
+                                    height="30"></canvas>
+                                </div>
+                                <div class="col-3" id="9_item_filter">
+                                  <div class="mt-20">
+                                      <label for="" class="col-12">Family</label>
+                                      <select name="family" multiple id="family_9" class="col-7" data-allow-clear="1">
+                                        <option value='-2' class="ignore">all</option>
+                                      </select>
+                                  </div>
+                                  <div class="mt-20">
+                                      <label for="" class="col-12">Silicon</label>
+                                      <select name="silicon" multiple id="silicon_9" class="col-7" data-allow-clear="1">
+                                        <option value='-2' class="ignore">all</option>
+                                      </select>
+                                  </div>
+                                  <div class="mt-20">
+                                      <label for="" class="col-12">Package</label>
+                                      <select name="package" multiple placeholder="" id="package_9"
+                                          class="col-7 form-control multiple_first_item" data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                      </select>
+                                  </div>
+                                  <div class="mt-20">
+                                      <label for="" class="col-12">End Customer</label>
+                                      <select name="endcustomer" multiple placeholder=""
+                                          id="endcustomer_9" class="col-7 form-control multiple_first_item"
+                                          data-allow-clear="1">
+                                          <option value='-2' class="ignore">all</option>
+                                      </select>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>Revenue per Appl. Line</h2>
+                        <br>
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-3">
+                                    <canvas id="revenuePerApplLine_PIE"></canvas>
+                                </div>
+                                <div class="col-6">
+                                    <canvas id="revenuePerApplLine"></canvas>
+                                </div>
+                                <div class="col-3" id="10_item_filter">
+                                  <label for="" class="col-12">Year</label>
+                                  <select name="year_10" id="year_10" class="col-7">
+                                  </select>
+                              </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>MC Profitability Development Balance by ALs</h2>
+                        <br>
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="profitabilityDevelopmentBalance"></canvas>
+                                </div>
+                                <div class="col-3" id="11_item_filter">
+                                  <label for="" class="col-12">Year</label>
+                                  <select name="year_11" id="year_11" class="col-7">
+                                  </select>
+                              </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <h2>MC Profitability Development Balance by Application</h2>
+                        <br>
+                        <div class="card-body d-block w-100">
+                            <div class="row border-4 border-bottom">
+                                <div class="col-9">
+                                    <canvas id="profitabilityDevelopmentBalanceByApp"></canvas>
+                                </div>
+                                <div class="col-3" id="11_item_filter">
+                                  <label for="" class="col-12">Year</label>
+                                  <select name="year_11" id="year_11" class="col-7">
+                                  </select>
+                              </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-target="#AnalyticsGraphCarousel"
+                        data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-target="#AnalyticsGraphCarousel"
+                        data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="datasource" class="tabcontent">
+            data source will be here
+        </div>
+    </div>
+</div>
+
+
+{% endblock contents %}
+{% block extra_javascript %}
+<script src="{% static 'libs/chart.js/chart.js' %}"></script>
+<script src="{% static 'libs\bootstrap-4.6.2-dist\js\bootstrap.min.js'%}"></script>
+<script src="{% static 'libs\select2\js\select2.min.js'%}"></script>
+<script>
+    $(document).ready(function () {
+        openTab("dashboard");
+        $(function () {
+            $('select').each(function () {
+                $(this).select2({
+                    width: "100%",
+                    placeholder: $(this).attr('placeholder'),
+                    allowClear: Boolean($(this).data('allow-clear')),
+                });
+            });
+        });
+    })
+    let packageDatas = [];
+    const backgroundColors = [
+      'rgb(147, 131, 134, 0.7)', 'rgb(154, 195, 186, 0.7)','rgb(173, 193, 106, 0.7)', 'rgb(172, 57, 124, 0.7)','rgb(154, 195, 186, 0.7)','rgb(173, 193, 106, 0.7)','rgb(102, 82, 85, 0.7)',
+      'rgb(93, 163, 148, 0.7)','rgb(117, 161, 63, 0.7)','rgb(130, 36, 97, 0.7)','rgb(240, 127, 60, 0.7)','rgb(240, 127, 60, 0.7)','rgb(227, 99, 24, 0.7)','rgb(255, 224, 84, 0.7)','rgb(245, 198, 49, 0.7)'
+    ]
+    const borderColors = [
+    '#938386', '#9ac3ba','#adc16a', '#ac397c','#9ac3ba','#adc16a','#665255',
+      '#5da394','#75a13f','#822461','#f07f3c','#f07f3c','#e36318','#ffe054','#f5c631'
+    ]
+    // for left graph in first item------------------------
+    const dataAspFamily = {
+        datasets: [{
+            data: [],
+        }]
+    };
+
+    const dataAspSilicon = {
+        datasets: [{
+            data: [],
+        }]
+    };
+
+    const dataAspPackage = {
+        datasets:
+            [{
+                label: 'Undefined 1',
+                backgroundColor: 'rgb(146, 130, 133)',
+                borderColor: 'rgb(146, 130, 133)',
+                data: [],
+            },
+            {
+                label: 'Undefined 2',
+                backgroundColor: 'rgb(146, 130, 133)',
+                borderColor: 'rgb(146, 130, 133)',
+                data: [],
+            },
+            {
+                label: 'Undefined 3',
+                backgroundColor: 'rgb(212, 166, 200)',
+                borderColor: 'rgb(212, 166, 200)',
+                data: [],
+            }
+            ]
+
+    };
+
+    const configAspFamily = {
+        type: 'line',
+        data: dataAspFamily,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "ASP €"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ASP family level',
+                }
+            }
+        }
+    };
+
+    const configAspSilicon = {
+        type: 'line',
+        data: dataAspSilicon,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "ASP €"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ASP silicon level',
+                }
+            }
+        }
+    };
+
+    const configAspPackage = {
+        type: 'line',
+        data: dataAspPackage,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "ASP €"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ASP package level',
+                }
+            }
+        }
+    };
+
+    const chartAspFamily = new Chart(
+        document.getElementById('chartAspFamily'),
+        configAspFamily
+    );
+
+    const chartAspSilicon = new Chart(
+        document.getElementById('chartAspSilicon'),
+        configAspSilicon
+    );
+
+    const chartAspPackage = new Chart(
+        document.getElementById('chartAspPackage'),
+        configAspPackage
+    );
+    const dataAspCnD = {
+        datasets: [{
+            label: 'Please Select',
+            backgroundColor: 'rgb(155, 195, 183)',
+            borderColor: 'rgb(155, 195, 183)',
+            data: [],
+        },
+        {
+            label: 'Please Select',
+            backgroundColor: 'rgb(129, 33, 97)',
+            borderColor: 'rgb(129, 33, 97)',
+            data: [],
+        }]
+    };
+
+    const dataAspPbyD = {
+        datasets: [{
+            label: 'ASP',
+            backgroundColor: 'rgb(155, 195, 183)',
+            borderColor: 'rgb(155, 195, 183)',
+            data: [],
+        },
+        {
+            label: 'Max Price',
+            backgroundColor: '#6c962b',
+            borderColor: '#6c962b',
+            data: [],
+        },
+        {
+            label: 'Min Price',
+            backgroundColor: '#e51641',
+            borderColor: '#e51641',
+            data: [],
+        }
+        ]
+    };
+
+    //second item
+
+    const configAspCnd = {
+        type: 'line',
+        data: dataAspCnD,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "ASP €"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ASP by Customer and Device',
+                }
+            }
+        }
+    };
+
+    const configAspPbyD = {
+        type: 'line',
+        data: dataAspPbyD,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Price €"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Max./Min./ASP Price by Device',
+                }
+            }
+        }
+    };
+
+    const chartAspCnd = new Chart(
+        document.getElementById('chartAspCnd'),
+        configAspCnd
+    );
+
+    const chartAspPbyD = new Chart(
+        document.getElementById('chartAspPbyD'),
+        configAspPbyD
+    );
+
+    // Mid-low Level Analyzer: At Which Customer Does a Device Have More Business
+
+    const dataVolumeForecast = {
+        datasets: [{
+            label: 'Please Select',
+            backgroundColor: 'rgb(129, 33, 97)',
+            borderColor: 'rgb(129, 33, 97)',
+            data: [],
+        },
+        {
+            label: 'Please Select',
+            backgroundColor: 'rgb(155, 195, 183)',
+            borderColor: 'rgb(155, 195, 183)',
+            data: [],
+        }]
+    };
+
+    const dataGMRevenue = {
+        datasets: [{
+            type: 'line',
+            label: 'Please Select',
+            data: [
+            ],
+            fill: false,
+            borderColor: 'rgb(110, 179, 174)',
+            yAxisID: 'y1'
+        },
+        {
+            type: 'line',
+            label: 'Please Select',
+            data: [
+            ],
+            fill: false,
+            borderColor: 'rgb(121, 19, 87)',
+            yAxisID: 'y1'
+        },
+        {
+            label: 'Please Select',
+            backgroundColor: 'rgb(121, 19, 87)',
+            borderColor: 'rgb(121, 19, 87)',
+            data: [],
+            yAxisID: 'y'
+        }, {
+            label: 'Please Select',
+            backgroundColor: 'rgba(110, 179, 174, 1)',
+            borderColor: 'rgba(110, 179, 174, 1)',
+            data: [],
+            yAxisID: 'y'
+        }
+        ]
+    };
+
+    const configVolumeForecast = {
+        type: 'line',
+        data: dataVolumeForecast,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Vol_w"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Volume Forecast',
+                }
+            }
+        }
+    };
+
+    const dataDashboardXX = {
+    labels: [' '],
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: [12],
+      },
+      {
+        label: 'Dataset 1',
+        data: [45],
+      },
+      {
+        label: 'Dataset 1',
+        data: [65],
+      },
+      {
+        label: 'Dataset 1',
+        data: [89],
+      },
+      {
+        label: 'Dataset 1',
+        data: [23],
+      },
+      {
+        label: 'Dataset 1',
+        data: [45],
+      },
+    ]
+    };
+
+
+
+    const configGMRevenue = {
+        type: 'bar',
+        data: dataGMRevenue,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    },
+                    stacked: true
+                },
+                y: {
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: "Rev_€_bar"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + 'M';
+                        }
+                    },
+                    stacked: true
+                },
+                y1: {
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: "GM %_line"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value * 100 + '%';
+                        }
+                    },
+                    stacked: false
+                }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  filter: function(label, data) {
+                      if (label.text === '') {
+                        return false
+                      }
+                      return true
+                  }
+                }
+              },
+              title: {
+                  display: true,
+                  text: 'GM %-Revenue',
+              }
+            }
+        }
+    };
+
+    const configDashboardXX = {
+        type: 'bar',
+        data: dataDashboardXX,
+        options: {
+          indexAxis: 'y',
+          // Elements options apply to all of the options unless overridden in a dataset
+          // In this case, we are setting the border of each horizontal bar to be 2px wide
+          elements: {
+            bar: {
+              borderWidth: 2,
+            }
+          },
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'left',
+            },
+            title: {
+              display: true,
+              text: 'Dashboard # XX'
+            }
+          }
+        },
+    };
+
+    const datarevenuePerApplLine = {
+    labels: ['PSE','ACEE','HSMM', 'BDI'],
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: [12,4,76,12],
+      },
+      {
+        label: 'Dataset 1',
+        data: [45,75,33,37],
+      },
+      {
+        label: 'Dataset 1',
+        data: [65,80,2,76],
+      }
+    ]
+    };
+    const datarevenuePerApplLine_PIE = {
+    labels: ['PSE','ACEE','HSMM', 'BDI'],
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: [12,4,76,12],
+      }
+    ]
+    };
+
+    const configrevenuePerApplLine = {
+        type: 'bar',
+        data: datarevenuePerApplLine,
+        options: {
+          indexAxis: 'y',
+          // Elements options apply to all of the options unless overridden in a dataset
+          // In this case, we are setting the border of each horizontal bar to be 2px wide
+          elements: {
+            bar: {
+              borderWidth: 2,
+            }
+          },
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: ''
+            }
+          }
+        },
+    };
+    const configrevenuePerApplLine_PIE = {
+      type: 'pie',
+      data: datarevenuePerApplLine_PIE,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Revenue In Pie'
+          }
+        }
+      },
+    };
+
+    const chartAspByCustomerAndDevice1 = new Chart(
+        document.getElementById('chartAspByCustomerAndDevice1'),
+        configAspCnd
+    );
+
+    const chartVolumeForecast = new Chart(
+        document.getElementById('chartVolumeForecast'),
+        configVolumeForecast
+    );
+
+    const chartGMRevenue = new Chart(
+        document.getElementById('chartGMRevenue'),
+        configGMRevenue
+    );
+
+    const dashboardXX = new Chart(
+        document.getElementById('dashboardXX'),
+        configDashboardXX
+    );
+
+    const revenuePerApplLine = new Chart(
+        document.getElementById('revenuePerApplLine'),
+        configrevenuePerApplLine
+    );
+
+    const revenuePerApplLine_PIE = new Chart(
+        document.getElementById('revenuePerApplLine_PIE'),
+        configrevenuePerApplLine_PIE
+    );
+
+    // Mid-low-level Analyzer: At Which Customer is a Device More Profitable?
+
+    const dataASPPackage1 = {
+        datasets: [{
+            label: 'TC277',
+            backgroundColor: 'rgb(146, 130, 133)',
+            borderColor: 'rgb(146, 130, 133)',
+            data: [],
+        },
+        {
+            label: 'TC275',
+            backgroundColor: 'rgb(212, 166, 200)',
+            borderColor: 'rgb(212, 166, 200)',
+            data: [],
+        }]
+    };
+
+    const dataVHKbyProductLevelPackage = {
+        datasets: [{
+            label: 'TC277',
+            backgroundColor: 'rgb(146, 130, 133)',
+            borderColor: 'rgb(146, 130, 133)',
+            data: [],
+        },
+        {
+            label: 'TC275',
+            backgroundColor: 'rgb(212, 166, 200)',
+            borderColor: 'rgb(212, 166, 200)',
+            data: [],
+        }]
+    };
+
+    const dataGMRevenueByCustomer = {
+        datasets: [{
+            type: 'line',
+            label: 'TC277',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(146, 130, 133)',
+            yAxisID: 'y1'
+        },
+        {
+            type: 'line',
+            label: 'TC275',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(212, 166, 200)',
+            yAxisID: 'y1'
+        },
+        {
+            label: 'TC275',
+            backgroundColor: 'rgb(212, 166, 200)',
+            borderColor: 'rgb(212, 166, 200)',
+            data: [],
+            yAxisID: 'y'
+        }, {
+            label: 'TC277',
+            backgroundColor: 'rgba(146, 130, 133)',
+            borderColor: 'rgba(146, 130, 133)',
+            data: [],
+            yAxisID: 'y'
+        }
+        ]
+    };
+
+    const configASPPackage1 = {
+        type: 'line',
+        data: dataASPPackage1,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "ASP €"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'ASP PAckage level',
+                }
+            }
+        }
+    };
+
+    const configVHKbyProductLevelPackage = {
+        type: 'line',
+        data: dataVHKbyProductLevelPackage,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "VHK_€"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'VHK by product level package',
+                }
+            }
+        }
+    };
+
+    const configGMRevenueByCustomer = {
+        type: 'bar',
+        data: dataGMRevenueByCustomer,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    },
+                    stacked: true
+                },
+                y: {
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: "Rev_€_bar"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + 'M';
+                        }
+                    },
+                    stacked: true
+                },
+                y1: {
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: "GM %_line"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value * 100 + '%';
+                        }
+                    },
+                    stacked: false
+                }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  filter: function(label, data) {
+                      if (label.text === '') {
+                        return false
+                      }
+                      return true
+                  }
+                }
+              },
+                title: {
+                    display: true,
+                    text: 'GM %-Revenue by Customer',
+                }
+            }
+        }
+    }
+
+    const chartASPPackage1 = new Chart(
+        document.getElementById('chartASPPackage1'),
+        configASPPackage1
+    );
+
+    const chartVHKbyProductLevelPackage = new Chart(
+        document.getElementById('chartVHKbyProductLevelPackage'),
+        configVHKbyProductLevelPackage
+    );
+
+    const chartGMRevenueByCustomer = new Chart(
+        document.getElementById('chartGMRevenueByCustomer'),
+        configGMRevenueByCustomer
+    );
+
+
+    // Mid-low-level Analyzer: Assuming that the Max. Price Is Used, GM Will Be Like...?
+
+    const dataNumberOfProjectsAndGMHypothesis = {
+        datasets: [{
+            type: 'line',
+            label: 'GM@Pmax.',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(118, 159, 59)',
+            yAxisID: 'y1'
+        },
+        {
+            type: 'line',
+            label: 'GM%',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(78, 121, 167)',
+            yAxisID: 'y1'
+        },
+        {
+            type: 'line',
+            label: 'GM@Pmin.',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(227, 0, 52)',
+            yAxisID: 'y1'
+        },
+        {
+            label: 'Number of Projects',
+            backgroundColor: 'rgb(110, 179, 174)',
+            borderColor: 'rgb(110, 179, 174)',
+            data: [],
+            yAxisID: 'y'
+        },]
+    };
+
+    const configNumberOfProjectsAndGMHypothesis = {
+        type: 'bar',
+        data: dataNumberOfProjectsAndGMHypothesis,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    },
+                },
+                y: {
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: "Number of Projects"
+                    },
+                    stacked: false
+                },
+                y1: {
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: "GM %"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value * 100 + '%';
+                        }
+                    },
+                    stacked: false
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Number of Projects & GM Hypothesis',
+                }
+            }
+        }
+    }
+
+    const chartNumberOfProjectsAndGMHypothesis = new Chart(
+        document.getElementById('chartNumberOfProjectsAndGMHypothesis'),
+        configNumberOfProjectsAndGMHypothesis
+    );
+
+    // High-level Analyzer: Cash Cow or Poor Dog - Business Performance by Device
+
+
+    const dataBusinessPerformanceByDevice = {
+        datasets: [{
+            label: 'Silicon1',
+            data: [],
+            backgroundColor: 'rgb(110, 179, 174)'
+        }, {
+            label: 'Silicon2',
+            data: [],
+            backgroundColor: 'rgb(78, 121, 167)'
+        },
+        {
+            label: 'Silicon3',
+            data: [],
+            backgroundColor: 'rgb(118, 159, 59)'
+        },
+        {
+            label: 'Silicon4',
+            data: [],
+            backgroundColor: 'rgb(155, 99, 132)'
+        }],
+    }
+
+    const configBusinessPerformanceByDevice = {
+        type: 'bubble',
+        data: dataBusinessPerformanceByDevice,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: "Cum. Vol_w"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + "M";
+                        }
+
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "5 year GM%"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + "%";
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cum. Vol. and 5-Year-GM% by Device',
+                }
+            }
+        }
+    };
+
+    const chartBusinessPerformanceByDevice = new Chart(
+        document.getElementById('chartBusinessPerformanceByDevice'),
+        configBusinessPerformanceByDevice
+    );
+
+    // High-level Analyzer: Cash Cow or Poor Dog - Business Performance by Customer
+
+    const dataBusinessPerformanceByCustomer = {
+        datasets: [{
+            label: 'Customer1',
+            data: [],
+            backgroundColor: 'rgb(110, 179, 174)'
+        }, {
+            label: 'Customer2',
+            data: [],
+            backgroundColor: 'rgb(78, 121, 167)'
+        },
+        {
+            label: 'Customer3',
+            data: [],
+            backgroundColor: 'rgb(118, 159, 59)'
+        },
+        {
+            label: 'Customer4',
+            data: [],
+            backgroundColor: 'rgb(155, 99, 132)'
+        }],
+    }
+
+    const configBusinessPerformanceByCustomer = {
+        type: 'bubble',
+        data: dataBusinessPerformanceByCustomer,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: "Cum. Vol_w"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + "M";
+                        }
+
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "5 year GM%"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + "%";
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cum. Vol. and 5-Year-GM% by Customer',
+                }
+            }
+        }
+    };
+
+    const chartBusinessPerformanceByCustomer = new Chart(
+        document.getElementById('chartBusinessPerformanceByCustomer'),
+        configBusinessPerformanceByCustomer
+    );
+
+    // High-level Analyzer: Cash Cow or Poor Dog - Business Performance by Customer
+
+    const dataBusinessPerformanceByDeviceAndCustomer = {
+        datasets: [{
+            label: 'Name1',
+            data: [],
+            backgroundColor: 'rgb(155, 99, 132)'
+        }],
+    }
+
+    const configBusinessPerformanceByDeviceAndCustomer = {
+        type: 'bubble',
+        data: dataBusinessPerformanceByDeviceAndCustomer,
+        options: {
+            layout: { padding: 0 },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                        display: true,
+                        text: "Cum. Vol_w"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + "M";
+                        }
+
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "5 year GM%"
+                    },
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks) {
+                            return value + "%";
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cum. Vol. and 5-Year-GM% by Device and Customer',
+                }
+            }
+        }
+    };
+
+    const chartBusinessPerformanceByDeviceAndCustomer = new Chart(
+        document.getElementById('chartBusinessPerformanceByDeviceAndCustomer'),
+        configBusinessPerformanceByDeviceAndCustomer
+    );
+
+    // req 114 chart start
+    let baseData = [
+ { label: 'A', value: 3 },
+ { label: 'B', value: 5 },
+ { label: 'C', value: 4 },
+ { label: 'D', value: 2 },
+ { label: 'E', value: 6 }
+];
+
+    const labels = baseData.map(o => o.label).concat('Total');
+    const data = [];
+    let total = 0;
+    for (let i = 0; i < baseData.length; i++) {
+      const vStart = total;
+      total += baseData[i].value;
+      data.push([vStart, total]);
+    }
+    data.push(total);
+
+
+    new Chart(
+    document.getElementById('profitabilityDevelopmentBalance'),
+    {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: backgroundColors,
+          barPercentage: 1
+        }]
+      },
+      options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      tooltips: {
+        callbacks: {
+          label: (tooltipItem, data) => {
+            const v = data.datasets[0].data[tooltipItem.index];
+            return Array.isArray(v) ? v[1] - v[0] : v;
+          }
+        }
+      },
+      scales: {
+        y: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+    // req 114 chart end
+
+
+    // req 116 chart start
+    new Chart(
+    document.getElementById('profitabilityDevelopmentBalanceByApp'),
+    {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: backgroundColors,
+          barPercentage: 1
+        }]
+      },
+      options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      tooltips: {
+        callbacks: {
+          label: (tooltipItem, data) => {
+            const v = data.datasets[0].data[tooltipItem.index];
+            return Array.isArray(v) ? v[1] - v[0] : v;
+          }
+        }
+      },
+      scales: {
+        y: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+    // req 116 chart end
+
+
+    let fetch_data = [];
+
+    const optionsFromDataFilter4 = (option_array, fetchdata, dataKey, fieldKey, isTriple = false) => {
+
+        if (isTriple == false) {
+            for (let key in fetchdata[dataKey]) {
+                if (fetchdata[dataKey].hasOwnProperty(key)) {
+                    if (!option_array.includes(fetchdata[dataKey][key][fieldKey])) {
+                        option_array.push(fetchdata[dataKey][key][fieldKey]);
+                    }
+                }
+            }
+            return option_array;
+        }
+        else {
+            for (let key in fetchdata[dataKey + "top"]) {
+                if (fetchdata[dataKey + "top"].hasOwnProperty(key)) {
+                    if (!option_array.includes(fetchdata[dataKey + "top"][key][fieldKey])) {
+                        option_array.push(fetchdata[dataKey + "top"][key][fieldKey]);
+                    }
+                }
+            }
+            for (let key in fetchdata[dataKey + "bottom"]) {
+                if (fetchdata[dataKey + "bottom"].hasOwnProperty(key)) {
+                    if (!option_array.includes(fetchdata[dataKey + "bottom"][key][fieldKey])) {
+                        option_array.push(fetchdata[dataKey + "bottom"][key][fieldKey]);
+                    }
+                }
+            }
+            return option_array;
+        }
+    }
+
+    //optimized function for get 4filter ops
+    const getFourFilterData = (index) => {
+        $.ajax({
+            url: "./KPIDashboard" + index,
+            method: 'GET',
+            success: function (data) {
+              console.log('KPIDashboard' + index, data )
+                fetch_data[index - 1] = data;
+                if (index >= 2 && index <= 4) {
+                    data.filter.family.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                        $('#family_' + index + "_left").append('<option value="' + val + '">' + val + '</option>')
+                        $('#family_' + index + "_right").append('<option value="' + val + '">' + val + '</option>')
+                    })
+                    data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                        $('#silicon_' + index + "_left").append('<option value="' + val + '">' + val + '</option>')
+                        $('#silicon_' + index + "_right").append('<option value="' + val + '">' + val + '</option>')
+
+                    })
+                    data.filter.package.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                        $('#package_' + index + "_left").append('<option value="' + val + '">' + val + '</option>')
+                        $('#package_' + index + "_right").append('<option value="' + val + '">' + val + '</option>')
+                    })
+                    data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                        $('#endcustomer_' + index + "_left").append('<option value="' + val[0] + '">' + val[1] + '</option>')
+                        $('#endcustomer_' + index + "_right").append('<option value="' + val[0] + '">' + val[1] + '</option>')
+                    })
+                }
+                else {
+
+                    data.filter.family.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                        $('#family_' + index).append('<option value="' + val + '">' + val + '</option>')
+                    })
+                    data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                        $('#silicon_' + index).append('<option value="' + val + '">' + val + '</option>')
+                    })
+                    data.filter.package.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                        $('#package_' + index).append('<option value="' + val + '">' + val + '</option>')
+                    })
+                    data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                        $('#endcustomer_' + index).append('<option value="' + val[0] + '">' + val[1] + '</option>')
+                    })
+                }
+
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        });
+    }
+
+    const assignFourFilterData = (index, data) => {
+        console.log(' assignFourFilterData', data)
+      fetch_data[index - 1] = data;
+      if (index >= 2 && index <= 4) {
+          data.filter.family.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+              $('#family_' + index + "_left").append('<option value="' + val + '">' + val + '</option>')
+              $('#family_' + index + "_right").append('<option value="' + val + '">' + val + '</option>')
+          })
+          data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+              $('#silicon_' + index + "_left").append('<option value="' + val + '">' + val + '</option>')
+              $('#silicon_' + index + "_right").append('<option value="' + val + '">' + val + '</option>')
+
+          })
+          data.filter.package.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+              $('#package_' + index + "_left").append('<option value="' + val + '">' + val + '</option>')
+              $('#package_' + index + "_right").append('<option value="' + val + '">' + val + '</option>')
+          })
+          data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+              $('#endcustomer_' + index + "_left").append('<option value="' + val[0] + '">' + val[1] + '</option>')
+              $('#endcustomer_' + index + "_right").append('<option value="' + val[0] + '">' + val[1] + '</option>')
+          })
+      }
+      else {
+
+          data.filter.family.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+              $('#family_' + index).append('<option value="' + val + '">' + val + '</option>')
+          })
+          data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+              $('#silicon_' + index).append('<option value="' + val + '">' + val + '</option>')
+          })
+          data.filter.package.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+              $('#package_' + index).append('<option value="' + val + '">' + val + '</option>')
+          })
+          data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+              $('#endcustomer_' + index).append('<option value="' + val[0] + '">' + val[1] + '</option>')
+          })
+      }
+    }
+    const assignThreeFilterData = (index, data) => {
+      fetch_data[index - 1] = data;
+      console.log("KPIDashboard" +index, data)
+      data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+          $('#silicon_' + index).append('<option value="' + val + '">' + val + '</option>')
+      })
+      data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+          $('#endcustomer_' + index).append('<option value="' + val[0] + '">' + val[1] + '</option>')
+      })
+      data['req' + Number(index + 72) + '_data']['0']?.yearIntervall.forEach((val) => {
+          $('#year_' + index).append('<option value="' + val + '">' + val + '</option>')
+      })
+    }
+
+    const fetchAllDashboardData = () => {
+      $.ajax({
+        url: "./KPIDashboardCar",
+        method: 'GET',
+        success: function (data) {
+          console.log('fetchAllDashboardData', data)
+          for(let key in data) {
+            const fourIndexs = ['first', 'second', 'third','forth', 'fifth',]
+            if(fourIndexs.includes(key)) {
+              assignFourFilterData(fourIndexs.indexOf(key) + 1, data[key])
+            }
+            const threeIndexs = ['sixth', 'seventh', 'eightth']
+            if(threeIndexs.includes(key)) {
+              assignThreeFilterData(threeIndexs.indexOf(key) + 6, data[key])
+            }
+          }
+        },
+        error: (err) => {
+          console.log('fetchAllDashboard error',err);
+        }
+      });
+    }
+
+    function arrayUnique(array) {
+      var a = array.concat();
+      for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+          if(a[i] === a[j])
+            a.splice(j--, 1);
+        }
+      }
+
+      return a;
+    }
+
+    const fetchManagerDashboard = () => {
+      $.ajax({
+        url: "./ManagerDashboard",
+        method: 'GET',
+        success: function (data) {
+          console.log('fetchManagerDashboard', data)
+          for(let i = 9; i < 15; i++) {
+            switch(i) {
+              case 10:
+                fetch_data[i] = {applications: data['twelve']};
+                fetch_data[i].filter = data.filter
+                console.log('fetch_data',fetch_data[10])
+                // get all years from applicationLines
+                let years = [];
+                for( let key in fetch_data[i].applications){
+                    years = arrayUnique(years.concat(fetch_data[i].applications[key].year))
+                }
+                console.log('years', years)
+                years.forEach((year) => {
+                  $('#year_10').append('<option value="' + year + '">' + year + '</option>')
+                })
+                break;
+            }
+            data.filter.family.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                $('#family_' + i).append('<option value="' + val + '">' + val + '</option>')
+            })
+            data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                $('#silicon_' + i).append('<option value="' + val + '">' + val + '</option>')
+            })
+            data.filter.package.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                $('#package_' + i).append('<option value="' + val + '">' + val + '</option>')
+            })
+            data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                $('#endcustomer_' + i).append('<option value="' + val[0] + '">' + val[1] + '</option>')
+            })
+          }
+        },
+        error: (err) => {
+            console.log('fetchManagerDashboard error',err);
+        }
+      });
+    }
+
+    const getThreeFilterData = (index) => {
+        $.ajax({
+            url: "./KPIDashboard" + index,
+            method: 'GET',
+            success: function (data) {
+                fetch_data[index - 1] = data;
+                console.log("KPIDashboard" +index, data)
+                data.filter.series.sort(function (a, b) { return a?.localeCompare(b) }).forEach((val) => {
+                    $('#silicon_' + index).append('<option value="' + val + '">' + val + '</option>')
+                })
+                data.filter.finalCustomer.sort(function (a, b) { return a[1]?.localeCompare(b[1]) }).forEach((val) => {
+                    $('#endcustomer_' + index).append('<option value="' + val[0] + '">' + val[1] + '</option>')
+                })
+                data['req' + Number(index + 72) + '_data']['0']?.yearIntervall.forEach((val) => {
+                    $('#year_' + index).append('<option value="' + val + '">' + val + '</option>')
+                })
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        });
+    }
+
+    function getGraphData() {
+
+        // for (let i = 1; i < 9; i++) {
+        //     if (i < 6)
+        //         getFourFilterData(i);
+        //     else
+        //         getThreeFilterData(i);
+        // }
+        // getFourFilterData(1); // 1 to 5
+        // getThreeFilterData(6); // 6 to 8
+        // Fetch All data at once
+        fetchAllDashboardData()
+
+        // Fetch new dashboards data
+        fetchManagerDashboard()
+
+    }
+
+    getGraphData();
+
+
+    //right filters function for req74-76
+    $(".right-filter select").change(function () {
+        let temp = $(this).attr('id');
+        let id = temp.split("_")[1];
+        let family_v = [];
+        let endcustomer_v = [];
+        let silicon_v = [];
+        let package_v = [];
+        if(id != 2) {
+          if ($('#endcustomer_' + id + '_right').val().includes('-2')) {
+            $("#endcustomer_" + id + "_right option:not(.ignore)").each(function () {
+              endcustomer_v.push($(this).val());
+            }
+            )
+          }
+          else {
+            endcustomer_v = $('#endcustomer_' + id + '_right').val();
+          }
+        }
+        else {
+          endcustomer_v = 'all';
+        }
+        if ($('#package_' + id + '_right').val().includes('-2')) {
+            $("#package_" + id + "_right option:not(.ignore)").each(function () {
+                package_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            package_v = $('#package_' + id + '_right').val();
+        }
+        if ($('#family_' + id + '_right').val().includes('-2')) {
+            $("#family_" + id + "_right option:not(.ignore)").each(function () {
+                family_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            family_v = $('#family_' + id + '_right').val();
+        }
+        if ($('#silicon_' + id + '_right').val().includes('-2')) {
+            $("#silicon_" + id + "_right option:not(.ignore)").each(function () {
+                silicon_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            silicon_v = $('#silicon_' + id + '_right').val();
+        }
+
+        console.log("important data here")
+        console.log(family_v, silicon_v, endcustomer_v, package_v)
+        let conditioner_1 = family_v.length != 0&& endcustomer_v.length != 0;
+        let conditioner_2 = conditioner_1 && silicon_v.length != 0;
+        let conditioner_3 = conditioner_2 && package_v.length != 0;
+
+        if (conditioner_3) {
+            switch (id) {
+                case "2":
+                    let template = [{
+                        label: 'ASP',
+                        backgroundColor: 'rgb(155, 195, 183)',
+                        borderColor: 'rgb(155, 195, 183)',
+                        data: [],
+                    },
+                    {
+                        label: 'Max Price',
+                        backgroundColor: '#6c962b',
+                        borderColor: '#6c962b',
+                        data: [],
+                    },
+                    {
+                        label: 'Min Price',
+                        backgroundColor: '#e51641',
+                        borderColor: '#e51641',
+                        data: [],
+                    }
+                    ];
+                    let graphData = [];
+                    for (let key in fetch_data[1]['req74_data_right']) {
+                      if (fetch_data[1]['req74_data_right'].hasOwnProperty(key)) {
+                        if (family_v.includes(fetch_data[1]['req74_data_right'][key].gen) &&silicon_v.includes(fetch_data[1]['req74_data_right'][key].series) && package_v.includes(fetch_data[1]['req74_data_right'][key].package)) {
+                            let individual_data_f = [{
+                                label: 'ASP',
+                                backgroundColor: 'rgb(155, 195, 183)',
+                                borderColor: 'rgb(155, 195, 183)',
+                                data: [],
+                            },
+                            {
+                                label: 'Max Price',
+                                backgroundColor: '#6c962b',
+                                borderColor: '#6c962b',
+                                data: [],
+                            },
+                            {
+                                label: 'Min Price',
+                                backgroundColor: '#e51641',
+                                borderColor: '#e51641',
+                                data: [],
+                            }
+                            ];
+                            let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[1]['filter']['currencyRate']);
+                            let chartType = $('#chartType').val();
+                            individual_data_f.label = fetch_data[1]['req74_data_right'][key].package;
+                            for (let i = 0; i < fetch_data[1]['req74_data_right'][key].year.length; i++) {
+                                individual_data_f[0].data.push({ x: (fetch_data[1]['req74_data_right'][key].year[i]).toString(), y: Number(fetch_data[1]['req74_data_right'][key][chartType + 'asp'][i]) * currency });
+                                individual_data_f[1].data.push({ x: (fetch_data[1]['req74_data_right'][key].year[i]).toString(), y: Number(fetch_data[1]['req74_data_right'][key].maxAsp[i])  * currency});
+                                individual_data_f[2].data.push({ x: (fetch_data[1]['req74_data_right'][key].year[i]).toString(), y: Number(fetch_data[1]['req74_data_right'][key].minAsp[i] ) * currency});
+                            }
+                            graphData.push({...individual_data_f});
+                        }
+                      }
+                    }
+                    let new_dtsets = [{
+                        label: 'ASP',
+                        backgroundColor: 'rgb(155, 195, 183)',
+                        borderColor: 'rgb(155, 195, 183)',
+                        data: [],
+                    },
+                    {
+                        label: 'Max Price',
+                        backgroundColor: '#6c962b',
+                        borderColor: '#6c962b',
+                        data: [],
+                    },
+                    {
+                        label: 'Min Price',
+                        backgroundColor: '#e51641',
+                        borderColor: '#e51641',
+                        data: [],
+                    }
+                    ];
+                    console.log('logging', graphData);
+                    let datasets = [];
+                    graphData.forEach((el, index) => {
+                        new_dtsets[0].label = el[0].label;
+                        new_dtsets[0].data = el[0].data;
+                        new_dtsets[1].label = el[1].label;
+                        new_dtsets[1].data = el[1].data;
+                        new_dtsets[2].label = el[2].label;
+                        new_dtsets[2].data = el[2].data;
+                        datasets.push(new_dtsets);
+                    });
+                    if (graphData.length != 0) {
+                        chartAspPbyD.data.datasets = datasets[0].map((el, index) => {
+                          return {...el, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]}
+                        });
+                        console.log('datasets',chartAspPbyD.data.datasets)
+                        chartAspPbyD.update();
+                    }
+                    else
+                    {
+                      chartAspPbyD.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                      chartAspPbyD.update();
+                    }
+                    break;
+                case "3":
+                    let template3 = [{
+                        type: 'line',
+                        label: 'Please Select',
+                        data: [
+                        ],
+                        fill: false,
+                        borderColor: 'rgb(110, 179, 174)',
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Please Select',
+                        type: 'bar',
+                        backgroundColor: 'rgba(110, 179, 174, 1)',
+                        borderColor: 'rgba(110, 179, 174, 1)',
+                        data: [],
+                        yAxisID: 'y'
+                    }
+                    ];
+                    let graphData3 = [];
+                    for (let key in fetch_data[2]['req75_data_right']) {
+                        if (fetch_data[2]['req75_data_right'].hasOwnProperty(key)) {
+                          if (family_v.includes(fetch_data[2]['req75_data_right'][key].gen) && endcustomer_v.includes( fetch_data[2]['req75_data_right'][key].endCustomer_id.toString()) && silicon_v.includes(fetch_data[2]['req75_data_right'][key].series) &&package_v.includes( fetch_data[2]['req75_data_right'][key].package)) {
+                              let individual_data_f = dataGMRevenue.datasets[0];
+                              let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[2]['filter']['currencyRate']);
+                              let chartType = $('#chartType').val();
+                              individual_data_f.label = fetch_data[2]['req75_data_right'][key].package;
+                              const fetch_datasets_data = [];
+                              for (let i = 0; i < fetch_data[2]['req75_data_right'][key].year.length; i++) {
+                                fetch_datasets_data.push({ x: (fetch_data[2]['req75_data_right'][key].year[i]).toString(), y: Number(fetch_data[2]['req75_data_right'][key][chartType + 'gm'][i]) * currency });
+                              }
+                              graphData3.push({...individual_data_f, data: fetch_datasets_data});
+
+                              individual_data_f = dataGMRevenue.datasets[2];
+                              individual_data_f.label = '';
+                              individual_data_f.data = fetch_data[2]['req75_data_right'][key][chartType + 'Rev'];
+                              graphData3.push({...individual_data_f})
+                          }
+                        }
+                    }
+                    console.log('graphData3',graphData3)
+                    if (graphData3.length != 0) {
+                        chartGMRevenue.data.datasets = graphData3.map((el, index) => {
+                          return {...el, backgroundColor: backgroundColors[parseInt(index/2) % 15 ], borderColor: borderColors[parseInt(index/2) % 15]}
+                        });
+                        chartGMRevenue.update();
+                    }
+                    else
+                    {
+                        chartGMRevenue.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                      chartGMRevenue.update();
+                    }
+                    break;
+
+                case "4":
+                    let template4 = [{
+                        type: 'line',
+                        label: 'Please Select',
+                        data: [
+                        ],
+                        fill: false,
+                        borderColor: 'rgb(110, 179, 174)',
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Please Select',
+                        backgroundColor: 'rgba(110, 179, 174, 1)',
+                        borderColor: 'rgba(110, 179, 174, 1)',
+                        data: [],
+                        yAxisID: 'y'
+                    }
+                    ];
+                    let graphData4 = [];
+                    for (let key in fetch_data[3]['req76_data_right']) {
+                        if (fetch_data[3]['req76_data_right'].hasOwnProperty(key)) {
+                          if (family_v.includes(fetch_data[3]['req76_data_right'][key].gen) && endcustomer_v.includes(fetch_data[3]['req76_data_right'][key].endCustomer_id.toString()) && silicon_v.includes(fetch_data[3]['req76_data_right'][key].series) && package_v.includes( fetch_data[3]['req76_data_right'][key].package) ) {
+                              let individual_data_f = [{
+                                type: 'line',
+                                label: 'Please Select',
+                                data: [
+                                ],
+                                fill: false,
+                                borderColor: 'rgb(110, 179, 174)',
+                                yAxisID: 'y1'
+                            },
+                            {
+                                backgroundColor: 'rgba(110, 179, 174, 1)',
+                                borderColor: 'rgba(110, 179, 174, 1)',
+                                data: [],
+                                yAxisID: 'y',
+                                label: ''
+                            }
+                            ];
+                              let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[3]['filter']['currencyRate']);
+                              let chartType = $('#chartType').val();
+                              individual_data_f[0].label =fetch_data[3]['req76_data_right'][key].endCustomer_id.toString();
+                              const fetch_datasets_data = [];
+                              for (let i = 0; i < fetch_data[3]['req76_data_right'][key].year.length; i++) {
+                                fetch_datasets_data.push({ x: (fetch_data[3]['req76_data_right'][key].year[i]).toString(), y: Number(fetch_data[3]['req76_data_right'][key][chartType + 'gm'][i]) * currency });
+                              }
+                              graphData4.push({...individual_data_f[0], data: fetch_datasets_data});
+                              // individual_data_f[1].label = fetch_data[3]['req76_data_right'][key].endCustomer_id.toString();
+                              individual_data_f[1].data = fetch_data[3]['req76_data_right'][key][chartType + 'wRev']
+                              graphData4.push({...individual_data_f[1]})
+                          }
+                        }
+                    }
+                    if (graphData4.length != 0) {
+                        chartGMRevenueByCustomer.data.datasets = graphData4.map((el, index) => {
+                          return {...el, backgroundColor: backgroundColors[parseInt(index/2) % 15 ], borderColor: borderColors[parseInt(index/2) % 15]}
+                        });
+                        chartGMRevenueByCustomer.update();
+                    }
+                    else{
+                        chartGMRevenueByCustomer.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                      chartGMRevenueByCustomer.update();
+                    }
+                    break;
+                default: break;
+            }
+        }
+        else {
+            switch (id) {
+                case "2":
+                    chartAspPbyD.data.datasets.forEach((el) => {
+                        el.data = [];
+                    });
+                    chartAspPbyD.update();
+                    break;
+                case "3":
+                    chartGMRevenue.data.datasets.forEach((el) => {
+                        el.data = [];
+                    });
+                    chartGMRevenue.update();
+                case "4":
+                    chartGMRevenueByCustomer.data.datasets.forEach((el) => {
+                        el.data = [];
+                    });
+                    chartGMRevenueByCustomer.update();
+                default: break;
+            }
+
+        }
+    })
+
+    //left filters function for req 74-76
+    $(".left-filter select").change(function () {
+
+        /*
+        ******************** REQ 74 LEFT BEGIN
+        */
+        console.log(fetch_data);
+        let temp = $(this).attr('id');
+        let id = temp.split("_")[1];
+        let family_v = [];
+        let endcustomer_v = [];
+        let silicon_v = [];
+        let package_v = [];
+        if ($('#endcustomer_' + id + '_left').val().includes('-2')) {
+            $("#endcustomer_" + id + "_left option:not(.ignore)").each(function () {
+                endcustomer_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            endcustomer_v = $('#endcustomer_' + id + '_left').val();
+        }
+        if ($('#family_' + id + '_left').val().includes('-2')) {
+            $("#family_" + id + "_left option:not(.ignore)").each(function () {
+                family_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            family_v = $('#family_' + id + '_left').val();
+        }
+        if ($('#silicon_' + id + '_left').val().includes('-2')) {
+            $("#silicon_" + id + "_left option:not(.ignore)").each(function () {
+                silicon_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            silicon_v = $('#silicon_' + id + '_left').val();
+        }
+        if ($('#package_' + id + '_left').val().includes('-2')) {
+            $("#package_" + id + "_left option:not(.ignore)").each(function () {
+                package_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            package_v = $('#package_' + id + '_left').val();
+        }
+
+        console.log("important data here")
+        console.log(family_v, silicon_v, endcustomer_v, package_v)
+        let conditioner_1 = family_v.length != 0 && endcustomer_v.length != 0;
+        let conditioner_2 = conditioner_1 && silicon_v.length != 0;
+        let conditioner_3 = conditioner_2 && package_v.length != 0;
+
+        if (conditioner_3) {
+            switch (id) {
+                case "2":
+                    let template = {
+                        label: 'Please Select',
+                        backgroundColor: 'rgb(155, 195, 183)',
+                        borderColor: 'rgb(155, 195, 183)',
+                        data: [],
+                    };
+                    var graphData = [];
+
+                    /*
+                    this for loop iterates through back end json and gets all items that match the user selection
+                    generation, silicon (series), package, end customer
+                    the data has to be prepared in order to be aggregated later down the road. we need to show only one line on the graph per mapCustomer.
+                    for this customer level aggregation we need to sum for every year all wRev and divide by wVol.
+                    */
+
+                    for (let key in fetch_data[1]['req74_data_left']) {
+                      if (fetch_data[1]['req74_data_left'].hasOwnProperty(key)) {
+                        if (family_v.includes(fetch_data[1]['req74_data_left'][key].gen) && silicon_v.includes(fetch_data[1]['req74_data_left'][key].series) && package_v.includes(fetch_data[1]['req74_data_left'][key].package)&& endcustomer_v.includes(fetch_data[1]['req74_data_left'][key].endCustomer_id.toString())) {
+                            let individual_data_f = {
+                                label: 'Please Select',
+                                backgroundColor: 'rgb(155, 195, 183)',
+                                borderColor: 'rgb(155, 195, 183)',
+                                data: [],
+                                dataBis: []
+                            };
+                            let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[1]['filter']['currencyRate']);
+                            let chartType = $('#chartType').val();
+                            //console.log("fetch_data[1]['req74_data_left'][key].endCustomerHelper", fetch_data[1]['req74_data_left'][key].endCustomerHelper)
+
+                            individual_data_f.label = fetch_data[1]['req74_data_left'][key].endCustomerHelper;
+                            for (let i = 0; i < fetch_data[1]['req74_data_left'][key].year.length; i++) {
+                                individual_data_f.dataBis.push({ x: (fetch_data[1]['req74_data_left'][key].year[i]).toString(), wRev: Number(fetch_data[1]['req74_data_left'][key][chartType + 'wRev'][i] ) * currency, wVol: Number(fetch_data[1]['req74_data_left'][key][chartType + 'wVol'][i]) } );
+                            }
+                            graphData.push(individual_data_f);
+                        }
+                      }
+                    }
+
+                    /*
+                    graphData has now only the information related to the selected packages and end customer
+                    one combinatino of package and end customer = one entry in graphData (now)
+                    but it's still not aggregated by
+                    */
+
+                    let new_dtsets = {
+                        label: 'Please Select',
+                        backgroundColor: 'rgb(155, 195, 183)',
+                        borderColor: 'rgb(155, 195, 183)',
+                        data: [],
+                    };
+                    let datasets = [];
+
+                    /*
+                    here we should aggregate based on graphData.label (customer name)
+                    since we build the average based on the end Customer -> one end customer, one line on the graph
+                    the line is the weighted average of all datasets for this end customer:
+
+                    (ASP of customer) = (sum of weighted revenues of this customer for a given year)
+                                        / (sum of weighted volumes of this customer for a given year)
+
+                    so we will prepare iteratively this
+                    */
+
+                    // group by label = end customer name
+                    let groupedData =
+                        Object.values(graphData.reduce((a, { label, dataBis }) => {
+                        if (!a[label]) a[label] = { label, dataBis: [] };
+                        a[label].dataBis.push(dataBis);
+                        return a;
+                    }, {}));
+
+                    /*
+                     grouped data has now everything grouped by end customer (one end customer, one array entry)
+                    groupedData = [{label: 'AVNET', dataBis: Array(1)},  {label: 'DELPHI', dataBis: Array(2)}, ...]
+
+                     */
+
+                    var finalGraphData = []
+                    groupedData.forEach((el, index) => {
+                        console.log("grouped element", el)
+                        /*
+                        for each customer (one entry in graphdata array), dataBis contains multiple arrays, one for each package
+                        we will now sum the values across all packages in order to be able to compute ASP
+                        databis = information for one end customer
+
+                         element of groupedData = {label: 'AVNET', dataBis: Array(2)}
+
+                         dataBis is an array of arrays, can have length 1 or n
+                         each array has dicts.
+                         each array is for one package.
+
+                        Example:
+                         dataBis = [
+                         [{x: '2020', wRev: 0, wVol: 0}, {x: '2021', wRev: 0, wVol: 0}, {x: '2022', wRev: 0, wVol: 0}, ...], //-> pacakge A
+                         [{x: '2020', wRev: 666, wVol: 777}, {x: '2021', wRev: 666, wVol: 777}, {x: '2022', wRev: 666, wVol: 777}, ...], // -> package B
+                         ...
+                         ]
+
+                        */
+                        dataBis = el.dataBis
+
+                        var customerLevelData = []
+                        var allYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050]
+                        var allwVols = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        var allwRevs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        var allAsps = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+                        dataBis.forEach((dataset, indexB) => {
+                            /*
+                            data set = the information for one package
+                            this is an array of dicts
+
+                            Example:
+                            dataset = [{x: '2020', wRev: 0, wVol: 0}, {x: '2021', wRev: 0, wVol: 0}, {x: '2022', wRev: 0, wVol: 0}, ...]
+
+                            each array entry (= dict) has the year, wVol, wRev
+                            */
+                            dataset.forEach((dataset, indexC) => {
+
+                                // x is year
+                                //console.log("logging dataset", el.label, dataset.x, dataset.wRev, dataset.wVol)
+
+                                // find the relevant index in allYears and add accordingly
+                                // will crash if a year < 2020 or > 2050 is passed
+                                const isYear = (element) => element == dataset.x;
+                                relevantIndex = allYears.findIndex(isYear);
+                                allwVols[relevantIndex] = allwVols[relevantIndex] + dataset.wVol;
+                                allwRevs[relevantIndex] = allwVols[relevantIndex] + dataset.wRev;
+                            })
+                        })
+
+                        // now build the ASP at customer level
+                        allAsps.forEach((dataset, index) => {
+                            try {
+                                allAsps[index] = ( (allwRevs[index] / allwVols[index]) || 0.0 )
+                            } catch {
+                                allAsps[index] = 0.0
+                            }
+                        })
+
+                        console.log("resulting asps", el.label)
+                        console.log(allAsps)
+
+                        /*
+                        now repeat the code we had originally and push into the graph the aggregated data
+                        */
+
+                        let individual_data_f = {
+                            label: 'Please Select',
+                            backgroundColor: 'rgb(155, 195, 183)',
+                            borderColor: 'rgb(155, 195, 183)',
+                            data: [],
+                        };
+
+                        individual_data_f.label = el.label;
+                        for (let i = 0; i < allYears.length; i++) {
+                            individual_data_f.data.push({ x: (allYears[i]).toString(), y: Number(allAsps[i] )});
+                        }
+                        finalGraphData.push(individual_data_f);
+                        console.log("final individual_data_f", individual_data_f)
+
+                    })
+
+                    finalGraphData.forEach((el, index) => {
+                        console.log("pushing label", el.label)
+                      datasets.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+                    });
+                    if (finalGraphData.length != 0) {
+                        chartAspCnd.data.datasets = datasets;
+                        chartAspCnd.update();
+                    }
+                    else{
+                        chartAspCnd.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                        chartAspCnd.update();
+                    }
+
+                    break;
+                case "3":
+                    let template3_bottom = {
+                        label: 'Please Select at Least one End Customer',
+                        backgroundColor: 'rgb(129, 33, 97)',
+                        borderColor: 'rgb(129, 33, 97)',
+                        data: [],
+                    };
+                    let template3_top = {
+                        label: 'Please Select at Least one End Customer',
+                        backgroundColor: 'rgb(155, 195, 183)',
+                        borderColor: 'rgb(155, 195, 183)',
+                        data: [],
+                    };
+                    const graphData3_top = [];
+                    let graphData3_bottom = [];
+                    for (let key in fetch_data[2]['req75_data_lefttop']) {
+                        if (fetch_data[2]['req75_data_lefttop'].hasOwnProperty(key)) {
+                          if (family_v.includes(fetch_data[2]['req75_data_lefttop'][key].gen) && silicon_v.includes(fetch_data[2]['req75_data_lefttop'][key].series) && package_v.includes(fetch_data[2]['req75_data_lefttop'][key].package) && endcustomer_v.includes(fetch_data[2]['req75_data_lefttop'][key].endCustomer_id.toString())) {
+                              let individual_data_f =  {
+                                label: 'Please Select',
+                                backgroundColor: 'rgb(155, 195, 183)',
+                                borderColor: 'rgb(155, 195, 183)',
+                                data: [],
+                                dataBis: []
+                            };
+                              let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[2]['filter']['currencyRate']);
+                              let chartType = $('#chartType').val();
+                              const endcustomer_id = fetch_data[2]['req75_data_lefttop'][key].endCustomer_id;
+                              const mapCustomer = fetch_data[2]['filter']['finalCustomer'].filter(el => el[0] == endcustomer_id )
+                              if(mapCustomer.length > 0) individual_data_f.label = mapCustomer[0][1]
+                              for (let i = 0; i < fetch_data[2]['req75_data_lefttop'][key].year.length; i++) {
+                                  individual_data_f.dataBis.push({ x: (fetch_data[2]['req75_data_lefttop'][key].year[i]).toString(), wRev: Number(fetch_data[2]['req75_data_lefttop'][key][chartType + 'wRev'][i] ) * currency, wVol: Number(fetch_data[2]['req75_data_lefttop'][key][chartType + 'wVol'][i]) });
+                              }
+                              graphData3_top.push(individual_data_f);
+                          }
+                        }
+                    }
+                    let datasets3_top = [];
+                    var finalGraphData = []
+
+                    let groupedData3_top =
+                        Object.values(graphData3_top.reduce((a, { label, dataBis }) => {
+                        if (!a[label]) a[label] = { label, dataBis: [] };
+                        a[label].dataBis.push(dataBis);
+                        return a;
+                    }, {}));
+
+                    groupedData3_top.forEach((el, index) => {
+                        console.log("grouped element", el)
+                        /*
+                        for each customer (one entry in graphdata array), dataBis contains multiple arrays, one for each package
+                        we will now sum the values across all packages in order to be able to compute ASP
+                        databis = information for one end customer
+
+                         element of groupedData = {label: 'AVNET', dataBis: Array(2)}
+
+                         dataBis is an array of arrays, can have length 1 or n
+                         each array has dicts.
+                         each array is for one package.
+
+                        Example:
+                         dataBis = [
+                         [{x: '2020', wRev: 0, wVol: 0}, {x: '2021', wRev: 0, wVol: 0}, {x: '2022', wRev: 0, wVol: 0}, ...], //-> pacakge A
+                         [{x: '2020', wRev: 666, wVol: 777}, {x: '2021', wRev: 666, wVol: 777}, {x: '2022', wRev: 666, wVol: 777}, ...], // -> package B
+                         ...
+                         ]
+
+                        */
+                        dataBis = el.dataBis
+
+                        var customerLevelData = []
+                        var allYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050]
+                        var allwVols = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        var allwRevs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        var allAsps = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+                        dataBis.forEach((dataset, indexB) => {
+                            /*
+                            data set = the information for one package
+                            this is an array of dicts
+
+                            Example:
+                            dataset = [{x: '2020', wRev: 0, wVol: 0}, {x: '2021', wRev: 0, wVol: 0}, {x: '2022', wRev: 0, wVol: 0}, ...]
+
+                            each array entry (= dict) has the year, wVol, wRev
+                            */
+                            dataset.forEach((dataset, indexC) => {
+
+                                // x is year
+                                //console.log("logging dataset", el.label, dataset.x, dataset.wRev, dataset.wVol)
+
+                                // find the relevant index in allYears and add accordingly
+                                // will crash if a year < 2020 or > 2050 is passed
+                                const isYear = (element) => element == dataset.x;
+                                relevantIndex = allYears.findIndex(isYear);
+                                allwVols[relevantIndex] = allwVols[relevantIndex] + dataset.wVol;
+                                allwRevs[relevantIndex] = allwVols[relevantIndex] + dataset.wRev;
+                            })
+                        })
+
+                        // now build the ASP at customer level
+                        allAsps.forEach((dataset, index) => {
+                            try {
+                                allAsps[index] = ( (allwRevs[index] / allwVols[index]) || 0.0 )
+                            } catch {
+                                allAsps[index] = 0.0
+                            }
+                        })
+
+                        console.log("resulting asps", el.label)
+                        console.log(allAsps)
+
+                        /*
+                        now repeat the code we had originally and push into the graph the aggregated data
+                        */
+
+                        let individual_data_f = {
+                            label: 'Please Select',
+                            backgroundColor: 'rgb(155, 195, 183)',
+                            borderColor: 'rgb(155, 195, 183)',
+                            data: [],
+                        };
+
+                        individual_data_f.label = el.label;
+                        for (let i = 0; i < allYears.length; i++) {
+                            individual_data_f.data.push({ x: (allYears[i]).toString(), y: Number(allAsps[i] )});
+                        }
+                        finalGraphData.push(individual_data_f);
+                        console.log("final individual_data_f", individual_data_f)
+
+                    })
+
+                    finalGraphData.forEach((el, index) => {
+                        console.log("pushing label", el.label)
+                      datasets3_top.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+                    });
+
+
+                    for (let key in fetch_data[2]['req75_data_leftbottom']) {
+                        if (fetch_data[2]['req75_data_leftbottom'].hasOwnProperty(key)) {
+                          if (family_v.includes(fetch_data[2]['req75_data_leftbottom'][key].gen) && silicon_v.includes(fetch_data[2]['req75_data_leftbottom'][key].series) && package_v.includes(fetch_data[2]['req75_data_leftbottom'][key].package)&& endcustomer_v.includes(fetch_data[2]['req75_data_leftbottom'][key].endCustomer_id.toString())) {
+                              let individual_data_f = {
+                                label: 'Please Select',
+                                backgroundColor: 'rgb(129, 33, 97)',
+                                borderColor: 'rgb(129, 33, 97)',
+                                data: [],
+                            };
+                              let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[2]['filter']['currencyRate']);
+                              let chartType = $('#chartType').val();
+                              individual_data_f.label = fetch_data[2]['req75_data_leftbottom'][key].gen;
+                              for (let i = 0; i < fetch_data[2]['req75_data_leftbottom'][key].year.length; i++) {
+                                  individual_data_f.data.push({ x: (fetch_data[2]['req75_data_leftbottom'][key].year[i]).toString(), y: Number(fetch_data[2]['req75_data_leftbottom'][key][chartType + 'wVol'][i]) * currency });
+                              }
+                              graphData3_bottom.push({...individual_data_f});
+                          }
+                        }
+                    }
+
+
+                    let new_dtsets3_bottom = {
+                        label: 'Please Select at least one End Customer',
+                        backgroundColor: 'rgb(129, 33, 97)',
+                        borderColor: 'rgb(129, 33, 97)',
+                        data: [],
+                    };
+                    let datasets3_bottom = [];
+                    graphData3_bottom.forEach((el, index) => {
+                      datasets3_bottom.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+                    });
+
+                    if (graphData3_top.length != 0) {
+                        chartAspByCustomerAndDevice1.data.datasets = datasets3_top;
+                        chartAspByCustomerAndDevice1.update();
+                    }
+                    else{
+                        chartAspByCustomerAndDevice1.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                        chartAspByCustomerAndDevice1.update();
+                    }
+
+                    if (graphData3_bottom.length != 0) {
+                        chartVolumeForecast.data.datasets = datasets3_bottom;
+                        chartVolumeForecast.update();
+                    }
+                    else{
+                        chartVolumeForecast.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                        chartVolumeForecast.update();
+                    }
+
+                    break;
+
+                case "4":
+                    let template4_bottom = {
+                        label: 'Please Select at least one active End Customer',
+                        backgroundColor: 'rgb(129, 33, 97)',
+                        borderColor: 'rgb(129, 33, 97)',
+                        data: [],
+                    };
+                    let template4_top = {
+                        label: 'Please Select at least one active End Customer',
+                        backgroundColor: 'rgb(155, 195, 183)',
+                        borderColor: 'rgb(155, 195, 183)',
+                        data: [],
+                    };
+                    let graphData4_top = [];
+                    let graphData4_bottom = [];
+                    for (let key in fetch_data[3]['req76_data_lefttop']) {
+                      if (fetch_data[3]['req76_data_lefttop'].hasOwnProperty(key)) {
+                        if (family_v.includes(fetch_data[3]['req76_data_lefttop'][key].gen) && endcustomer_v.includes(fetch_data[3]['req76_data_lefttop'][key].endCustomer_id.toString()) && silicon_v.includes(fetch_data[3]['req76_data_lefttop'][key].series) && package_v.includes(fetch_data[3]['req76_data_lefttop'][key].package)) {
+                            let individual_data_f =  {
+                                label: 'Please Select',
+                                backgroundColor: 'rgb(155, 195, 183)',
+                                borderColor: 'rgb(155, 195, 183)',
+                                data: [],
+                                dataBis: []
+                            };
+                            let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[3]['filter']['currencyRate']);
+                            let chartType = $('#chartType').val();
+                            individual_data_f.label = fetch_data[3]['req76_data_lefttop'][key].gen;
+                            for (let i = 0; i < fetch_data[3]['req76_data_lefttop'][key].year.length; i++) {
+                                individual_data_f.data.push({ x: (fetch_data[3]['req76_data_lefttop'][key].year[i]).toString(), y: Number(fetch_data[3]['req76_data_lefttop'][key][chartType + 'asp'][i] ) * currency});
+
+                            }
+                            graphData4_top.push(individual_data_f);
+                        }
+                      }
+                    }
+
+                    let datasets4_top = [];
+
+                    var finalGraphData = [];
+
+                    graphData4_top.forEach((el, index) => {
+                      datasets4_top.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+                    });
+
+                    const req76_data_leftbottom = [];
+                    for (let key in fetch_data[3]['req76_data_leftbottom']) {
+                        if (fetch_data[3]['req76_data_leftbottom'].hasOwnProperty(key)) {
+                          if (family_v.includes(fetch_data[3]['req76_data_leftbottom'][key].gen) && silicon_v.includes(fetch_data[3]['req76_data_leftbottom'][key].series) && package_v.includes(fetch_data[3]['req76_data_leftbottom'][key].package)) {
+                            let i = req76_data_leftbottom.findIndex(x => (x.gen == fetch_data[3]['req76_data_leftbottom'][key].gen && x.series == fetch_data[3]['req76_data_leftbottom'][key].series && x.package == fetch_data[3]['req76_data_leftbottom'][key].package))
+                            if(i <= -1) {
+                              req76_data_leftbottom.push(fetch_data[3]['req76_data_leftbottom'][key])
+                              let individual_data_f =  {
+                                label: 'Please Select',
+                                backgroundColor: 'rgb(129, 33, 97)',
+                                borderColor: 'rgb(129, 33, 97)',
+                                data: [],
+                              };
+                              let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[3]['filter']['currencyRate']);
+                              individual_data_f.label = fetch_data[3]['req76_data_leftbottom'][key].package;
+                              for (let i = 0; i < fetch_data[3]['req76_data_leftbottom'][key].year.length; i++) {
+                                  individual_data_f.data.push({ x: (fetch_data[3]['req76_data_leftbottom'][key].year[i]).toString(), y: Number(fetch_data[3]['req76_data_leftbottom'][key].vhk[i])* currency });
+                              }
+                              graphData4_bottom.push(individual_data_f);
+                            }
+
+                          }
+                        }
+                    }
+                    let new_dtsets4_bottom =  {
+                        label: 'Please Select',
+                        backgroundColor: 'rgb(129, 33, 97)',
+                        borderColor: 'rgb(129, 33, 97)',
+                        data: [],
+                    };
+                    let datasets4_bottom = [];
+                    graphData4_bottom.forEach((el, index) => {
+                      datasets4_bottom.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+                    });
+                    if (graphData4_top.length != 0) {
+                        chartASPPackage1.data.datasets = datasets4_top;
+                        chartASPPackage1.update();
+                    }
+                    else{
+                        chartASPPackage1.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                        chartASPPackage1.update();
+                    }
+
+                    if (graphData4_bottom.length != 0) {
+                        chartVHKbyProductLevelPackage.data.datasets = datasets4_bottom;
+                        chartVHKbyProductLevelPackage.update();
+                    }
+                    else{
+                        chartVHKbyProductLevelPackage.data.datasets.forEach((el)=>{
+                        el.data=[];
+                      })
+                        chartVHKbyProductLevelPackage.update();
+                    }
+
+                    break;
+                default: break;
+            }
+        }
+        else {
+            switch (id) {
+                case "2":
+                    chartAspCnd.data.datasets.forEach((el) => {
+                        el.data = [];
+                        el.label = "Please Select at least one active End Customer"
+                    });
+                    chartAspCnd.update();
+
+                    if (chartAspCnd.data.datasets.length > 0) {
+                        chartAspCnd.data.datasets.length = 1
+                    }
+
+                    break;
+                case "3":
+                    chartAspByCustomerAndDevice1.data.datasets.forEach((el) => {
+                        el.data = [];
+                        el.label = "Please Select at least one active End Customer"
+
+                    });
+
+                    if (chartAspByCustomerAndDevice1.data.datasets.length > 0) {
+                        chartAspByCustomerAndDevice1.data.datasets.length = 1
+                    }
+
+                    chartAspByCustomerAndDevice1.update();
+                    chartVolumeForecast.data.datasets.forEach((el) => {
+                        el.data = [];
+                        el.label = "Please Select at least one active End Customer"
+
+                    });
+
+                    if (chartVolumeForecast.data.datasets.length > 0) {
+                        chartVolumeForecast.data.datasets.length = 1
+                    }
+
+
+                    chartVolumeForecast.update();
+                    break;
+                case "4":
+                    chartASPPackage1.data.datasets.forEach((el) => {
+                        el.data = [];
+                        el.label = "Please Select at least one active End Customer"
+
+                    });
+
+                    if (chartASPPackage1.data.datasets.length > 0) {
+                        chartASPPackage1.data.datasets.length = 1
+                    }
+
+                    chartASPPackage1.update();
+
+
+                    chartVHKbyProductLevelPackage.data.datasets.forEach((el) => {
+                        el.data = [];
+                        el.label = "Please Select at least one active End Customer"
+
+                    });
+
+                    if (chartVHKbyProductLevelPackage.data.datasets.length > 0) {
+                        chartVHKbyProductLevelPackage.data.datasets.length = 1
+                    }
+
+                    chartVHKbyProductLevelPackage.update();
+                    break;
+            }
+
+        }
+    })
+
+    /*
+        ******************** REQ 74 LEFT END
+    */
+
+    //req73 filter
+    $("#1_item_filter select").change(function () {
+        let family_v = [];
+        let endcustomer_v = [];
+        let silicon_v = [];
+        let package_v = [];
+        if ($('#endcustomer_1').val().includes('-2')) {
+            $("#endcustomer_1 option:not(.ignore)").each(function () {
+                endcustomer_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            endcustomer_v = $('#endcustomer_1').val();
+        }
+        if ($('#package_1').val().includes('-2')) {
+            $("#package_1 option:not(.ignore)").each(function () {
+                package_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            package_v = $('#package_1').val();
+        }
+        if ($('#family_1').val().includes('-2')) {
+            $("#family_1 option:not(.ignore)").each(function () {
+                family_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            family_v = $('#family_1').val();
+        }
+        if ($('#silicon_1').val().includes('-2')) {
+            $("#silicon_1 option:not(.ignore)").each(function () {
+                silicon_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            silicon_v = $('#silicon_1').val();
+        }
+        let conditioner_1 = family_v.length != 0 && endcustomer_v.length != 0;
+        let conditioner_2 = conditioner_1 && silicon_v.length != 0;
+        let conditioner_3 = conditioner_2 && package_v.length != 0;
+
+        console.log('filterssssss', conditioner_1, conditioner_2, conditioner_3);
+        let template_left = {
+            label: 'Please Select',
+            backgroundColor: 'rgb(155, 195, 183)',
+            borderColor: 'rgb(155, 195, 183)',
+            data: [],
+        }
+        let template_mid = {
+            label: 'Please Select 2',
+            backgroundColor: '#6c962b',
+            borderColor: '#6c962b',
+            data: []
+        }
+        let template_right = {
+            label: 'Undefined 1',
+            backgroundColor: 'rgb(146, 130, 133)',
+            borderColor: 'rgb(146, 130, 133)',
+            data: [],
+        }
+        console.log('fetch_data 2063',fetch_data)
+        if (conditioner_1) {
+            let familyDatas = [];
+            for (let key in fetch_data[0]['req73_data_left']) {
+                if (fetch_data[0]['req73_data_left'].hasOwnProperty(key)) {
+                  if (endcustomer_v.includes(fetch_data[0]['req73_data_left'][key].endCustomer_id.toString())&& family_v.includes(fetch_data[0]['req73_data_left'][key].gen)) {
+                      let individual_data_f = { label: "", data: [] };
+                      let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[0]['filter']['currencyRate']);
+                      let chartType = $('#chartType').val();
+                      individual_data_f.label = fetch_data[0]['req73_data_left'][key].gen;
+                      for (let i = 0; i < fetch_data[0]['req73_data_left'][key].year.length; i++) {
+                          individual_data_f.data.push({ x: (fetch_data[0]['req73_data_left'][key].year[i]).toString(), y: Number(fetch_data[0]['req73_data_left'][key][chartType + 'asp'][i]) * currency })
+                      }
+                      familyDatas.push(individual_data_f);
+                  }
+                }
+            }
+            let datasets = [];
+            familyDatas.forEach((el, index) => {
+                datasets.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+            });
+            if (familyDatas.length != 0) {
+              chartAspFamily.data.datasets = datasets;
+              chartAspFamily.update();
+            }
+            else{
+                chartAspFamily.data.datasets.forEach((el)=>{
+                el.data=[];
+              })
+                chartAspFamily.update();
+            }
+
+        }
+        else {
+            chartAspFamily.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartAspFamily.update();
+        }
+        if (conditioner_2) {
+            let siliconData = [];
+            for (let key in fetch_data[0]['req73_data_middle']) {
+                if (fetch_data[0]['req73_data_middle'].hasOwnProperty(key)) {
+                  if (endcustomer_v.includes(fetch_data[0]['req73_data_middle'][key].endCustomer_id.toString()) && family_v.includes(fetch_data[0]['req73_data_middle'][key].gen) && silicon_v.includes(fetch_data[0]['req73_data_middle'][key].series)) {
+                      let individual_data_f = { label: "", data: [] };
+                      let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[0]['filter']['currencyRate']);
+                      let chartType = $('#chartType').val();
+                      individual_data_f.label = fetch_data[0]['req73_data_middle'][key].series;
+                      for (let i = 0; i < fetch_data[0]['req73_data_middle'][key].year.length; i++) {
+                        individual_data_f.data.push({ x: (fetch_data[0]['req73_data_middle'][key].year[i]).toString(), y: Number(fetch_data[0]['req73_data_middle'][key][chartType + 'asp'][i]) * currency })
+                      }
+                      siliconData.push(individual_data_f);
+                  }
+                }
+            }
+            let new_dtsets =  {
+                label: 'Please Select 2',
+                backgroundColor: '#6c962b',
+                borderColor: '#6c962b',
+                data: []
+            };
+            let datasets = [];
+            siliconData.forEach((el, index) => {
+              datasets.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+            });
+            if (siliconData.length != 0) {
+              chartAspSilicon.data.datasets = datasets;
+              chartAspSilicon.update();
+            }
+            else{
+                chartAspSilicon.data.datasets.forEach((el)=>{
+                el.data=[];
+              })
+                chartAspSilicon.update();
+            }
+
+        }
+        else {
+            chartAspSilicon.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartAspSilicon.update();
+        }
+        if (conditioner_3) {
+            let packageData = [];
+            for (let key in fetch_data[0]['req73_data_right']) {
+              if (fetch_data[0]['req73_data_right'].hasOwnProperty(key)) {
+                if (endcustomer_v.includes(fetch_data[0]['req73_data_right'][key].endCustomer_id.toString()) && family_v.includes(fetch_data[0]['req73_data_right'][key].gen) && silicon_v.includes(fetch_data[0]['req73_data_right'][key].series) && package_v.includes(fetch_data[0]['req73_data_right'][key].package)) {
+                    let individual_data_f = { label: "", data: [] };
+                    let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[0]['filter']['currencyRate']);
+                    let chartType = $('#chartType').val();
+                    individual_data_f.label = fetch_data[0]['req73_data_right'][key].package;
+                    for (let i = 0; i < fetch_data[0]['req73_data_right'][key].year.length; i++) {
+                        individual_data_f.data.push({ x: (fetch_data[0]['req73_data_right'][key].year[i]).toString(), y: Number(fetch_data[0]['req73_data_right'][key][chartType + 'asp'][i]) * currency })
+                    }
+                    packageData.push(individual_data_f);
+                }
+              }
+            }
+            let new_dtsets =  {
+                label: 'Undefined 1',
+                backgroundColor: 'rgb(146, 130, 133)',
+                borderColor: 'rgb(146, 130, 133)',
+                data: [],
+            }
+            let datasets = [];
+            packageData.forEach((el, index) => {
+              datasets.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+            });
+            if (packageData.length != 0) {
+              chartAspPackage.data.datasets = datasets;
+              chartAspPackage.update();
+            }
+            else{
+                chartAspPackage.data.datasets.forEach((el)=>{
+                el.data=[];
+              })
+                chartAspPackage.update();
+            }
+
+        }
+        else {
+            chartAspPackage.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartAspPackage.update();
+        }
+    })
+
+    //req77 filter
+    $("#5_item_filter select").change(function () {
+        let family_v = [];
+        let endcustomer_v = [];
+        let silicon_v = [];
+        let package_v = [];
+
+        if ($('#endcustomer_5').val().includes('-2')) {
+            $("#endcustomer_5 option:not(.ignore)").each(function () {
+                endcustomer_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            endcustomer_v = $('#endcustomer_5').val();
+        }
+        if ($('#package_5').val().includes('-2')) {
+            $("#package_5 option:not(.ignore)").each(function () {
+                package_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            package_v = $('#package_5').val();
+        }
+        if ($('#family_5').val().includes('-2')) {
+            $("#family_5 option:not(.ignore)").each(function () {
+                family_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            family_v = $('#family_5').val();
+        }
+        if ($('#silicon_5').val().includes('-2')) {
+            $("#silicon_5 option:not(.ignore)").each(function () {
+                silicon_v.push($(this).val());
+            }
+            )
+        }
+        else {
+            silicon_v = $('#silicon_5').val();
+        }
+        let conditioner_1 = family_v.length != 0&& endcustomer_v.length != 0;
+        let conditioner_2 = conditioner_1 && silicon_v.length != 0;
+        let conditioner_3 = conditioner_2 && package_v.length != 0;
+
+        console.log("herherere")
+        console.log(family_v, silicon_v, endcustomer_v, package_v)
+
+        let template5 = [{
+            type: 'line',
+            label: 'GM@Pmax.',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(118, 159, 59)',
+            yAxisID: 'y1'
+        },
+        {
+            type: 'line',
+            label: 'GM%',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(78, 121, 167)',
+            yAxisID: 'y1'
+        },
+        {
+            type: 'line',
+            label: 'GM@Pmin.',
+            data: [],
+            fill: false,
+            borderColor: 'rgb(227, 0, 52)',
+            yAxisID: 'y1'
+        },
+        {
+            label: 'Number of Projects',
+            backgroundColor: 'rgb(110, 179, 174)',
+            borderColor: 'rgb(110, 179, 174)',
+            data: [],
+            yAxisID: 'y'
+        },]
+
+
+        console.log(conditioner_3)
+        console.log(fetch_data)
+        if (conditioner_3) {
+            let packageData = [];
+            for (let key in fetch_data[4]['req77_data']) {
+                if (fetch_data[4]['req77_data'].hasOwnProperty(key)) {
+                  if (endcustomer_v.includes(fetch_data[4]['req77_data'][key].endCustomer_id.toString() ) &&family_v.includes( fetch_data[4]['req77_data'][key].gen) &&silicon_v.includes (fetch_data[4]['req77_data'][key].series) && package_v.includes(fetch_data[4]['req77_data'][key].package)) {
+                      let individual_data_f =  [{
+                        type: 'line',
+                        label: 'GM@Pmax.',
+                        data: [],
+                        fill: false,
+                        borderColor: 'rgb(118, 159, 59)',
+                        yAxisID: 'y1'
+                    },
+                    {
+                        type: 'line',
+                        label: 'GM%',
+                        data: [],
+                        fill: false,
+                        borderColor: 'rgb(78, 121, 167)',
+                        yAxisID: 'y1'
+                    },
+                    {
+                        type: 'line',
+                        label: 'GM@Pmin.',
+                        data: [],
+                        fill: false,
+                        borderColor: 'rgb(227, 0, 52)',
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Number of Projects',
+                        backgroundColor: 'rgb(110, 179, 174)',
+                        borderColor: 'rgb(110, 179, 174)',
+                        data: [],
+                        yAxisID: 'y'
+                    },];
+                    let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[10]['filter']['currencyRate']);
+                    let chartType = $('#chartType').val();
+                    individual_data_f.label = fetch_data[4]['req77_data'][key].package;
+                    for (let i = 0; i < fetch_data[4]['req77_data'][key].year.length; i++) {
+                        individual_data_f[0].data.push({ x: (fetch_data[4]['req77_data'][key].year[i]).toString(), y: fetch_data[4]['req77_data'][key][chartType + 'pmax_gm'][i] * currency})
+                        individual_data_f[1].data.push({ x: (fetch_data[4]['req77_data'][key].year[i]).toString(), y: fetch_data[4]['req77_data'][key][chartType + 'gm'][i] * currency})
+                        individual_data_f[2].data.push({ x: (fetch_data[4]['req77_data'][key].year[i]).toString(), y: fetch_data[4]['req77_data'][key][chartType + 'pmin_gm'][i] * currency})
+                        individual_data_f[3].data.push({ x: (fetch_data[4]['req77_data'][key].year[i]).toString(), y: fetch_data[4]['req77_data'][key].projectCount[i] })
+                    }
+                    packageData.push(individual_data_f);
+                  }
+                }
+            }
+            let new_dtsets =  [{
+                type: 'line',
+                label: 'GM@Pmax.',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(118, 159, 59)',
+                yAxisID: 'y1'
+            },
+            {
+                type: 'line',
+                label: 'GM%',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(78, 121, 167)',
+                yAxisID: 'y1'
+            },
+            {
+                type: 'line',
+                label: 'GM@Pmin.',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(227, 0, 52)',
+                yAxisID: 'y1'
+            },
+            {
+                label: 'Number of Projects',
+                backgroundColor: 'rgb(110, 179, 174)',
+                borderColor: 'rgb(110, 179, 174)',
+                data: [],
+                yAxisID: 'y'
+            },]
+            let datasets = [];
+            console.log(packageData);
+            packageData.forEach((el, index) => {
+                new_dtsets[0].label = el[0].label;
+                new_dtsets[0].data = el[0].data;
+                new_dtsets[1].label = el[1].label;
+                new_dtsets[1].data = el[1].data;
+                new_dtsets[2].label = el[2].label;
+                new_dtsets[2].data = el[2].data;
+                new_dtsets[3].label = el[3].label;
+                new_dtsets[3].data = el[3].data;
+                datasets.push(new_dtsets);
+            });
+            if (packageData.length != 0) {
+                chartNumberOfProjectsAndGMHypothesis.data.datasets = datasets[0].map((el, index) => {
+                  return {...el, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]}
+                });
+                chartNumberOfProjectsAndGMHypothesis.update();
+            }
+            else{
+                chartNumberOfProjectsAndGMHypothesis.data.datasets.forEach((el)=>{
+                el.data=[];
+              })
+                chartNumberOfProjectsAndGMHypothesis.update();
+            }
+
+        }
+        else {
+            chartNumberOfProjectsAndGMHypothesis.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartNumberOfProjectsAndGMHypothesis.update();
+        }
+
+    })
+
+    //req78-80 filter
+    $('.threeFilter select').change(function () {
+    let temp = $(this).attr('id');
+    let id = temp.split("_")[1];
+    let endcustomer_v = [];
+    let silicon_v = [];
+    let year_v = [];
+
+    if ($('#endcustomer_' + id).val().includes('-2')) {
+      $("#endcustomer_" + id + " option:not(.ignore)").each(function () {
+        endcustomer_v.push($(this).val());
+      }
+      )
+    }
+    else {
+      endcustomer_v = $('#endcustomer_' + id).val();
+    }
+    if ($('#year_' + id).val().includes('-2')) {
+      $("#year_" + id + " option:not(.ignore)").each(function () {
+        year_v.push($(this).val());
+      }
+      )
+    }
+    else {
+      year_v = $('#year_' + id).val();
+    }
+    if ($('#silicon_' + id).val().includes('-2')) {
+      $("#silicon_" + id + " option:not(.ignore)").each(function () {
+        silicon_v.push($(this).val());
+      }
+      )
+    }
+    else {
+      silicon_v = $('#silicon_' + id).val();
+    }
+
+    let template = {
+      label: 'Name1',
+      data: [],
+      backgroundColor: 'rgb(155, 99, 132)'
+    }
+    packageData=[];
+
+    if (endcustomer_v.length != 0) {
+      for (let key in fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data']) {
+        if (fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'].hasOwnProperty(key)) {
+            if (endcustomer_v.includes(fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'][key].endCustomer_id.toString()) && silicon_v.includes(fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'][key].series) ) {
+              let individual_data_f =  {
+                label: 'Name1',
+                data: [],
+                backgroundColor: 'rgb(155, 99, 132)'
+              };
+              individual_data_f.label = fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'][key].endCustomer_id;
+              for (let i = 0; i < fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'][key].CYvol5_10_20.length; i++) {
+                individual_data_f.data.push({ x: (fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'][key].CYvol5_10_20[i]).toString(), y: fetch_data[(id - Number(1))]['req' + (72 + Number(id)) + '_data'][key].CYgm5_10_20[i],r:  year_v})
+              }
+              packageData.push(individual_data_f);
+            }
+        }
+      }
+      console.log(packageData);
+      let new_dtsets =  {
+        label: 'Name1',
+        data: [],
+        backgroundColor: 'rgb(155, 99, 132)'
+      };
+      let datasets = [];
+      packageData.forEach((el, index) => {
+        datasets.push({label:el.label,data:el.data, backgroundColor: backgroundColors[index % 15 ], borderColor: borderColors[index % 15]});
+      });
+      if (packageData.length != 0) {
+        switch(id)
+        {
+          case "6":
+            chartBusinessPerformanceByDevice.data.datasets=datasets;
+            chartBusinessPerformanceByDevice.update();
+            break;
+          case "7":
+            chartBusinessPerformanceByCustomer.data.datasets=datasets;
+            chartBusinessPerformanceByCustomer.update();
+            break;
+          default:
+            chartBusinessPerformanceByDeviceAndCustomer.data.datasets=datasets;
+            chartBusinessPerformanceByDeviceAndCustomer.update();
+            break;
+        }
+      }
+      else
+      {
+        switch(id)
+        {
+          case "6":
+            chartBusinessPerformanceByDevice.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartBusinessPerformanceByDevice.update();
+            break;
+          case "7":
+            chartBusinessPerformanceByCustomer.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartBusinessPerformanceByCustomer.update();
+            break;
+          default:
+            chartBusinessPerformanceByDeviceAndCustomer.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            chartBusinessPerformanceByDeviceAndCustomer.update();
+            break;
+        }
+      }
+    }
+    else
+    {
+      switch(id)
+        {
+          case "6":
+            chartBusinessPerformanceByDevice.data.datasets.forEach((el)=>{
+              el.data=[]
+            });
+            chartBusinessPerformanceByDevice.update();
+            break;
+          case "7":
+            chartBusinessPerformanceByCustomer.data.datasets.forEach((el)=>{
+              el.data=[];
+            });
+            chartBusinessPerformanceByCustomer.update();
+            break;
+          default:
+            chartBusinessPerformanceByDeviceAndCustomer.data.datasets.forEach((el)=>{
+              el.data=[];
+            });
+            chartBusinessPerformanceByDeviceAndCustomer.update();
+            break;
+        }
+    }
+  })
+
+    //req109 filter
+    $("#10_item_filter select").change(function () {
+        let year_v = []
+        if ($('#year_10').val().includes('-2')) {
+          $("#year_10" + " option:not(.ignore)").each(function () {
+            year_v.push($(this).val());
+          }
+          )
+        }
+        else {
+          year_v = $('#year_10').val();
+        }
+
+        if (year_v) {
+            let dashboardData = [];
+            let labels = []
+            let individual_data_f = { label: "", data: [] };
+            for (let key in fetch_data[10]['applications']) {
+              let currency = $('#currency').val() == 'eur' ? 1 : Number(fetch_data[10]['filter']['currencyRate']);
+              let chartType = $('#chartType').val();
+              labels.push(fetch_data[10]['applications'][key].applicationLine);
+              for (let i = 0; i < fetch_data[10]['applications'][key].year.length; i++) {
+                if(fetch_data[10]['applications'][key].year[i] == year_v) {
+                  individual_data_f.data.push(fetch_data[10]['applications'][key][chartType + 'wRev'][i] * currency)
+                }
+              }
+            }
+            dashboardData.push(individual_data_f);
+            let datasets = [];
+            dashboardData.forEach((el, index) => {
+                datasets.push({label:el.label,data:el.data, backgroundColor: backgroundColors, borderColor: borderColors});
+            });
+            if (dashboardData.length != 0) {
+              revenuePerApplLine_PIE.data.datasets = datasets;
+              revenuePerApplLine_PIE.data.labels = labels;
+              revenuePerApplLine_PIE.update();
+            }
+            else{
+                revenuePerApplLine_PIE.data.datasets.forEach((el)=>{
+                el.data=[];
+              })
+                revenuePerApplLine_PIE.update();
+            }
+        }
+        else {
+            revenuePerApplLine_PIE.data.datasets.forEach((el) => {
+                el.data = [];
+            });
+            revenuePerApplLine_PIE.update();
+        }
+    })
+
+    $('#currency, #chartType').change(function() {
+      $("#1_item_filter select").change();
+      $(".right-filter select").change();
+      $(".left-filter select").change();
+    })
+    function openTab(tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "").replace(" hide", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        $('button[data-tab="' + tabName + '"]')[0].className += " active";
+    }
+
+</script>
+{% endblock extra_javascript %}

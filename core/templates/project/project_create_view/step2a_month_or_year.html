@@ -1,0 +1,188 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+<style>
+    .mt-10 {
+        margin-top: 10px !important;
+    }
+    .mt-30 {
+        margin-top: 30px !important;
+    }
+    .mt-50 {
+        margin-top: 50px !important;
+    }
+    .card {
+        box-shadow: none !important;
+    }
+    .color-pink {
+        background-color: #ab377a !important;
+        color: white;
+    }
+    .new_label {
+        border: 1px solid;
+        border-radius: 30px;
+        width: 140px;
+        text-align: center;
+        padding: 7px;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+    }
+    .save-baseline {
+        width: 174px !important;
+        margin-top: 30px !important;
+        border-radius: 30px !important;
+        background-color: #ab377a !important;
+        border: none !important;
+        font-size: 18px !important;
+    }
+    .center {
+        text-align: center !important;
+    }
+    label {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+    .tablinks {
+        color: #ab377a;
+        font-weight: bold !important;
+        padding: 12px 30px;
+        font-size: 15px !important;
+        border-bottom: 5px solid;
+        cursor: pointer;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .accordion-header {
+        text-align: center;
+    }
+    .tab-container {
+        min-height: 500px;
+    }
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        /* border: 1px solid #ccc; */
+        border-top: none;
+    }
+    /* Create an active/current tablink class */
+    .tab a.active {
+        border-bottom: 6px solid #ab377a;
+    }
+    .tab a {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+        border-bottom: 6px solid #edd2e2;
+        width: 220px;
+    }
+    .tab a:hover {
+        color: #ab377a;
+    }
+    .tab {
+        overflow: hidden;
+        padding: 0px 10px;
+    }
+    .big-text {
+        font-family: "Source Sans Pro";
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 60px !important;
+        line-height: 75px;
+        text-align: center;
+        color: rgba(30, 30, 30, 0.1);
+        margin-right: 35px;
+        position: relative;
+        top: 10px;
+    }
+    .chart-header {
+        font-size: 26px;
+        padding-left: 60px !important;
+        color: black;
+    }
+    .baseline-table {
+        width: 100%;
+        border: 1px solid;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .baseline-table table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+    th {
+        padding: 2px;
+        background: #fbfbff;
+    }
+    td {
+        padding: 5px;
+        border-top: 1px solid !important;
+        border-right: 1px solid !important;
+    }
+    td:last-child {
+        border-right: none !important;
+    }
+    .float-right {
+        float: right;
+    }
+    .align-right {
+        float: right;
+        clear: both;
+    }
+    .text-gray {
+        color: #a7a7a7;
+    }
+    .text-bold {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .text-regular {
+        font-weight: 400;
+        font-size: 16px;
+    }
+</style>
+
+{% endblock extra_css %} {% block title %} Volume Entry {% endblock title %} {% block breadcrumbs %} {% if editMode == False %} {% breadcrumb "Project Entry" "project_management_all_view" %} {% breadcrumb "New Project" %} {% else %} {% breadcrumb "Project Edit" 'project_deepdive' projectId=projectId %} {% breadcrumb "Edit Volume - Select" %} {% endif %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <div class="row justify-content-center">
+        {% if editMode == False %}
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Project Creation</li>
+                <li class="active">Volume Entry</li>
+                <li>Pricing Entry</li>
+                <li>Done</li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="tab text-center">
+            <a href="{% url 'project_deepdive' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive' %} active{% endif %}">OVERVIEW</a>
+            <a href="{% url 'edit_project_key_facts' projectId %}" class="tablinks">PROJECT DETAILS <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_volume_view' %}" class="tablinks active">VOLUME <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_pricing_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_pricing_view' %} active {% endif %}">PRICING <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'project_deepdive_history' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive_history' %} active {% endif %}">PROJECT HISTORY</a>
+        </div>
+        {% endif %}
+
+        <div class="col-12 d-flex justify-content-center align-items-center h-30" id="choiceModel">
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" id="year" class="btn btn-primary bg-brown btn-lg waves-effect waves-light" onclick="window.location.href='{% url 'create_volume_excel_view' %}';" href="{% url 'create_volume_excel_view' %}" value="Excel">Yearly Values</button>
+                <button type="button" id="month" class="btn btn-secondary bg-magenta btn-lg waves-effect waves-light" onclick="window.location.href='{% url 'create_volume_excel_month_view' %}';" href="{% url 'create_volume_excel_month_view' %}" value="Automatic">Monthly Values</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+<script>
+    var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://"
+    var url = wsProtocol + window.location.host + "/ws/project/view/" + "{{ projectId|safe }}/" + "{{ request.user.id }}/"
+    var chatSocket = new WebSocket(url)
+</script>
+{% endblock extra_javascript %}

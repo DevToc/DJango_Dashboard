@@ -1,0 +1,316 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{% static 'libs/dropzone/dropzone.css'%}" />
+<link href="{% static 'libs/toastr/nuget/content/content/toastr.min.css'%}" rel="stylesheet" type="text/css" />
+{% endblock extra_css %} {% block title %} Import / Export {% endblock title %}
+{% block breadcrumbs %}
+{% breadcrumb "Import / Export" "import_export_main"  %}
+ {% endblock breadcrumbs %}
+
+{% block contents %}
+
+
+<div class="card-body import_export_main">
+
+        {% if messages %}
+        {% for message in messages %}
+        <!--
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        -->
+            {% if message.tags == "alert-danger" %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+            {% else %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+      {% endif %}
+
+
+
+    <h5 class="h3">Import & Export</h5>
+    <div class="row border-top">
+      <div class="col-md-3 col-sm-12 border-right animateSlideRight">
+        <div class="title">Integrations <img class="icon" src="{% static 'images/icons/integrations.png' %}" alt="Image"></div>
+        <div class="tab menu">
+          <button class="tablinks" onclick="openPage(event, 'importExcelFile')" id="defaultOpen">
+            <div class="deactive"><img class="icon" src="{% static 'images/icons/Icon Import (Gray).png' %}" alt="Image"> Import file</div>
+            <div class="active"><img class="icon" src="{% static 'images/icons/Icon Import (Green).png' %}" alt="Image"> Import file</div>
+          </button>
+          <button class="tablinks" onclick="openPage(event, 'exportExcelFile')">
+            <div class="deactive"><img class="icon" src="{% static 'images/icons/Icon Export (Gray).png' %}" alt="Image"> Export file</div>
+            <div class="active"><img class="icon" src="{% static 'images/icons/Icon Export (Green).png' %}" alt="Image"> Export file</div>
+          </button>
+          <!--
+          <button class="tablinks" onclick="openPage(event, 'Tokyo')">
+            <div class="deactive"><img class="icon" src="{% static 'images/icons/Icon Import CSV (Gray).png' %}" alt="Image"> Import CSV file</div>
+            <div class="active"><img class="icon" src="{% static 'images/icons/Icon Import CSV (Green).png' %}" alt="Image"> Import CSV file</div>
+          </button>
+          <button class="tablinks" onclick="openPage(event, 'exportExcelFile')">
+            <div class="deactive"><img class="icon" src="{% static 'images/icons/Icon ExportCSV (Gray).png' %}" alt="Image"> Export CSV file</div>
+            <div class="active"><img class="icon" src="{% static 'images/icons/Icon ExportCSV (Green).png' %}" alt="Image"> Export CSV file</div>
+          </button>
+          -->
+        </div>
+      </div>
+      <div class="col-md-9 col-sm-12 import-wrap animateSlideLeft">
+        <div id="importExcelFile" class="tabcontent">
+          <div class="title2">Import file</div>
+            <form enctype='multipart/form-data' action="{% url 'import_export_main'%}" method='POST' class="dropzone dz import-excel" id="my-dropzone">
+              {% csrf_token %}
+              <input type="hidden" id="fileType" name="fileType" value="vrfc">
+              <input type="hidden" id="fncoding" name="fncoding" value="utf-8">
+              <input type="hidden" id="columnSeparator" name="columnSeparator" value=",">
+              <input type="hidden" id="textDelimiter" name="textDelimiter" value="&#8221;">
+              <input type="hidden" id="dateNumFormat" name="dateNumFormat" value="mm-dd-yyyy">
+              <div class="fallback">
+                <input name="inputFile" type="file" multiple />
+              </div>
+              <div class="dz-message" data-dz-message>
+                <div class="vertical-center">
+                  <img src="{% static 'images/importexcelImg.png' %}" alt="">
+                  <div class="description">Drag a xls/xlsx file here or upload via the button to create a project from it</div>
+                  <button class="btn-import">IMPORT EXCEL</button>
+                </div>
+              </div>
+          </form>
+        </div>
+        <div id="fileSetting" class="tabcontent">
+          <div class="height-100">
+            <div class="title2">File Settings</div>
+            <div class="container ">
+              <div class="row mt-30 align-center">
+                <div class="col-3"><label for="">File Type</label></div>
+                <div class="col-9">
+                  <select class="form-control" onchange="handleFormField(event, 'fileType')">
+                    <option value="notSelected">---- Select Here ----</option>
+                    <option value="vrfc">VRFC File</option>
+                    <option value="pmdf">Product Master Data file</option>
+                    <option value="boupTemplate">Bottom Up Template</option>
+                    <option value="dragon">Dragon Data</option>
+                    <option value="migrationPse">Migration - PSE</option>
+                    <option value="migrationAcee">Migration - ACEE</option>
+                    <option value="migrationHsee">Migration - HSMM</option>
+                    <option value="migrationBdi">Migration - BDI</option>
+                    <option value="dataConsistencyPse">Data consistency check - PSE</option>
+                    <option value="dataConsistencyAcee">Data consistency check - ACEE</option>
+                    <option value="dataConsistencyHsmm">Data consistency check - HSMM</option>
+                    <option value="dataConsistencyBdi">Data consistency check - BDI</option>
+                    <option value="reportToElke">Report to Elke File</option>
+
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-30 align-center">
+                <div class="col-3"><label for="">Encoding</label></div>
+                <div class="col-9">
+                  <select class="form-control" onchange="handleFormField(event, 'fncoding')">
+                    <option value="utf-8">Unicode (UTF-8)</option>
+                    <option value="unicode">Unicode </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-30 align-center">
+                <div class="col-3"><label for="">Column Separator</label></div>
+                <div class="col-9">
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn cst-btn-default column-separator active" onclick="toggleActive(event, '.column-separator')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value="," autocomplete="off" checked> Comma (,)
+                    </label>
+                    <label class="btn cst-btn-default column-separator"  onclick="toggleActive(event, '.column-separator')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value=";" autocomplete="off"> Semicolon (;)
+                    </label>
+                    <label class="btn cst-btn-default column-separator"  onclick="toggleActive(event, '.column-separator')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value=":" autocomplete="off"> Colon (:)
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-30 align-center">
+                <div class="col-3"><label for="">Text Delimiter</label></div>
+                <div class="col-9">
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn cst-btn-default text-delimiter active" onclick="toggleActive(event, '.text-delimiter')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value="&#8221;"  autocomplete="off" checked> Double quote (")
+                    </label>
+                    <label class="btn cst-btn-default text-delimiter"  onclick="toggleActive(event, '.text-delimiter')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value="'" autocomplete="off"> Single quote (')
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-30 align-center">
+                <div class="col-3"><label for="">Date & Number Format</label></div>
+                <div class="col-9">
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn cst-btn-default date-num-format active" onclick="toggleActive(event, '.date-num-format')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value="mm-dd-yyyy" autocomplete="off" checked> mm-dd-yyyy
+                    </label>
+                    <label class="btn cst-btn-default date-num-format"  onclick="toggleActive(event, '.date-num-format')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value="dd-mm-yyyy" autocomplete="off"> dd-mm-yyyy
+                    </label>
+                    <label class="btn cst-btn-default date-num-format"  onclick="toggleActive(event, '.date-num-format')">
+                      <input type="radio" onclick="handleFormField(event, 'columnSeparator')" value="yyyy-mm-dd" autocomplete="off"> yyyy-mm-dd
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 center">
+                <button class="btn submit" id="submit-all">Upload</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- File export form -->
+
+        <div id="exportExcelFile" class="tabcontent">
+          <div class="title2">Export file</div>
+
+          <div class="container ">
+            <div class="row mt-30 align-center">
+              <div class="col-3"><label for="">File Type</label></div>
+
+
+              <form enctype='multipart/form-data' action="{% url 'import_export_main'%}" method='POST'>
+                {% csrf_token %}
+                <input type="hidden" id="fileTypeExport" name="fileTypeExport" value="notSelected">
+                <!--
+                <input type="hidden" id="fncoding" name="fncoding" value="utf-8">
+                <input type="hidden" id="columnSeparator" name="columnSeparator" value=",">
+                <input type="hidden" id="textDelimiter" name="textDelimiter" value="&#8221;">
+                <input type="hidden" id="dateNumFormat" name="dateNumFormat" value="mm-dd-yyyy">
+                -->
+                <div class="col-9">
+                  <select class="form-control" onchange="handleFormField(event, 'fileTypeExport')">
+                    <option value="notSelected">---- Select Here ----</option>
+                    <option value="vrfcOoh">VRFC OoH File</option>
+                    <option value="vrfcSfc">VRFC Sales Forecast File</option>
+                    <option value="ordersWithNoProjectReport">Orders With No Project Report</option>
+                    <option value="projectsWithNoOrdersReport">Projects with No Orders Report</option>
+                    <option value="pmdf">Product Master Data file</option>
+                    <option value="missingVhkReports">Missing VHKs report</option>
+                    <option value="boupTemplateMyProjects">Bottom Up Bulk Update- Only my projects</option>
+                    <option value="vrfcOohDeltas">vrfcOohDeltas</option>
+                    <!---
+                    <option value="boupTemplateMyTeamProjects">Bottom Up Bulk Update - My team's projects</option>
+                    -->
+                    <option value="boupTemplateAllProjects">Bottom Up Bulk Update - All Projects</option>
+                    <option value="dragon">Dragon Data</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-12 center">
+                <button class="btn submit" id="submit-all">Download</button>
+              </div>
+            </form>
+
+
+
+          </div>
+        </div>
+
+        <div id="Tokyo" class="tabcontent">
+            <h3>Tokyo</h3>
+            <p>Tokyo is the capital of Japan.</p>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+<script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+<script src="{% static 'libs/toastr/toastr.js'%}" ></script>
+
+
+<script>
+  // dropzone
+  Dropzone.autoDiscover=false;
+  const myDropzone= new Dropzone('#my-dropzone',{
+      url:'/ifx/importExport/',
+      maxFiles:1,
+      maxFilesize:80,      //acceptedFiles: 'application/vnd.ms-excel',
+      acceptedFiles: "text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      //acceptedFiles={[".csv, text/csv, application/vnd.ms-excel, application/csv, text/x-csv, application/x-csv, text/comma-separated-values, text/x-comma-separated-values"]},
+      autoProcessQueue: false,
+      init: function () {
+        var submitButton = document.querySelector("#submit-all");
+        var wrapperThis = this;
+
+        this.on('success', function( file, resp ){
+          toastr.success('File uploaded successfully');
+        });
+        this.on('error', function( file){
+          toastr.error('File uploading failed');
+        });
+        submitButton.addEventListener("click", function () {
+            wrapperThis.processQueue();
+
+        });
+        this.on('success', function( file, resp ){
+          toastr.success('File uploaded successfully');
+        });
+        this.on('error', function( file){
+          toastr.error('File uploading failed');
+        });
+        this.on("addedfile", function (file) {
+          openSetting('fileSetting')
+        });
+    },
+
+    success: function(file, response){
+        //Here you can get your response.
+        console.log("response --->", response, response.outputFile);
+        let url = '/ifx/importExport/download/' + response.outputFile
+        if (response.outputFile != "") {
+          console.log("output url", url)
+          window.location.replace(url);
+          console.log("replaced url!")
+        } else {
+          alert("File was successfully processed!");
+          let url2 = '/ifx/importExport'
+          //window.location.replace(url2);
+        }
+    }
+  })
+  function handleFormField(evt, id){
+    console.log(evt.currentTarget.value)
+    $("#" + id).val(evt.currentTarget.value)
+  }
+  function toggleActive(e, selector) {
+    radio = $(selector)
+    for (i = 0; i < radio.length; i++) {
+        radio[i].className = radio[i].className.replace(" active", "")
+    }
+    e.currentTarget.className += " active"
+  }
+    function openPage(evt, tabName) {
+        var i, tabcontent, tablinks
+        tabcontent = document.getElementsByClassName("tabcontent")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none"
+        }
+        tablinks = document.getElementsByClassName("tablinks")
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "")
+        }
+        document.getElementById(tabName).style.display = "block"
+        evt.currentTarget.className += " active"
+    }
+    function openSetting(tabName) {
+      tabcontent = document.getElementsByClassName("tabcontent")
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none"
+        }
+      document.getElementById(tabName).style.display = "block"
+    }
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click()
+</script>
+{% endblock extra_javascript %}

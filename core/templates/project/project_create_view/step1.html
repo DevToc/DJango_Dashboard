@@ -1,0 +1,816 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+<style>
+    .mt-10 {
+        margin-top: 10px !important;
+    }
+    .mt-30 {
+        margin-top: 30px !important;
+    }
+    .mt-50 {
+        margin-top: 50px !important;
+    }
+    .card {
+        box-shadow: none !important;
+    }
+    .color-pink {
+        background-color: #ab377a !important;
+        color: white;
+    }
+    .new_label {
+        border: 1px solid;
+        border-radius: 30px;
+        width: 140px;
+        text-align: center;
+        padding: 7px;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+    }
+    .save-baseline {
+        width: 174px !important;
+        margin-top: 30px !important;
+        border-radius: 30px !important;
+        background-color: #ab377a !important;
+        border: none !important;
+        font-size: 18px !important;
+    }
+    .center {
+        text-align: center !important;
+    }
+    label {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+    .tablinks {
+        color: #ab377a;
+        font-weight: bold !important;
+        padding: 12px 30px;
+        font-size: 15px !important;
+        border-bottom: 5px solid;
+        cursor: pointer;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .accordion-header {
+        text-align: center;
+    }
+    .tab-container {
+        min-height: 500px;
+    }
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        /* border: 1px solid #ccc; */
+        border-top: none;
+    }
+    /* Create an active/current tablink class */
+    .tab a.active {
+        border-bottom: 6px solid #ab377a;
+    }
+    .tab a {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+        border-bottom: 6px solid #edd2e2;
+        width: 220px;
+    }
+    .tab a:hover {
+        color: #ab377a;
+    }
+    .tab {
+        overflow: hidden;
+        padding: 0px 10px;
+    }
+    .big-text {
+        font-family: "Source Sans Pro";
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 60px !important;
+        line-height: 75px;
+        text-align: center;
+        color: rgba(30, 30, 30, 0.1);
+        margin-right: 35px;
+        position: relative;
+        top: 10px;
+    }
+    .chart-header {
+        font-size: 26px;
+        padding-left: 60px !important;
+        color: black;
+    }
+    .baseline-table {
+        width: 100%;
+        border: 1px solid;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .baseline-table table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+    th {
+        padding: 2px;
+        background: #fbfbff;
+    }
+    td {
+        padding: 5px;
+        border-top: 1px solid !important;
+        border-right: 1px solid !important;
+    }
+    td:last-child {
+        border-right: none !important;
+    }
+    .float-right {
+        float: right;
+    }
+    .align-right {
+        float: right;
+        clear: both;
+    }
+    .text-gray {
+        color: #a7a7a7;
+    }
+    .text-bold {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .text-regular {
+        font-weight: 400;
+        font-size: 16px;
+    }
+</style>
+{% endblock extra_css %} {% block title %} Project Creation {% endblock title %} {% block breadcrumbs %} {% if editMode == False %} {% breadcrumb "Project Entry" "project_management_all_view" %} {% breadcrumb "New Project" %} {% else %} {% breadcrumb "Project Edit" 'project_deepdive' projectId=projectId %} {% breadcrumb "Key Facts" %} {% endif %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <div class="row justify-content-center">
+        {% if editMode == False %}
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Project Creation</li>
+                <li>Volume Entry</li>
+                <li>Pricing Entry</li>
+                <li>Done</li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="tab text-center">
+            <a href="{% url 'project_deepdive' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive' %} active{% endif %}">OVERVIEW</a>
+            <a href="{% url 'edit_project_key_facts' projectId %}" class="tablinks active">PROJECT DETAILS <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_volume_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_volume_view' %} active {% endif %}">VOLUME <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_pricing_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_pricing_view' %} active {% endif %}">PRICING <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'project_deepdive_history' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive_history' %} active {% endif %}">PROJECT HISTORY</a>
+        </div>
+        {% endif %}
+
+        <div class="col-12">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4">
+                    {{ form.media.js }}
+                    <div class="row animateSlideUp">
+                        {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{error}}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %} {% endif %}
+                        <div class="col-12 mb-3">
+                            <div class="mt-4">
+                                <div class="accordion baselines" id="createProject">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingTwo">
+                                            <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#productInformation" aria-expanded="true" aria-controls="productInformation">
+                                                <label class="big-text">1</label> <span class="h2">Product Information<i class="bx bx-info-circle" aria-hidden="true" title="You can select or enter a Product Sales Name."></i></span>
+                                            </button>
+                                        </h2>
+                                        <div id="productInformation" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#createProject">
+                                            <div class="accordion-body">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-3">{{form.product_family|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.product_series|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.product_package|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.product|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.sales_name|as_crispy_field}}</div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-3" id="selectedHfg">HFG: n/a</div>
+                                                    <div class="col-md-4 col-lg-3" id="selectedPlHfg">PL_HFG: n/a</div>
+                                                    <div class="col-md-4 col-lg-3" id="selectedPpos">PPOS: n/a</div>
+                                                    <div class="col-md-4 col-lg-3" id="selectedProduct">Product: n/a</div>
+                                                </div>
+                                                <br />
+
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-3">{{form.applicationLine|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.applicationMain|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.applicationDetail|as_crispy_field}}</div>
+                                                </div>
+                                                Product not available in PGS+? Create a dummy product
+                                                <a href="{% url 'create_product_entry_point' %}">here</a>.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#keyFacts" aria-expanded="false" aria-controls="keyFacts">
+                                                <label class="big-text">2</label> <span class="h2">Project Details<i class="bx bx-info-circle" data-toggle="tooltip" title="The key facts for this project. You can modify them later." data-placement="top" aria-hidden="true"></i></span>
+                                            </button>
+                                        </h2>
+                                        <div id="keyFacts" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#createProject">
+                                            <div class="accordion-body">
+                                                <p class="card-text" data-toggle="tooltip" title="If possible, you can enter multiple regions." data-placement="top">This is an example information tooltip. &#9432;</p>
+
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-3">{{form.projectName|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.productMarketer|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.region|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.secondRegion|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.estimatedSop|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.status|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.salesContact|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.dummy|as_crispy_field}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingThree">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#customerInformation" aria-expanded="true" aria-controls="customerInformation">
+                                                <label class="big-text">3</label> <span class="h2">Customer Information<i class="bx bx-info-circle" title="Please enter the customer information according to SnOp combinations." aria-hidden="true"></i></span>
+                                            </button>
+                                        </h2>
+                                        <div id="customerInformation" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#createProject">
+                                            <div class="accordion-body">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-3">{{form.mainCustomer|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.finalCustomer|as_crispy_field}}</div>
+                                                </div>
+
+                                                Shown customer combinations are provided by VRFC. For TC4 and Aureo, you can create a new customer combination <a href="{% url 'create_dummy_customer' %}">here</a>.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingFour">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#supplyChainInformation" aria-expanded="true" title="Supply Chain information is optional and will help us get better picture of our supply chain paths." aria-controls="supplyChainInformation">
+                                                <label class="big-text">4</label> <span class="h2">Supply Chain Information<i class="bx bx-info-circle" aria-hidden="true"></i></span>
+                                            </button>
+                                        </h2>
+                                        <div id="supplyChainInformation" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#createProject">
+                                            <div class="accordion-body">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-lg-3">{{form.distributor|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.ems|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.tier1|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.oem|as_crispy_field}}</div>
+                                                    <div class="col-md-4 col-lg-3">{{form.vpaCustomer|as_crispy_field}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end accordion -->
+                                <br />
+                                <!-- consistency validation errors -->
+
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" id="validationConflict">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert" id="validationConflictRfpLevel">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+
+                                {% if error %} {{error}} {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">{{form.comment|as_crispy_field}}</div>
+
+                        {% if editMode == False %}
+                        <div class="d-flex flex-column align-items-center">
+                            <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Next Step</button>
+                            <button type="submit" name="save_n_continue" class="text-pinkish-red anchor-btn"><i class="bx bx-save"></i> Save & Continue Later</button>
+                        </div>
+                        {% else %}
+                        <div class="mb-3 text-center">
+                            <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Save</button>
+                            <a href="{% url 'project_deepdive' projectId %}" class="btn btn-secondary save-baseline mb-3">Discard changes</a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- end accordion -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+<script src="{% static 'libs/select2/dist/js/select2.min.js'%}"></script>
+<script>
+    $(document).ready(function () {
+        // select2 on sales name
+
+        var product_family = $("#id_product_family")
+        var product_series = $("#id_product_series")
+        var product_package = $("#id_product_package")
+        var product = $("#id_product")
+        var sales_name = $("#id_sales_name")
+        //#####
+        var distributor = $("#id_distributor")
+        var mainCustomer = $("#id_mainCustomer")
+        var finalCustomer = $("#id_finalCustomer")
+        var vpaCustomer = $("#id_vpaCustomer")
+        var oem = $("#id_oem")
+        var ems = $("#id_ems")
+        var tier1 = $("#id_tier1")
+
+        distributor.select2({
+            width: "100%",
+        })
+
+        vpaCustomer.select2({
+            width: "100%",
+        })
+
+        finalCustomer.select2({
+            width: "100%",
+        })
+        mainCustomer.select2({
+            width: "100%",
+        })
+
+        oem.select2({
+            width: "100%",
+        })
+        ems.select2({
+            width: "100%",
+        })
+        tier1.select2({
+            width: "100%",
+        })
+
+        // filter end customers
+
+        mainCustomer.on("select2:select", function () {
+            $.post("{% url 'end_customers_list_json' %}", {query: this.value}, function (data, status) {
+                var endCustomers = data.data
+                finalCustomer.empty().trigger("change")
+                var newOptions = [new Option("---------", "", true, true)]
+                endCustomers.forEach((element, key) => {
+                    newOptions.push(new Option(element.text, element.id, false, false))
+                    console.log("pushing", element.text, element.id)
+                })
+                finalCustomer.append(newOptions).trigger("change")
+            })
+        })
+
+        // #### lets find a bettwe way of doing this
+        /*
+        counter = 0
+        distributor.on("select2:select", function () {
+            distributorValue = this.value
+            distibutorLabel = this.options[this.selectedIndex].text
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                mainCustomer.append(newOptions) .trigger("change")
+            } else {
+                mainCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                finalCustomer.append(newOptions).trigger("change")
+            } else {
+                finalCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                vpaCustomer.append(newOptions).trigger("change")
+            } else {
+                vpaCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            counter = counter + 1
+        })
+
+        
+        oem.on("select2:select", function () {
+            distributorValue = this.value
+            distibutorLabel = this.options[this.selectedIndex].text
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                mainCustomer.append(newOptions) .trigger("change")
+            } else {
+                mainCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                finalCustomer.append(newOptions).trigger("change")
+            } else {
+                finalCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                vpaCustomer.append(newOptions).trigger("change")
+            } else {
+                vpaCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            counter = counter + 1
+        })
+
+        ems.on("select2:select", function () {
+            distributorValue = this.value
+            distibutorLabel = this.options[this.selectedIndex].text
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                mainCustomer.append(newOptions) .trigger("change")
+            } else {
+                mainCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                finalCustomer.append(newOptions).trigger("change")
+            } else {
+                finalCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                vpaCustomer.append(newOptions).trigger("change")
+            } else {
+                vpaCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            counter = counter + 1
+        })
+
+        tier1.on("select2:select", function () {
+            distributorValue = this.value
+            distibutorLabel = this.options[this.selectedIndex].text
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                mainCustomer.append(newOptions) .trigger("change")
+            } else {
+                mainCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                finalCustomer.append(newOptions).trigger("change")
+            } else {
+                finalCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            if (counter == 0) {
+                var newOptions = [new Option("---------", "", true, true)]
+                newOptions.push(new Option(distibutorLabel, distributorValue, false, false))
+                vpaCustomer.append(newOptions).trigger("change")
+            } else {
+                vpaCustomer.append(new Option(distibutorLabel, distributorValue, false, false)).trigger("change")
+            }
+
+            counter = counter + 1
+        })
+        */
+
+        // #####
+        product_family.select2({
+            width: "100%",
+        })
+        product.select2({
+            width: "100%",
+        })
+        product_series.select2({
+            width: "100%",
+        })
+        product_package.select2({
+            width: "100%",
+        })
+        sales_name.select2({
+            width: "100%",
+        })
+
+        $("#validationConflict").hide()
+        $("#validationConflictRfpLevel").hide()
+
+        // select series
+        product_family.on("select2:select", function () {
+            $.post("{% url 'series_list_json' %}", {query: this.value}, function (data, status) {
+                console.log("got family sel", data.data)
+                var series = data.data
+                product_series.empty().trigger("change")
+                product_package.empty().trigger("change")
+                product.empty().trigger("change")
+                sales_name.empty().trigger("change")
+
+                var newOptions = [new Option("---------", "", true, true)]
+                series.forEach((element, key) => {
+                    newOptions.push(new Option(element.text, element.familyHelper, false, false))
+                    console.log("new option", element.text, element.familyHelper, false, false)
+                })
+                product_series.append(newOptions).trigger("change")
+            })
+        })
+
+        // select packages
+        product_series.on("select2:select", function () {
+            //console.log("this", this, "text", this.text)
+            inputData = product_series.select2("data")
+            //console.log(inputData[0])
+            //console.log(inputData[0].text, inputData[0].id)
+            familyValue = inputData[0].id
+            seriesValue = inputData[0].text
+
+            product_package.empty().trigger("change")
+            product.empty().trigger("change")
+            sales_name.empty().trigger("change")
+
+            $.post("{% url 'package_list_json' %}", {family: familyValue, series: seriesValue}, function (data, status) {
+                console.log("got series sel", data.data)
+
+                var packages = data.data
+                product_package.empty().trigger("change")
+                var newOptions = [new Option("---------", "", true, true)]
+                packages.forEach((element, key) => {
+                    newOptions.push(new Option(element.packageHelper, element.seriesHelper, element.familyHelper, false, false))
+                })
+                product_package.append(newOptions).trigger("change")
+            })
+        })
+
+        // select sales name
+        product_package.on("select2:select", function () {
+            inputData = product_package.select2("data")
+            fam = product_family.select2("data")[0].text
+            ser = product_series.select2("data")[0].text
+            console.log(inputData[0].text, inputData[0].id)
+            packageValue = inputData[0].text
+
+            product.empty().trigger("change")
+            sales_name.empty().trigger("change")
+
+            $.post("{% url 'product_list_json' %}", {package: packageValue, series: ser, family: fam}, function (data, status) {
+                var names = data.data
+
+                product.empty().trigger("change")
+                //sales_name.empty().trigger("change")
+                var newOptions = [new Option("---------", "", true, true)]
+
+                names.forEach((element, key) => {
+                    console.log("pushing element", element.text, "val", key, "element", element)
+                    newOptions.push(new Option(element.text, element.id, false, false))
+                })
+
+                product.append(newOptions).trigger("change")
+
+                console.log("product selection resulting hfg, ppos", data.hfg, data.ppos)
+            })
+        })
+
+        product.on("select2:select", function () {
+
+            sales_name.empty().trigger("change")
+            $.post("{% url 'sales_name_list_json' %}", {query: this.value}, function (data, status) {
+                console.log("%%%%%% selected a product")
+                sales_name.empty().trigger("change")
+                var newOptions = [new Option("---------", "", true, true)]
+                var names = data.data
+
+                names.forEach((element, key) => {
+                    console.log("pushing element salesname", element.text, "val", key, "element", element)
+                    newOptions.push(new Option(element.text, element.id, false, false))
+                })
+
+                sales_name.append(newOptions).trigger("change")
+
+                var hfg = $("#selectedHfg")
+                var plHfg = $("#selectedPlHfg")
+                var ppos = $("#selectedPpos")
+                var product = $("#selectedProduct")
+                var hfgString = "HFG: " + data.hfg
+                var plHfgString = "PL_HFG: " + data.plHfg
+                var pposString = "PPOS: " + data.ppos
+                var productString = "Product (RFP): " + data.product
+                hfg.html(hfgString)
+                plHfg.html(plHfgString)
+                ppos.html(pposString)
+                product.html(productString)
+                console.log("selected a product, resulting info", data.hfg, data.ppos)
+            })
+        })
+
+        sales_name.on("select2:select", function () {
+            $.post("{% url 'hfg_info_json' %}", {query: this.value}, function (data, status) {
+                var hfg = $("#selectedHfg")
+                var plHfg = $("#selectedPlHfg")
+                var ppos = $("#selectedPpos")
+                var product = $("#selectedProduct")
+                var hfgString = "HFG: " + data.hfg
+                var pposString = "PPOS: " + data.ppos
+                var productString = "Product (RFP): " + data.product
+                var plHfgString = "PL_HFG: " + data.plHfg 
+                hfg.html(hfgString)
+                ppos.html(pposString)
+                product.html(productString)
+                plHfg.html(plHfgString)
+
+                console.log("hfg, ppos", data.hfg, data.ppos)
+            })
+        })
+    })
+</script>
+
+<script>
+    /*
+This script is used to check upon updates
+*/
+
+    $(document).ready(function () {
+        var sales_name = $("#id_sales_name")
+        var mainCustomer = $("#id_mainCustomer")
+        var finalCustomer = $("#id_finalCustomer")
+        var applicationMain = $("#id_applicationMain")
+        var applicationDetail = $("#id_applicationDetail")
+        $("#validationConflict").hide()
+
+        i = 0
+
+        applicationMain
+            .add(applicationDetail)
+            .add(mainCustomer)
+            .add(finalCustomer)
+            .add(sales_name)
+            .click(function () {
+                console.log("main customer val", mainCustomer.val(), "length", mainCustomer.val().length)
+                if (mainCustomer.val().length != 0 && finalCustomer.val().length != 0 && applicationMain.val().length != 0 && applicationDetail.val().length != 0 && sales_name.val().length != 0) {
+                    const fullUrl = "/project/checkInputPlausi/" + String(sales_name.val()) + "/" + String(applicationMain.val()) + "/" + String(applicationDetail.val()) + "/" + String(mainCustomer.val()) + "/" + String(finalCustomer.val())
+                    console.log("full url BBB", fullUrl, "numer", i, "mainCust", mainCustomer.val())
+                    i = i + 1
+                    /*
+for conflicts at sales name level, blocking conflict            })*/
+                    $.ajax({
+                        url: fullUrl,
+                        method: "GET",
+                        success: function (data) {
+                            var conflicts = data["conflictsSalesName"]
+                            console.log("--> conflicting conflictsSalesName ", conflicts)
+
+                            if (conflicts.length > 0) {
+                                console.log("found conflict %%%")
+                                var errorString = "There is already a project in the Bottom Up table containing the same combination of Main Customer, End Customer, Sales Name, Application Main and Application Detail. You will be able to create a project draft, but not to enter it in the Bottom Up. The conflicting project IDs are: "
+
+                                for (var index = 0; index < conflicts.length; index++) {
+                                    errorString = errorString + String(conflicts[index]) + ", "
+                                }
+
+                                errorString = errorString.slice(0, -2) + "."
+
+                                $("#validationConflict").show()
+                                $("#validationConflict").html(errorString)
+                            } else {
+                                console.log("no conflicts found at sales name level")
+                                $("#validationConflict").html("")
+                                $("#validationConflict").hide()
+                            }
+                        },
+                    })
+
+                    /*
+                    for conflicts at RFP level, only warning
+                    */
+
+                    const fullUrl2 = "/project/checkInputPlausiRfp/" + String(sales_name.val()) + "/" + String(applicationMain.val()) + "/" + String(applicationDetail.val()) + "/" + String(mainCustomer.val()) + "/" + String(finalCustomer.val())
+
+                    $.ajax({
+                        url: fullUrl2,
+                        method: "GET",
+                        success: function (data) {
+                            var conflicts = data["conflictsRfp"]
+                            console.log("--> conflicting checkInputPlausiRfp ", conflicts)
+
+                            if (conflicts.length > 0) {
+                                console.log("found possible conflict %%%")
+                                var errorString = "There is already a project in the Bottom Up table containing the same combination of Main Customer, End Customer, Sales Name, Application Main and Application Detail. This is just a warning, you can continue creating the project. The relevant project IDs are: "
+
+                                for (var index = 0; index < conflicts.length; index++) {
+                                    errorString = errorString + String(conflicts[index]) + ", "
+                                }
+
+                                errorString = errorString.slice(0, -2) + "."
+
+                                $("#validationConflictRfpLevel").show()
+                                $("#validationConflictRfpLevel").html(errorString)
+                            } else {
+                                console.log("no conflicts found at rfp level")
+                                $("#validationConflictRfpLevel").html("")
+                                $("#validationConflictRfpLevel").hide()
+                            }
+                        },
+                    })
+                }
+            })
+
+        sales_name.on("select2:select", function () {
+            console.log("sales name value", sales_name.val())
+            if (mainCustomer.val().length != 0 && finalCustomer.val().length != 0 && applicationMain.val().length != 0 && applicationDetail.val().length != 0 && sales_name.val().length != 0) {
+                const fullUrl = "/project/checkInputPlausi/" + String(sales_name.val()) + "/" + String(applicationMain.val()) + "/" + String(applicationDetail.val()) + "/" + String(mainCustomer.val()) + "/" + String(finalCustomer.val())
+                console.log("full url BBB", fullUrl, "numer", i, "mainCust", mainCustomer.val())
+                i = i + 1
+                /*
+                $.get(fullUrl, {query: ""}, function (data) {
+                    console.log("gettting data", data)
+                })*/
+                $.ajax({
+                    url: fullUrl,
+                    method: "GET",
+                    success: function (data) {
+                        var conflicts = data["conflictsSalesName"]
+                        console.log("--> conflicting ", conflicts)
+
+                        if (conflicts.length > 0) {
+                            var errorString = "There is already a project in the Bottom Up table containing the same combination of Main Customer, End Customer, Sales Name, Application Main and Application Detail. You can check it here: . You will be able to create a project draft, but not to enter it in the Bottom Up. The conflicting project IDs are: "
+
+                            for (var index = 0; index < conflicts.length; index++) {
+                                errorString = errorString + String(conflicts[index]) + ", "
+                            }
+
+                            errorString = errorString.slice(0, -2) + "."
+
+                            $("#validationConflict").show()
+                            $("#validationConflict").html(errorString)
+                        } else {
+                            $("#validationConflict").hide()
+                            $("#validationConflict").html("")
+                        }
+                    },
+                })
+
+                const fullUrl2 = "/project/checkInputPlausiRfp/" + String(sales_name.val()) + "/" + String(applicationMain.val()) + "/" + String(applicationDetail.val()) + "/" + String(mainCustomer.val()) + "/" + String(finalCustomer.val())
+
+                $.ajax({
+                    url: fullUrl2,
+                    method: "GET",
+                    success: function (data) {
+                        var conflicts = data["conflictsRfp"]
+                        console.log("--> conflicting checkInputPlausiRfp ", conflicts)
+
+                        if (conflicts.length > 0) {
+                            console.log("found possible conflict %%%")
+                            var errorString = "There is already a project in the Bottom Up table containing the same combination of Main Customer, End Customer, Sales Name, Application Main and Application Detail. This is just a warning, you can continue creating the project. The relevant project IDs are: "
+
+                            for (var index = 0; index < conflicts.length; index++) {
+                                errorString = errorString + String(conflicts[index]) + ", "
+                            }
+
+                            errorString = errorString.slice(0, -2) + "."
+
+                            $("#validationConflictRfpLevel").show()
+                            $("#validationConflictRfpLevel").html(errorString)
+                        } else {
+                            console.log("no conflicts found at rfp level")
+                            $("#validationConflictRfpLevel").html("")
+                            $("#validationConflictRfpLevel").hide()
+                        }
+                    },
+                })
+            }
+        })
+    })
+</script>
+
+<script>
+    var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://"
+    var url = wsProtocol + window.location.host + "/ws/project/view/" + "{{ projectId|safe }}/" + "{{ request.user.id }}/"
+    var chatSocket = new WebSocket(url)
+</script>
+
+{% endblock extra_javascript %}

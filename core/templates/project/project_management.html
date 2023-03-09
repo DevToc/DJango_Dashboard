@@ -1,0 +1,156 @@
+{% extends 'base.html' %} {% load widget_tweaks %} {% load humanize %} {% load custom_tags static crispy_forms_tags %} {% block title %} Page Blank {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %} {% endblock extra_css %} {% block breadcrumbs %} {% breadcrumb "Project Management" %} {% endblock breadcrumbs %} {% block contents %}
+<div class="card-body">
+    <div class="d-flex justify-content-between flex-wrap">
+        <div class="mb-3">
+            <div class="text-gray-dark">Review your projects as well as your project drafts.</div>
+        </div>
+        <div>
+            <a href="{% url 'create_project_view_reset' %}" class="btn btn-lg btn-outline-secondary rounded-md rounded-3"><i class="mdi mdi-plus"></i> New Project</a>
+        </div>
+    </div>
+    <hr />
+
+    <div class="row justify-content-between">
+        <div class="col-12 col-md-8">
+            <ul class="nav nav-tabs nav-tabs-custom nav-justified fs-18">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_all_view' %}active{% endif %}" href="{% url 'project_management_all_view' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-briefcase-alt-2"></i></span>
+                        <span class="d-none d-sm-block">All Projects</span>
+                    </a>
+                </li>
+                <!-- 
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_inprogress_view' %}active{% endif %}" href="{% url 'project_management_inprogress_view' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-list-ol"></i></span>
+                        <span class="d-none d-sm-block">In Progress</span>
+                    </a>
+                </li>
+                -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_draft_view' %}active{% endif %}" href="{% url 'project_management_draft_view' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-file-blank"></i></span>
+                        <span class="d-none d-sm-block">Draft</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_toptenrevenue' %}active{% endif %}" href="{% url 'project_management_toptenrevenue' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-file-blank"></i></span>
+                        <span class="d-none d-sm-block">Top 10 Revenue</span>
+                    </a>
+                </li>
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_completed_view' %}active{% endif %}" href="{% url 'project_management_completed_view' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-checkbox-checked"></i></span>
+                        <span class="d-none d-sm-block">Completed</span>
+                    </a>
+                </li>
+                -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_canceled_view' %}active{% endif %}" href="{% url 'project_management_canceled_view' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-block"></i></span>
+                        <span class="d-none d-sm-block">Canceled</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_quality_checks_view' %}active{% endif %}" href="{% url 'project_management_quality_checks_view' %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-block"></i></span>
+                        <span class="d-none d-sm-block">Quality Checks</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'project_management_canceled_view' %}active{% endif %}">
+                        <span class="d-block d-sm-none"><i class="bx bx-block"></i></span>
+                        <span class="d-none d-sm-block">Mass Updates</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="ms-auto col-md-4 col-12 text-end">
+            <button class="btn bg-white" type="button" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bx bx-filter"></i>All filters</button>
+        </div>
+    </div>
+    <div class="tab-container">
+        <div class="tabcontent">
+            <div class="baselines list-group">
+                {% for project in object_list %}
+                <div class="card border-gray border-1 mb-3 animateSlideUp list-group-item list-group-item-action p-0">
+                    <div class="card-body">
+                        <div class="card-title d-flex flex-wrap justify-content-between">
+                            <div class="d-flex flex-wrap">
+                                <div class="form-check">
+                                    <input class="form-check-input me-3" type="checkbox" id="checkbox{{project.id}}" value="" />
+                                </div>
+                                {% if project.status.status != "0" %}
+
+                                <a href="{% url 'project_deepdive' project.id %}" class="h3"><span class="text-gray">#{{project.id}} - HFG: {{project.sales_name.rfp.hfg}} &nbsp </span>   {{project.mainCustomer}} - {{project.sales_name.rfp}} - {{project.applicationMain}}</a>
+                                {% else %}
+                                <a href="{% url 'project_deepdive' project.id %}" class="h3"><span class="text-red">#{{project.id}} - {{project.sales_name.rfp.hfg}} - {{project.mainCustomer}}  - {{project.sales_name.rfp}} - {{project.applicationMain}}</span> </a>
+                                {% endif %}
+
+                                <div class="ms-3 d-flex space-x-2 flex-wrap">
+                                    <h3 class="me-3"><span class="badge badge-soft-primary border border-primary">{{project.status.statusDisplay}}</span></h3>
+                                    {% if project.draft %}
+                                    <a href="#" class="fs-20 me-2 text-secondary"><span class="mdi mdi-bookmark-outline"></span>Draft</a>
+                                    {% endif %} {% if project.dummy %}
+                                    <a href="#" class="fs-20 me-2 text-secondary"><span class="mdi mdi-duck"></span>Dummy</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex gap-3">
+                                <a href="{% url 'project_deepdive' project.id %}" class="text-secondary"> <i class="mdi mdi-square-edit-outline"></i>Edit</a>
+                                <a href="{% url 'delete_project' project.id %}" class="text-secondary"> <i class="mdi mdi-delete-outline"></i>Delete</a>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <p><i class="mdi mdi-bookmark me-1"></i> {{project.mainCustomer}} - {{project.finalCustomer}}</p>
+                            <!-- <p><i class="mdi mdi-bookmark me-1"></i> </p> -->
+                            <p><i class="mdi mdi-mouse me-1"></i> {{project.sales_name}}</p>
+                            <p><i class="mdi mdi-family-tree me-1"></i> {{project.applicationMain}} - {{project.applicationDetail}}</p>
+                            <!--<p><i class="mdi mdi-factory me-1"></i> </p>-->
+                            <p><i class="mdi mdi-face-outline me-1"></i> {{project.productMarketer}}</p>
+                        </div>
+                        <hr />
+
+                        <div class="d-flex">
+                            <h5>{{project.projectName}} - Comments: {{project.comment}} <span class="text-gray">Updated {{project.modifiedDate|naturaltime}}</span></h5>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="min-vh-75 align-items-center d-flex justify-content-center">
+                    <h4>No Records Found!</h4>
+                </div>
+                {% endfor %}
+            </div>
+            {% if page_obj.has_other_pages %} {% include 'partials/pagination.html' with paginator=page_obj.paginator page_obj=page_obj %} {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- model -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="get">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filter Projects</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">{{filter.form|crispy}}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-brown text-white" data-bs-dismiss="modal">Close</button>
+                    <button class="btn bg-magenta text-white" type="submit">FILTER</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- [ Main Content ] end -->
+
+{% endblock contents %} {% block extra_javascript %} {% endblock extra_javascript %}

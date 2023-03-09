@@ -1,0 +1,22 @@
+
+{% if showSeriesSelect == True %}
+<div class="form-row">
+    <label for="productSelectionForm2.prodSeries">Product series</label>
+  </div>
+
+
+  <div class="form-row">
+    <select name="series" class="form-control" autocomplete="off" hx-get="/ifx/productMarketing/dropdownPackage/{{family}}" hx-target="#packageSelect">
+      <option selected>---------</option>
+        {% for key, value in productSeries %}
+        <option value={{key}}>{{key}} - {{value}}</option>
+        {% endfor %}          
+      </select>
+  </div>
+  <br>
+
+  <div id="packageSelect"> 
+    {% include 'productMarketing/enterProjectForm/packageSelect.html' %}
+  </div>
+
+  {% endif %}

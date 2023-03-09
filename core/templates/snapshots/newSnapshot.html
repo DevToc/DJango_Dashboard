@@ -1,0 +1,228 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %}{% load widget_tweaks custom_tags %} {% block title %} New Baseline {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+<style>
+  .mt-30{
+    margin-top: 30px !important;
+  }
+  .card{
+    box-shadow: none !important;
+  }
+  .color-pink{
+    background-color: #AB377A !important;
+    color: white;
+  }
+  .new_label{
+    border: 1px solid;
+    border-radius: 30px;
+    width: 140px;
+    text-align: center;
+    padding: 7px;
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+  }
+  .save-baseline{
+    width: 174px !important;
+    margin-top: 30px !important;
+    border-radius: 30px !important;
+    background-color: #AB377A !important;
+    border: none !important;
+    font-size: 18px !important;
+  }
+  .center {
+    text-align: center !important;
+  }
+  .bx-info-circle{
+    background-color: #5EA290;
+    color: white;
+    border-radius: 50%;
+    margin-left: 23px;
+  }
+  label{
+    font-weight: 600 !important;
+    font-size: 14px !important;
+  }
+  .baseline-creation{
+    color: #AB377A;
+    font-weight: bold !important;
+    padding: 12px 0;
+    font-size: 16px !important;
+    border-bottom: 5px solid;
+    cursor: pointer;
+  }
+  .border-0{
+    border: none !important;
+  }
+  .accordion-header{
+    text-align: center;
+  }
+  .big-text{
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400 !important;
+    font-size: 60px !important;
+    line-height: 75px;
+    text-align: center;
+    color: rgba(30, 30, 30, 0.1);
+    margin-right: 35px;
+    position: relative;
+    top: 10px;
+  }
+</style>
+{% endblock extra_css %}
+{% block breadcrumbs %}
+{% breadcrumb "Baseline Management" 'snapshotList' %} 
+{% breadcrumb "New Baseline" %}
+{% endblock breadcrumbs %}
+
+{% block contents %}
+
+  <div class="card-body">
+    <h3 class="h3">New Baseline</h3>
+
+    <div class="col-12">
+        <label class="baseline-creation">BASELINE CREATION</label>
+
+        <form method="post" name="CreateSnapshotForm">
+            {% csrf_token %}
+            <div class="mt-4">
+                {{ form.media.js }}
+
+                <div class="row mt-30">
+                    <h2>
+                        <label class="big-text">1</label> Labels
+                        <i data-toggle="tooltip" data-placement="top" title="Please select a baseline label. This will help you classify your baselines better. You can create new labels anytime." class="bx bx-info-circle" aria-hidden="true"></i>
+                    </h2>
+                    <hr />
+                </div>
+                <div class="accordion" id="createProject">
+                    <div class="accordion-item border-0">
+                        <div class="row mt-30">
+                            <label>Select a baseline label</label>
+                            <div class="col-4">
+                                <select class="form-control" name="tagInput" id="tagInput">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="col-8">
+                                <div class="accordion-header" id="headingOne">
+                                    <div class="new_label" data-bs-toggle="collapse" data-bs-target="#creatation-label" aria-expanded="true" aria-controls="creatation-label">New Label</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="creatation-label" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#createProject">
+                            <div class="row mt-30">
+                                <label for="">New label</label>
+                                <div class="col-4"><input type="text" class="form-control" id="new_label" /></div>
+                                <div class="col-8">
+                                    <div class="new_label color-pink"><a onclick="createTag()">Save Label</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-30">
+                    <h2>
+                        <label class="big-text">2</label> Key Facts
+                        <i data-toggle="tooltip" data-placement="top" title="Please enter a baseline name." class="bx bx-info-circle" aria-hidden="true"></i>
+                    </h2>
+                    <hr />
+                </div>
+
+                <div class="row">
+                    {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+
+                    <div class="col-12 mb-3">
+                        <div class="mt-4">
+                            <div class="col-md-4 col-lg-3">{{form.snapshotName|as_crispy_field}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-30">
+                    <label>Baseline comments</label>
+                    <div class="col-6">
+                        <input class="form-control" name="snapshotCommentsInput" />
+                    </div>
+                </div>
+                <div class="mt-30 center">
+                    <button class="btn btn-secondary save-baseline" type="submit">SAVE BASELINE</button>
+                </div>
+            </div>
+        </form>
+
+      <!-- 
+      <form method="POST" action="snapshot" name="CreateSnapshotForm">
+        {% csrf_token %}
+        <div class="baselines">
+
+
+
+          <div class="row mt-30">
+            <label>Baseline name</label>
+            <div class="col-6">
+              <input class="form-control" name="snapshotNameInput">
+            </div>
+          </div>
+
+        </div>
+      </form>
+      -->
+    </div>
+</div>
+
+{% endblock contents %}
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+    function getTagList() {
+        $.ajax({
+            url: "./snapshotTagList",
+            method: "GET",
+            success: function (data) {
+                const tags = data.map((el) => {
+                    return `<option value="${el.id}">${el.tagName}</option>`
+                })
+                $("#tagInput").html(tags)
+            },
+        })
+    }
+
+    function createTag() {
+        const tagName = $("#new_label").val()
+        if (!tagName) {
+            alert("label should not be empty!")
+            $("#new_label").focus()
+            return
+        }
+        const csrfToken = $("[name=csrfmiddlewaretoken]").val()
+        $.ajax({
+            url: "./createSnapshotTag",
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrfToken)
+            },
+            data: {tagName: tagName},
+            success: function (data) {
+                $("#new_label").empty()
+                getTagList()
+            },
+        })
+    }
+    getTagList()
+</script>
+
+{% endblock extra_javascript %}

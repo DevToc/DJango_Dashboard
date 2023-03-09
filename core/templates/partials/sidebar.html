@@ -1,0 +1,82 @@
+{% load static %} {% block sidebar %}
+<!-- ========== Left Sidebar Start ========== -->
+<div class="vertical-menu">
+    <div data-simplebar class="h-100">
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li>
+                    <a href="{% url 'dashboard_view' %}" class="waves-effect">
+                        <i class="bx bx-home"></i>
+                        <span key="t-file-dashboard">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'project_management_all_view' %}" class="waves-effect">
+                        <i class="bx bx-bolt-circle"></i>
+                        <span key="t-project-entry">Project Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'import_export_main' %}" class="waves-effect">
+                        <i class="bx bx-export"></i>
+                        <span key="t-project-entry">Import / Export</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'project_overview' %}" class="waves-effect">
+                        <i class="bx bx-data"></i>
+                        <span key="t-project-entry">Project Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'snapshotList' %}" class="waves-effect">
+                        <i class="bx bx-book"></i>
+                        <span key="t-project-entry">Baseline Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'analytics' %}" class="waves-effect">
+                        <i class="bx bx-line-chart"></i>
+                        <span key="t-project-entry">Analytics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'help' %}" class="waves-effect">
+                        <i class="bx bx-help-circle"></i>
+                        <span key="t-project-entry">Help</span>
+                    </a>
+                </li>
+                <!--
+                <li>
+                    <a href="{% url 'imports' %}" class="waves-effect">
+                        <i class="bx bx-line-chart"></i>
+                        <span key="t-project-entry">TestImports</span>
+                    </a>
+                </li>
+                -->
+
+                <!-- 
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-store"></i>
+                        <span key="t-demo">Dummy Dropdown</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="#" key="t-products">abc</a>
+                        </li>
+                        <li>
+                            <a href="#" key="t-add-product">xyz</a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->
+{% endblock %}

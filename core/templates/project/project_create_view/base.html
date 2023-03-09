@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+{% endblock extra_css %} {% block title %} Project Creation {% endblock title %} {% block breadcrumbs %} {% breadcrumb "Project Entry" "project_management_all_view" %} {% breadcrumb "New Project" %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <div class="row justify-content-center">
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Project Creation</li>
+                <li>Volume Entry</li>
+                <li>Pricing Entry</li>
+                <li>Done</li>
+            </ul>
+        </div>
+
+        <div class="col-12">{% block form %} {% endblock form %}</div>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %} {% endblock extra_javascript %}

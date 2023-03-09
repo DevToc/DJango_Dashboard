@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock extra_css %} {% block title %} Project Creation {% endblock title %} {% block breadcrumbs %} {% breadcrumb "Project Entry" "create_project_view" %} {% breadcrumb "New Dummy Customer" %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <h5 class="h3">Create a dummy customer.</h5>
+    <p class="card-title-desc">Required fields are marked with *</p>
+    <div class="row justify-content-center">
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Dummy Customer</li>
+            </ul>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mt-4">
+                {{ form.media.js }}
+
+                <div class="row">
+
+                    <!-- consistency validation errors -->
+                    {% if createSalesNameSuccess == False %} {% for error in creationInformation %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+
+                    {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                    <br>
+                    Please enter the name for the Main and End Customers.
+                    Please note that these will be marked as dummy customers, since the offical list is provided by SnOp. 
+                    <br>
+
+                    <div class="col-12 mb-3">
+                        <div class="mt-4">
+                            <div class="accordion" id="createVolume">
+                                <div class="row" id="automaticDiv">
+                                    <div class="col-md-4 col-lg-3">{{form.mainCustomer|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.finalCustomer|as_crispy_field}}</div>
+
+                                </div>
+                            </div>
+                            <!-- end accordion -->
+                        </div>
+                    </div>
+
+                    <div id="submitBtn">
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+
+                        <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Create Customer</button>
+                    </div>
+
+                    {% if createSalesNameSuccess == True %} {% for error in creationInformation %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+
+                </div>
+
+                <!-- end accordion -->
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+
+{% endblock extra_javascript %}

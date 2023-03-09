@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+
+<link href="{% static 'libs/select2/dist/css/select2.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock extra_css %} {% block title %} Volume Entry {% endblock title %} {% block breadcrumbs %} {% breadcrumb "New Product" "create_product_entry_point" %} {% breadcrumb "Select dummy type" %} {% endblock breadcrumbs %} {% block contents %}
+
+
+
+<div class="card-body">
+    <h5 class="h3">Dummy Product Entry</h5>
+    <p class="card-title-desc">Please select whether you want to create a new product and a corresponding sales name OR if you just need a dummy sales name based on an existing product. </p>
+    <div class="row justify-content-center">
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Select Dummy Type</li>
+                <li >Details</li>
+            </ul>
+        </div>
+
+        <div class="col-12 d-flex justify-content-center align-items-center h-30" id="choiceModel">
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" id="year" class="btn btn-primary bg-brown btn-lg waves-effect waves-light" onclick="window.location.href='{% url 'create_dummy_product' %}';"  href="{% url 'create_dummy_product' %}" value="Excel" >Dummy Product and Sales Name</button>
+                <button type="button" id="month" class="btn btn-secondary bg-magenta btn-lg waves-effect waves-light" onclick="window.location.href='{% url 'create_dummy_sales_name' %}';" href="{% url 'create_dummy_sales_name' %}" value="Automatic" >Dummy Sales Name</button>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+{% endblock extra_javascript %}

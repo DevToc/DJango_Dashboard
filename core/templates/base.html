@@ -1,0 +1,229 @@
+{% load static custom_tags currency %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content="SAAS For a company" name="description" />
+        <meta content="Saadat Ali" name="author" />
+
+        <title>{% block title %} {{heading}} {% endblock title %} | Product Marketing</title>
+
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+        {% block css %}
+        <!-- extra css -->
+        {% block extra_css %} {% endblock %}
+        <!-- Bootstrap Css -->
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'css/custom.css' %}" rel="stylesheet" type="text/css" />
+
+        {% endblock css %}
+    </head>
+
+    <body data-sidebar="light" data-layout-mode="light">
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+            {% block header %} {% include 'partials/header.html' %} {% endblock %} {% block sidebar %} {% include 'partials/sidebar.html' %} {% endblock %}
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid px-0">
+                        {% if messages %} {% for message in messages %}
+                        <div class="alert {{message.tags}}" role="alert">{{message}}</div>
+                        {% endfor %} {% endif %}
+
+                        <!-- end page title -->
+                        <div class="card rounded-14">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0 display-6 fs-18 align-items-center" style="--bs-breadcrumb-divider: ''">
+                                            {% if not request.resolver_match.url_name == 'dashboard_view' %}
+                                            <li class="breadcrumb-item">
+                                                <a href="/" class="align-middle"><i class="bx bx-home"></i></a>
+                                            </li>
+                                            <li class="breadcrumb-item"><span class="bx bx-chevron-right align-middle"></span></li>
+                                            {% endif %} {% block breadcrumbs %} {% endblock breadcrumbs %}
+                                        </ol>
+                                    </div>
+
+                                    <!-- App Search-->
+                                    <div class="d-flex justify-content-end">
+                                        {% if filter.form.projectName %}
+                                        <form class="app-search d-none d-lg-block">
+                                            <div class="position-relative">
+                                                {{filter.form.projectName}}
+                                                <span class="bx bx-search-alt"></span>
+                                            </div>
+                                        </form>
+
+                                        {% endif %}
+
+                                        <div class="dropdown d-inline-block d-lg-none ms-2">
+                                            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="mdi mdi-magnify"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-search-dropdown">
+                                                <form class="p-3">
+                                                    <div class="form-group m-0">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username" />
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown d-inline-block">
+                                            <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="d-none d-xl-inline-block ms-1"><span class="me-1">{{CURRENCY.symbol}}</span> {{CURRENCY_CODE}}</span>
+                                                <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                {% for currency in CURRENCIES %}
+                                                <a class="dropdown-item" href="{% url 'currencies_set_currency' %}?currency_code={{currency.code}}"><span class="me-1">{{currency.symbol}}</span> {{currency.code}}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown d-none d-lg-inline-block ms-1">
+                                            <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
+                                                <i class="bx bx-fullscreen"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="dropdown d-inline-block">
+                                            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="bx bx-bell bx-tada"></i>
+                                                <span class="badge bg-danger rounded-pill">3</span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
+                                                <div class="p-3">
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <h6 class="m-0" key="t-notifications">Notifications</h6>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <a href="#!" class="small" key="t-view-all"> View All</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div data-simplebar style="max-height: 230px">
+                                                    <a href="javascript: void(0);" class="text-reset notification-item">
+                                                        <div class="d-flex">
+                                                            <div class="avatar-xs me-3">
+                                                                <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                                                    <i class="bx bx-cart"></i>
+                                                                </span>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="mb-1" key="t-your-order">Warning here A</h6>
+                                                                <div class="font-size-12 text-muted">
+                                                                    <p class="mb-1" key="t-grammer">warning details</p>
+                                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript: void(0);" class="text-reset notification-item">
+                                                        <div class="d-flex">
+                                                            <img src="{% static 'images/users/avatar-3.jpg'%}" class="me-3 rounded-circle avatar-xs" alt="user-pic" />
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="mb-1">Other notification</h6>
+                                                                <div class="font-size-12 text-muted">
+                                                                    <p class="mb-1" key="t-simplified">notification details.</p>
+                                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-hours-ago">1 hour ago</span></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    <a href="javascript: void(0);" class="text-reset notification-item">
+                                                        <div class="d-flex">
+                                                            <div class="avatar-xs me-3">
+                                                                <span class="avatar-title bg-success rounded-circle font-size-16">
+                                                                    <i class="bx bx-badge-check"></i>
+                                                                </span>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="mb-1" key="t-shipped">Your project was reviewed</h6>
+                                                                <div class="font-size-12 text-muted">
+                                                                    <p class="mb-1" key="t-grammer">Message from reviewer</p>
+                                                                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="p-2 border-top d-grid">
+                                                    <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)"> <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">View More..</span> </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown d-inline-block">
+                                            <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <img class="rounded-circle header-profile-user" src="{% static 'images/users/avatar-1.jpg' %}" alt="Header Avatar" />
+                                                <span class="d-none d-xl-inline-block ms-1">{{user.username}}</span>
+                                                <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <div class="dropdown-divider"></div>
+                                                {% if user.is_authenticated %} {% if user.has_usable_password %}
+                                                <!---
+                                                <a class="dropdown-item" href="{% url 'account_change_password' %}"><i class="bx bx-key font-size-16 align-middle me-1"></i> Change Password</a>
+                                                -->
+                                                {% else %}
+                                                <a class="dropdown-item" href="{% url 'account_set_password' %}"><i class="bx bx-key font-size-16 align-middle me-1"></i> Set Password</a>
+                                                {% endif %}
+                                                <a class="dropdown-item text-danger" href="{% url 'account_logout' %}"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>Log Out</a>
+                                                {% else %}
+                                                <a class="dropdown-item" href="{% url 'account_login' %}"><i class="bx bx-log-in font-size-16 align-middle me-1"></i> Log In</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+
+                                {% block contents %} {% endblock contents %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+
+                {% block extra_content %} {% endblock %} {% block footer %} {% include 'partials/footer.html' %} {% endblock %}
+            </div>
+            <!-- end main content-->
+        </div>
+        <!-- END layout-wrapper -->
+        {% block Subscribe %} {% endblock %} {% block r_sidebar %} {% include 'partials/rightsidebar.html' %} {% endblock %} {% block javascript %}
+        <!-- JAVASCRIPT -->
+
+        <script src="{% static 'libs/jquery/jquery.slim.min.js' %}"></script>
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.min.carousel.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        {% block extra_javascript %} {% endblock %}
+
+        <script src="{% static 'js/app.js' %}"></script>
+        {% endblock javascript %}
+    </body>
+</html>

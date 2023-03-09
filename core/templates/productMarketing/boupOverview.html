@@ -1,0 +1,84 @@
+{% extends "base.html" %} {% load static custom_tags %} {% block title %} Full Bottom Up - CY Based {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+<!-- DataTables -->
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet" />
+<!-- link rel='stylesheet' href="{% static 'datatables.net-bs/css/dataTables.bootstrap.min.css' %}" -->
+<link rel="stylesheet" href="{% static 'datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" />
+
+{% endblock %} {% block breadcrumbs %} {% breadcrumb "Full Bottom Up" %} {% endblock breadcrumbs %} {% block contents %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body min-vh-75">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-12">
+                                {% include "partials/navigation_boup.html" %}
+                                <!-- datatable  -->
+                                <div class="px-4 mb-4">
+                                    <div class="table-responsive">
+                                        <table id="boupTable" class="table table-striped table-bordered nowrap overflow-x-auto w-100"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock contents %}
+
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+<!-- Required datatable js -->
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<!-- Buttons examples -->
+<script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'libs/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+
+<!-- Responsive examples -->
+<script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/utils.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        AjaxDatatableViewUtils.initialize_table(
+            $("#boupTable"),
+            "{% url 'project_overview_full_data' %}",
+            {
+                // extra_options (example)
+                processing: true,
+                autoWidth: true,
+                full_row_select: false,
+                scrollX: true,
+            },
+            {
+                // extra_data
+                // ...
+            }
+        )
+    })
+</script>
+
+{% endblock extra_javascript %}

@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Product Master Data - RFP Level {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block extra_css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />    
+{% endblock %}
+{% block contents %}
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ breadcrumb ] start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                          
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ breadcrumb ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Main Content ] start -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="col-md-12">
+                                                <div class="page-header-title">
+                                                    <div class = "row">
+                                                        <div class="col-md-12">
+                                                            <h5 class="m-b-10"><a href="/"><i class="feather icon-home"></i></a>  Product Master Data - RFP Level </h5>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            {% include "partials/navigation_analytics.html" %}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                             
+                                            </div>
+
+
+                                        </div>
+                                        <div class="card-block">
+                          
+
+
+
+
+                                          <br>
+
+                                          <table id="productTable" class="display nowrap" style="width:100%; overflow-x: auto;">
+
+            
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>HFG</th>
+                                                    <th>PPOS</th>
+                                                    <th>RFP</th>
+                                                    <th>Package</th>
+                                                    <th>Basic Type</th>
+                                                    <th>Available in PGS+?</th>
+
+                                                  </tr>
+                                            </thead>
+                                
+                                            <tfoot>
+                                              <tr>
+                                                <th>ID</th>
+                                                <th>HFG</th>
+                                                <th>PPOS</th>
+                                                <th>RFP</th>
+                                                <th>Package</th>
+                                                <th>Basic Type</th>
+                                                <th>Available in PGS+?</th>
+                                              </tr>
+                                          </tfoot>
+                                        </table>
+                      
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Main Content ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock contents %} {% block extra_javascript %}
+
+<!-- Required datatable js -->
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<!-- Buttons examples -->
+<script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'libs/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+
+<!-- Responsive examples -->
+<script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+<!-- Datatable init js -->
+
+<script src="{% static 'js/pages/datatables.init.js' %}"></script>  
+
+
+
+<!-- Datatable Data Control -->
+
+<script>
+
+  $(document).ready(function() {
+
+// column based search
+  $('#productTable tfoot th').each(function () {
+      var title = $(this).text();
+
+      if (title != "") {
+      $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    }
+  });
+
+
+  var table = $('#productTable').DataTable({
+
+
+// export buttons
+dom: 'Bflrtip',
+  buttons: [
+      'copy', 'csv', 'excel', 'pdf', 'print'
+  ],
+
+// general options
+serverSide: true,
+scrollY: '500px',
+scrollCollapse: true,
+paging: true,
+keys: true,
+scrollX: true,
+responsive: false,
+processing: true,
+pageLength: 50,
+"ajax": {
+    "processing": true,
+    "url": "{% url 'productFullList' %}",
+    "dataSrc": "dataForTable",
+  },
+  "columns": [
+          { "data": "id"},
+          { "data": "hfg"},
+          { "data": "ppos"},
+          { "data": "rfp"},
+          { "data": "package"},
+          { "data": "basicType"},
+          { "data": "availablePGS"},
+      ],
+
+
+  // for search
+  initComplete: function () {
+    // Apply the search
+    this.api()
+        .columns()
+        .every(function () {
+            var that = this;
+
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+        });
+  },
+});
+});
+
+
+
+</script>
+
+
+
+{% endblock extra_javascript %}
+
+

@@ -1,0 +1,638 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'libs/spreadsheet/dist/css/jquery.jexcel.css' %}" />
+<link rel="stylesheet" href="{% static 'libs/spreadsheet/dist/css/jquery.jcalendar.css' %}" />
+<style>
+    .mt-10 {
+        margin-top: 10px !important;
+    }
+    .mt-30 {
+        margin-top: 30px !important;
+    }
+    .mt-50 {
+        margin-top: 50px !important;
+    }
+    .card {
+        box-shadow: none !important;
+    }
+    .color-pink {
+        background-color: #ab377a !important;
+        color: white;
+    }
+    .new_label {
+        border: 1px solid;
+        border-radius: 30px;
+        width: 140px;
+        text-align: center;
+        padding: 7px;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+    }
+    .save-baseline {
+        width: 174px !important;
+        margin-top: 30px !important;
+        border-radius: 30px !important;
+        background-color: #ab377a !important;
+        border: none !important;
+        font-size: 18px !important;
+    }
+    .center {
+        text-align: center !important;
+    }
+    label {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+    .tablinks {
+        color: #ab377a;
+        font-weight: bold !important;
+        padding: 12px 30px;
+        font-size: 15px !important;
+        border-bottom: 5px solid;
+        cursor: pointer;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .accordion-header {
+        text-align: center;
+    }
+    .tab-container {
+        min-height: 500px;
+    }
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        /* border: 1px solid #ccc; */
+        border-top: none;
+    }
+    /* Create an active/current tablink class */
+    .tab a.active {
+        border-bottom: 6px solid #ab377a;
+    }
+    .tab a {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+        border-bottom: 6px solid #edd2e2;
+        width: 220px;
+    }
+    .tab a:hover {
+        color: #ab377a;
+    }
+    .tab {
+        overflow: hidden;
+        padding: 0px 10px;
+    }
+    .big-text {
+        font-family: "Source Sans Pro";
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 60px !important;
+        line-height: 75px;
+        text-align: center;
+        color: rgba(30, 30, 30, 0.1);
+        margin-right: 35px;
+        position: relative;
+        top: 10px;
+    }
+    .chart-header {
+        font-size: 26px;
+        padding-left: 60px !important;
+        color: black;
+    }
+    .baseline-table {
+        width: 100%;
+        border: 1px solid;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .baseline-table table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+    th {
+        padding: 2px;
+        background: #fbfbff;
+    }
+    td {
+        padding: 5px;
+        border-top: 1px solid !important;
+        border-right: 1px solid !important;
+    }
+    td:last-child {
+        border-right: none !important;
+    }
+    .float-right {
+        float: right;
+    }
+    .align-right {
+        float: right;
+        clear: both;
+    }
+    .text-gray {
+        color: #a7a7a7;
+    }
+    .text-bold {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .text-regular {
+        font-weight: 400;
+        font-size: 16px;
+    }
+</style>
+{% endblock extra_css %} {% block title %} Volume Entry {% endblock title %} {% block breadcrumbs %} {% if editMode == False %} {% breadcrumb "Project Entry" "project_management_all_view" %} {% breadcrumb "New Project - Volume Entry - Monthly Level" %} {% else %} {% breadcrumb "Project Edit" 'project_deepdive' projectId=projectId %} {% breadcrumb "Volume Edit - Monthly Level" %} {% endif %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <div class="row justify-content-center">
+        {% if editMode == False %}
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Project Creation</li>
+                <li class="active">Volume Entry</li>
+                <li>Pricing Entry</li>
+                <li>Done</li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="tab text-center">
+            <a href="{% url 'project_deepdive' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive' %} active{% endif %}">OVERVIEW</a>
+            <a href="{% url 'edit_project_key_facts' projectId %}" class="tablinks">PROJECT DETAILS <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_volume_view' %}" class="tablinks active">VOLUME <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_pricing_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_pricing_view' %} active {% endif %}">PRICING <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'project_deepdive_history' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive_history' %} active {% endif %}">PROJECT HISTORY</a>
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mt-4">
+                {{ form.media.js }}
+                <div class="row">
+                    {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        If you entered yearly quantities, we will show in this page interpolated values at a monthly level.
+                        Depending on how smooth your planing was, the yearly sums of values shown here might not fully match the yearly figures.
+                        The monthly figures shown here are used for Quarterly and Fiscal Year reports.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <h4>Start of Production: {{project.estimatedSop|stringformat:"s"}}</h4>
+
+                        <div class="mt-4">
+                            <div class="accordion" id="createVolume">
+                                <div class="row" id="manualDiv" style="display: none">
+                                    <h5 class="card-title">Enter Your Values</h5>
+                                    <div class="col-2">
+                                        <i data-toggle="tooltip" data-placement="top" title="Press the tab key in order to add more columns. The first row is for the years. The second row is for the quantities." class="bx bx-info-circle mx-1" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="overflow-scroll">
+                                        <div id="excel"></div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">{{form.excelData|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3" style="display: none">{{form.startOfProductionYear|as_crispy_field}}</div>
+                                </div>
+                            </div>
+                            <!-- end accordion -->
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row mt-50">
+                            <div class="col-6 chart-header">Planned Quantities / RFP + EC + MC (weighted)</div>
+                            <div class="col-6 chart-header">Orders / RFP + EC + MC</div>
+                            <div class="float-right">
+                                <select name="years" id="years" class="btn" onchange="changeYear()"></select>
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <canvas id="revenue"></canvas>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <canvas id="orders"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if editMode == False %}
+                    <div id="submitBtn" style="display: none">
+                        <div class="d-flex flex-column align-items-center">
+                            <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Next Step</button>
+                            <button type="submit" name="save_n_continue" class="text-pinkish-red anchor-btn"><i class="bx bx-save"></i> Save & Continue Later</button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div id="submitBtn" style="display: none">
+                        <div class="mb-3 text-center">
+                            <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Save</button>
+                            <a href="{% url 'project_deepdive' projectId %}" class="btn btn-secondary save-baseline mb-3">Discard changes</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- end accordion -->
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+<!-- <script src="{% static 'libs/select2/dist/js/select2.min.js'%}"></script> -->
+<script src="{% static 'libs/spreadsheet/dist/js/jquery.jexcel.js' %}"></script>
+<script src="{% static 'libs/spreadsheet/dist/js/jquery.csv.min.js' %}"></script>
+<script src="{% static 'libs/spreadsheet/dist/js/excel-formula.min.js' %}"></script>
+<script src="{% static 'libs/spreadsheet/dist/js/jquery.jcalendar.js' %}"></script>
+<script>
+
+
+    function isPositiveInteger(str) {
+    if (typeof str !== 'string') {
+        return false;
+    }
+
+    const num = Number(str);
+
+    if (Number.isInteger(num) && num > 0) {
+        return true;
+    }
+
+    return false;
+    }
+
+    // data can be used to prefill
+    var data1 = [["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], [], []]
+    const options = {
+        data: data1,
+        csvFileName: "Product Marketing",
+        minSpareCols: 2,
+        allowInsertRow: false,
+        // funcitons
+        onchange: function () {
+            var value = $("#excel").jexcel("getData", false)
+            var years = value[0].filter((n) => n)
+            var months = value[1].filter((n) => n)
+            var volumes = value[2].filter((n) => n)
+            const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN"]
+            const allowableMonths = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+            var allowableYears = new Array();
+
+            // until 2050
+            var yearBasis = 2019
+            for(var i=0; i < 30; i++) {
+                allowableYears.push(String(yearBasis))
+                yearBasis = yearBasis + 1
+            }
+
+            // reset all cells
+            for(var i=0; i < value[0].length; i++) {
+                const column = i + 1
+                const cell = columns[i] + "1"
+                $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                $("#excel").jexcel('setStyle', cell, 'color', 'black');
+            }
+            for(var i=0; i < value[1].length; i++) {
+                const column = i + 1
+                const cell = columns[i] + "2"
+                $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                $("#excel").jexcel('setStyle', cell, 'color', 'black');
+            }
+            for(var i=0; i < value[2].length; i++) {
+                const column = i + 1
+                const cell = columns[i] + "3"
+                $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                $("#excel").jexcel('setStyle', cell, 'color', 'black');
+            }
+
+            var yearsForCellHighlight =  value[0]
+            var monthsForCellHighlight =  value[1]
+            var volumesForCellHighlight = value[2]
+
+            while (yearsForCellHighlight.length) {                      // Loop while there are still entries
+                const last = yearsForCellHighlight[yearsForCellHighlight.length - 1];   // Get the last entry without removing it
+                if (last !== "" && last !== "\r") {     // Is this one to remove?
+                    break;                              // No, stop
+                }
+                --yearsForCellHighlight.length;                         // Yes, remove and keep looping
+            }
+
+            while (volumesForCellHighlight.length) {                      // Loop while there are still entries
+                const last = volumesForCellHighlight[volumesForCellHighlight.length - 1];   // Get the last entry without removing it
+                if (last !== "" && last !== "\r") {     // Is this one to remove?
+                    break;                              // No, stop
+                }
+                --volumesForCellHighlight.length;                         // Yes, remove and keep looping
+            }
+
+            while (monthsForCellHighlight.length) {                      // Loop while there are still entries
+                const last = monthsForCellHighlight[monthsForCellHighlight.length - 1];   // Get the last entry without removing it
+                if (last !== "" && last !== "\r") {     // Is this one to remove?
+                    break;                              // No, stop
+                }
+                --monthsForCellHighlight.length;                         // Yes, remove and keep looping
+            }
+
+
+            // to do: highlight cells with wrong characters...
+            for(var i=0; i < volumesForCellHighlight.length; i++) {
+                // check if an integer. if not, highlight the cell in red
+                console.log("cecking", volumesForCellHighlight[i])
+                if ((isPositiveInteger(volumesForCellHighlight[i]) == false) )  {
+                    const column = i + 1
+                    const cell = columns[i] + "3"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'red');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'white');
+
+                    console.log("wrong cell", cell)
+                } else {
+                    const column = i + 1
+                    const cell = columns[i] + "3"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'black');
+
+                }
+            }
+
+            // to do: highlight cells with wrong characters...
+            for(var i=0; i < monthsForCellHighlight.length; i++) {
+                // check if an integer. if not, highlight the cell in red
+                console.log("cecking", monthsForCellHighlight[i])
+                if ((isPositiveInteger(monthsForCellHighlight[i]) == false) || (allowableMonths.includes(monthsForCellHighlight[i]) == false)) {
+                    const column = i + 1
+                    const cell = columns[i] + "2"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'red');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'white');
+
+                    console.log("wrong cell", cell)
+                } else {
+                    const column = i + 1
+                    const cell = columns[i] + "2"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'black');
+
+                }
+            }
+
+            // to do: highlight cells with wrong characters...
+            for(var i=0; i < yearsForCellHighlight.length; i++) {
+                // check if an integer. if not, highlight the cell in red
+                console.log("cecking", yearsForCellHighlight[i])
+                if ((isPositiveInteger(yearsForCellHighlight[i]) == false)||(allowableYears.includes(yearsForCellHighlight[i]) == false)) {
+                    const column = i + 1
+                    const cell = columns[i] + "1"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'red');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'white');
+
+                    console.log("wrong cell", cell)
+                } else {
+                    const column = i + 1
+                    const cell = columns[i] + "1"
+                    $("#excel").jexcel('setStyle', cell, 'background-color', 'white');
+                    $("#excel").jexcel('setStyle', cell, 'color', 'black');
+
+                }
+            }
+
+
+            // if decimals entered, clean...
+            for(var i=0; i < volumes.length; i++) {
+                volumes[i] = volumes[i].replace(",", '.');
+            }
+
+            for(var i=0; i < years.length; i++) {
+                years[i] = years[i].replace(",", '.');
+            }
+
+            for(var i=0; i < months.length; i++) {
+                months[i] = months[i].replace(",", '.');
+            }
+
+            $("#id_excelData").val(`${years} \n${months} \n${volumes}`)
+            console.log("volumes value", volumes)
+            console.log("years value", years)
+
+            $("#jexcel_label_0").html("Year")
+            $("#jexcel_label_1").html("Month")
+            $("#jexcel_label_2").html("Quantity")
+
+        },
+    }
+    //$("#excel").jexcel(options)
+    var formulas = {
+        /**
+         * Custom method: SUM - Example: =SUM(C1:C10), =SUM(A1,A2,A3)
+         *
+         * @param string formula
+         * @return total
+         */
+        sum: function (formula) {
+            // Get main table id
+            var id = $(this.instance).prop("id")
+            // Total to be returned
+            var total = 0
+            // Check sum type
+            var d = formula.split(/:/)
+            // Which sum to be used
+            if (d.length < 2) {
+                // Explode by comman and sum all columns in the formula
+                d = formula.split(",")
+                $.each($(d), function (k, v) {
+                    v = parseInt($("#" + id).jexcel("getValue", v))
+                    total += v
+                })
+            } else {
+                t1 = d[0].match(/[a-zA-Z]+/g)
+                t2 = d[1].match(/[a-zA-Z]+/g)
+                // Sum vertical or horizontal
+                if (t1[0] == t2[0]) {
+                    // Some all cells in a vertical way
+                    co = t1
+                    t1 = d[0].match(/[0-9]+/g)
+                    t2 = d[1].match(/[0-9]+/g)
+                    for (i = t1; i <= t2; i++) {
+                        v = parseInt($("#" + id).jexcel("getValue", co + i))
+                        total += v
+                    }
+                } else {
+                    // Som all cells in a horizontal way
+                    t1 = $("#" + id)
+                        .jexcel("id", d[0])
+                        .split("-")
+                    t2 = $("#" + id)
+                        .jexcel("id", d[1])
+                        .split("-")
+
+                    for (i = t1[0]; i <= t2[0]; i++) {
+                        v = parseInt($("#" + id).jexcel("getValue", i + "-" + t1[1]))
+                        total += v
+                    }
+                }
+            }
+
+            try {
+                return total
+            } catch (e) {
+                return null
+            }
+        },
+    }
+
+
+
+    $(document).ready(function () {
+        $("#manualDiv").show(100)
+        $("#submitBtn").show(100)
+
+        $("#manual").click(function () {
+        })
+
+        var dataCondition = {{ dataCondition }}
+        var years = {{ years }}
+        var months = {{ months }}
+        var volumes = {{ volumes }}
+
+        console.log("BByears and volumes", years, volumes)
+        console.log("BBdata condition", dataCondition)
+        // if prefill data available, use it.
+        if (dataCondition == 1) {
+            data1[0] = years // [2020, 2021] //years
+            data1[1] = months //[1, 2] //,volumes
+            data1[2] = volumes //[1, 2] //,volumes
+        }
+        console.log("data1", data1)
+        $("#excel").jexcel(options)
+
+        $("#jexcel_label_0").html("Year")
+        $("#jexcel_label_1").html("Month")
+        $("#jexcel_label_2").html("Quantity")
+        $("#id_excelData").val(`${years} \n${months} \n${volumes}`)
+
+
+    })
+</script>
+
+<script>
+    var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://"
+    var url = wsProtocol + window.location.host + "/ws/project/view/" + "{{ projectId|safe }}/" + "{{ request.user.id }}/"
+    var chatSocket = new WebSocket(url)
+</script>
+
+<!-- Chart JS -->
+<script src="{% static 'libs/chart.js/Chart.bundle.min.js' %}"></script>
+
+<script>
+
+    // init chart
+    const ctxRevenue = document.getElementById('revenue');
+    const ctxOrders = document.getElementById('orders');
+    let revenue
+    let orders
+    let revenueValuesBaseline1
+    let ordersValuesBaseline1
+    let years
+
+
+    $(document).ready(function () {
+        revenueValuesBaseline1 = {{plannedQuantities}} //[100,200,300,400,400,400,400,400] // {{revenue}} // JSON.parse("{{revenueValuesBaseline1}}")
+        ordersValuesBaseline1 = {{orders}} //JSON.parse("{{ordersValuesBaseline1}}")
+        years =  {{yearsGraphs}}  //JSON.parse("{{yearsGraphs}}")
+        console.log('years',revenueValuesBaseline1, ordersValuesBaseline1, years)
+
+        // add years in dropdown
+        let options = ''
+        let i
+        for(i=0;i< Math.floor(years.length/10);i++) {
+            options += `<option value="${i}">${years[i * 10]} - ${years[i * 10 + 9]}</option>`;
+        }
+        if(i * 10 < years.length) options += `<option value="${i}">${years[i * 10]} - ${years[years.length - 1]}</option>`;
+        $("#years").html(options);
+
+
+        const dataRevenue = {
+            datasets: [{
+                label: 'Weighted Planned Quantites (RFP+MC+EC)',
+                data: revenueValuesBaseline1.slice(0, 10),
+                // order: 2,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: '#93349547',
+                borderWidth: 1,
+                borderRadius: 2,
+                borderSkipped: false,
+            }],
+            labels: years.slice(0, 10)
+        };
+        const dataOrders = {
+            datasets: [{
+                label: 'Orders on Hand (RFP+MC+EC)',
+                data: ordersValuesBaseline1.slice(0, 10),
+                // order: 2,
+                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: '#b09fa245',
+                borderWidth: 1
+            }],
+            labels: years.slice(0, 10)
+        };
+
+        const configRevenue = {
+            type: 'bar',
+            data: dataRevenue,
+            options: {
+            responsive: true,
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: true
+            }
+            }
+        };
+        const configOrders = {
+            type: 'bar',
+            data: dataOrders,
+            options: {
+            responsive: true,
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        };
+
+
+        revenue = new Chart(ctxRevenue, configRevenue);
+        orders = new Chart(ctxOrders, configOrders);
+
+    })
+
+
+    function changeYear() {
+      const id = Number($("#years").val());
+      // revenue chart udpate
+      revenue.data.datasets[0].data = revenueValuesBaseline1.slice(id * 10, id * 10 + 10);
+      revenue.data.labels = years.slice(id * 10, id * 10 + 10)
+      revenue.update();
+      // orders chart udpate
+      orders.data.datasets[0].data = ordersValuesBaseline1.slice(id * 10, id * 10 + 10);
+      orders.data.labels = years.slice(id * 10, id * 10 + 10)
+      orders.update();
+    }
+</script>
+{% endblock extra_javascript %}

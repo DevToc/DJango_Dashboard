@@ -1,0 +1,355 @@
+{% extends 'base.html' %} {% load custom_tags static crispy_forms_tags %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'libs/spreadsheet/dist/css/jquery.jexcel.css' %}" />
+<link rel="stylesheet" href="{% static 'libs/spreadsheet/dist/css/jquery.jcalendar.css' %}" />
+<style>
+    .mt-10 {
+        margin-top: 10px !important;
+    }
+    .mt-30 {
+        margin-top: 30px !important;
+    }
+    .mt-50 {
+        margin-top: 50px !important;
+    }
+    .card {
+        box-shadow: none !important;
+    }
+    .color-pink {
+        background-color: #ab377a !important;
+        color: white;
+    }
+    .new_label {
+        border: 1px solid;
+        border-radius: 30px;
+        width: 140px;
+        text-align: center;
+        padding: 7px;
+        font-size: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+    }
+    .save-baseline {
+        width: 174px !important;
+        margin-top: 30px !important;
+        border-radius: 30px !important;
+        background-color: #ab377a !important;
+        border: none !important;
+        font-size: 18px !important;
+    }
+    .center {
+        text-align: center !important;
+    }
+    label {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+    .tablinks {
+        color: #ab377a;
+        font-weight: bold !important;
+        padding: 12px 30px;
+        font-size: 15px !important;
+        border-bottom: 5px solid;
+        cursor: pointer;
+    }
+    .border-0 {
+        border: none !important;
+    }
+    .accordion-header {
+        text-align: center;
+    }
+    .tab-container {
+        min-height: 500px;
+    }
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        /* border: 1px solid #ccc; */
+        border-top: none;
+    }
+    /* Create an active/current tablink class */
+    .tab a.active {
+        border-bottom: 6px solid #ab377a;
+    }
+    .tab a {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+        border-bottom: 6px solid #edd2e2;
+        width: 220px;
+    }
+    .tab a:hover {
+        color: #ab377a;
+    }
+    .tab {
+        overflow: hidden;
+        padding: 0px 10px;
+    }
+    .big-text {
+        font-family: "Source Sans Pro";
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 60px !important;
+        line-height: 75px;
+        text-align: center;
+        color: rgba(30, 30, 30, 0.1);
+        margin-right: 35px;
+        position: relative;
+        top: 10px;
+    }
+    .chart-header {
+        font-size: 26px;
+        padding-left: 60px !important;
+        color: black;
+    }
+    .baseline-table {
+        width: 100%;
+        border: 1px solid;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .baseline-table table {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+    }
+    th {
+        padding: 2px;
+        background: #fbfbff;
+    }
+    td {
+        padding: 5px;
+        border-top: 1px solid !important;
+        border-right: 1px solid !important;
+    }
+    td:last-child {
+        border-right: none !important;
+    }
+    .float-right {
+        float: right;
+    }
+    .align-right {
+        float: right;
+        clear: both;
+    }
+    .text-gray {
+        color: #a7a7a7;
+    }
+    .text-bold {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .text-regular {
+        font-weight: 400;
+        font-size: 16px;
+    }
+</style>
+{% endblock extra_css %} {% block title %} Volume Entry {% endblock title %} {% block breadcrumbs %} {% if editMode == False %} {% breadcrumb "Project Entry" "project_management_all_view" %} {% breadcrumb "New Project - Automatic Volume" %} {% else %} {% breadcrumb "Project Edit" 'project_deepdive' projectId=projectId %} {% breadcrumb "Volume Edit - Automatic" %} {% endif %} {% endblock breadcrumbs %} {% block contents %}
+
+<div class="card-body">
+    <div class="row justify-content-center">
+        {% if editMode == False %}
+        <div class="fluid-container" style="z-index: 1">
+            <ul class="progressbar p-0">
+                <li class="active">Project Creation</li>
+                <li class="active">Volume Entry</li>
+                <li>Pricing Entry</li>
+                <li>Done</li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="tab text-center">
+            <a href="{% url 'project_deepdive' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive' %} active{% endif %}">OVERVIEW</a>
+            <a href="{% url 'edit_project_key_facts' projectId %}" class="tablinks">PROJECT DETAILS <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_volume_view' %}" class="tablinks active">VOLUME <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'create_pricing_view' %}" class="tablinks {% if request.resolver_match.url_name == 'create_pricing_view' %} active {% endif %}">PRICING <i class="mdi mdi-square-edit-outline"></i></a>
+            <a href="{% url 'project_deepdive_history' projectId %}" class="tablinks {% if request.resolver_match.url_name == 'project_deepdive_history' %} active {% endif %}">PROJECT HISTORY</a>
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mt-4">
+                {{ form.media.js }}
+
+                <div class="row">
+                    <!-- consistency validation errors -->
+                    {% if functionalWarnings %} {% for error in functionalWarnings %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="validationConflict">
+                        {{error|safe }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %} {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %} {% endif %}
+                    <div class="col-12 mb-3">
+                        <div class="mt-4">
+                            <div class="accordion" id="createVolume">
+                                <div class="row" id="automaticDiv">
+                                    <div class="col-md-4 col-lg-3">{{form.startOfProduction|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.endOfProduction|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.totalVolume|as_crispy_field}}</div>
+                                    <div class="col-md-4 col-lg-3">{{form.peakYear|as_crispy_field}}</div>
+                                </div>
+                            </div>
+                            <!-- end accordion -->
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row mt-50">
+                            <div class="col-6 chart-header">Planned Quantities / RFP + EC + MC (weighted)</div>
+                            <div class="col-6 chart-header">Orders / RFP + EC + MC</div>
+                            <div class="float-right">
+                                <select name="years" id="years" class="btn" onchange="changeYear()"></select>
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <canvas id="revenue"></canvas>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <canvas id="orders"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if editMode == False %}
+                    <div class="d-flex flex-column align-items-center">
+                        <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Next Step</button>
+                        <button type="submit" name="save_n_continue" class="text-pinkish-red anchor-btn"><i class="bx bx-save"></i> Save & Continue Later</button>
+                    </div>
+                    {% else %}
+                    <div class="mb-3 text-center">
+                        <button class="btn btn-secondary save-baseline mb-3" type="submit" id="compare_submit">Save</button>
+                        <a href="{% url 'project_deepdive' projectId %}" class="btn btn-secondary save-baseline mb-3">Discard changes</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- end accordion -->
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock contents %} {% block extra_javascript %}
+<script>
+    var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://"
+    var url = wsProtocol + window.location.host + "/ws/project/view/" + "{{ projectId|safe }}/" + "{{ request.user.id }}/"
+    var chatSocket = new WebSocket(url)
+</script>
+
+<!-- Chart JS -->
+<script src="{% static 'libs/chart.js/Chart.bundle.min.js' %}"></script>
+
+<script>
+
+    // init chart
+    const ctxRevenue = document.getElementById('revenue');
+    const ctxOrders = document.getElementById('orders');
+    let revenue
+    let orders
+    let revenueValuesBaseline1
+    let ordersValuesBaseline1
+    let years
+
+
+    $(document).ready(function () {
+        revenueValuesBaseline1 = {{plannedQuantities}} //[100,200,300,400,400,400,400,400] // {{revenue}} // JSON.parse("{{revenueValuesBaseline1}}")
+        ordersValuesBaseline1 = {{orders}} //JSON.parse("{{ordersValuesBaseline1}}")
+        years =  {{yearsGraphs}}  //JSON.parse("{{yearsGraphs}}")
+        console.log('years',revenueValuesBaseline1, ordersValuesBaseline1, years)
+
+        // add years in dropdown
+        let options = ''
+        let i
+        for(i=0;i< Math.floor(years.length/10);i++) {
+            options += `<option value="${i}">${years[i * 10]} - ${years[i * 10 + 9]}</option>`;
+        }
+        if(i * 10 < years.length) options += `<option value="${i}">${years[i * 10]} - ${years[years.length - 1]}</option>`;
+        $("#years").html(options);
+
+
+        const dataRevenue = {
+            datasets: [{
+                label: 'Weighted Planned Quantites (RFP+MC+EC)',
+                data: revenueValuesBaseline1.slice(0, 10),
+                // order: 2,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: '#93349547',
+                borderWidth: 1,
+                borderRadius: 2,
+                borderSkipped: false,
+            }],
+            labels: years.slice(0, 10)
+        };
+        const dataOrders = {
+            datasets: [{
+                label: 'Orders on Hand (RFP+MC+EC)',
+                data: ordersValuesBaseline1.slice(0, 10),
+                // order: 2,
+                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: '#b09fa245',
+                borderWidth: 1
+            }],
+            labels: years.slice(0, 10)
+        };
+
+        const configRevenue = {
+            type: 'bar',
+            data: dataRevenue,
+            options: {
+            responsive: true,
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: true
+            }
+            }
+        };
+        const configOrders = {
+            type: 'bar',
+            data: dataOrders,
+            options: {
+            responsive: true,
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        };
+
+
+        revenue = new Chart(ctxRevenue, configRevenue);
+        orders = new Chart(ctxOrders, configOrders);
+
+    })
+
+
+    function changeYear() {
+      const id = Number($("#years").val());
+      // revenue chart udpate
+      revenue.data.datasets[0].data = revenueValuesBaseline1.slice(id * 10, id * 10 + 10);
+      revenue.data.labels = years.slice(id * 10, id * 10 + 10)
+      revenue.update();
+      // orders chart udpate
+      orders.data.datasets[0].data = ordersValuesBaseline1.slice(id * 10, id * 10 + 10);
+      orders.data.labels = years.slice(id * 10, id * 10 + 10)
+      orders.update();
+    }
+</script>
+{% endblock extra_javascript %}

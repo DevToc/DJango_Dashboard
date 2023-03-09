@@ -1,0 +1,140 @@
+
+{% load widget_tweaks %}
+
+<!-- Body -->
+
+
+    <div>
+
+    <canvas id="chartAspFamily" width="10" height="10"></canvas>
+    
+    
+
+
+
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+
+
+<script src="{{ ASSETS_ROOT }}/plugins/chart.js/dist/chart.min.js"></script>
+<script src="{{ ASSETS_ROOT }}/plugins/chart.js/dist/chart.extension.js"></script>
+
+
+<script>
+
+    // Mid-low-level Analyzer: Same customer, Same Family, Different Prices
+    const dataAspFamily = {
+        datasets: [{
+        label: 'Endcustomer 1',
+        backgroundColor: 'rgba(110, 179, 174, 1)',
+            borderColor: 'rgba(110, 179, 174, 1)',
+        data: [{
+            x: '2022',
+            y: 7.2
+            }, {
+            x: '2023',
+            y: 7.8
+            }, {
+            x: '2024',
+            y: 7.6
+            }, {
+            x: '2025',
+            y: 7.5
+            },
+            {
+            x: '2026',
+            y: 7.2
+            }, {
+            x: '2027',
+            y: 6.8
+            }, {
+            x: '2028',
+            y: 6.7
+            }, {
+            x: '2029',
+            y: 6.2
+            },
+            {
+            x: '2030',
+            y: 6.0
+            }],
+        }, 
+        {
+        label: 'Endcustomer 2',
+        backgroundColor: 'rgba(110, 179, 174, 1)',
+        borderColor: 'rgba(110, 179, 174, 1)',
+        data: [{
+            x: '2022',
+            y: 7.1
+            }, {
+            x: '2023',
+            y: 5
+            }, {
+            x: '2024',
+            y: 4.6
+            }, {
+            x: '2025',
+            y: 4.5
+            },
+            {
+            x: '2026',
+            y: 4.2
+            }, {
+            x: '2027',
+            y: 3
+            }, {
+            x: '2028',
+            y: 3
+            }, {
+            x: '2029',
+            y: 3
+            },
+            {
+            x: '2030',
+            y: 3
+            }],
+        }]
+        };
+        
+    const configAspFamily = {
+        type: 'line',
+        data: dataAspFamily,
+        options: {
+            layout: { padding: 300 },
+            scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "ASP €"
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Year"
+                            }
+                        }
+                    },
+            plugins: {
+                title: {
+                display: true,
+                text: 'ASP family level',
+                    }
+                }
+            }
+        };
+
+   
+
+    const chartAspFamily = new Chart(
+        document.getElementById('chartAspFamily'),
+        configAspFamily
+        );
+
+</script>
+
+
+{% endblock extra_javascript %}
+
+

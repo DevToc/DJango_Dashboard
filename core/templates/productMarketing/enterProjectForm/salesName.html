@@ -1,0 +1,32 @@
+
+  <div class="form-row">
+    <label for="productSelectionForm2.prodSalesName">Sales Name</label>
+  </div>
+
+  <div class="form-row">
+    <select name="salesName" class="form-control">
+
+        {% if selectedSalesName != None %}
+          <option value={{selectedSalesName.pk}} selected>{{selectedSalesName}}</option>
+          {% for name in salesNames %}
+          <option value={{name.pk}}>{{name}}</option>
+        {% endfor %}  
+
+        {% else %}
+          <option value selected>---------</option>
+          {% for name in salesNames %}
+          <option value={{name.pk}}>{{name}}</option>
+          {% endfor %}          
+        {% endif %}
+
+
+
+
+      </select>
+  </div>
+
+  {% if salesNameMissingError %}
+  <div class="alert alert-danger">
+  <strong>This field is mandatory!</strong>
+  </div>
+  {% endif %}

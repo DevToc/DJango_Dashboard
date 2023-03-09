@@ -1,0 +1,201 @@
+
+{% load widget_tweaks %}
+
+
+
+
+
+
+    <div class="row justify-content-center mt-4 mb-4">
+      <div class="container" style="z-index: 1;">
+        <ul class="progressbar p-0">
+          <li class="active" >Project Creation</li>
+          <li class="active" >Volume</li>
+          <li class="active">Pricing Source</li>
+          <li >Pricing Review</li>
+          <li>Conflict Checks</li>
+        </ul>
+      </div>
+    </div>
+
+
+  
+    <h3 class="text-red">{{ notification }}</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="row justify-content-center">
+
+
+    <!-- 
+    <h1>Price Source Selection</h1>-->
+    <p class="card-text" data-toggle="tooltip"
+    title="price help text." data-placement="top">Price help text to do
+    &#9432;</p>                      <br>
+  </div>
+
+
+
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+      <div>
+
+
+
+  <div class="form-row">
+    <label for="form_1.diagnose">Data Source</label>
+    {{sourceSelectionForm.dataSource|add_class:"form-control"}}
+  </div>
+  <br>
+
+  <div class="form-row">
+    <label for="form_1.diagnose">Comments</label>
+  </div>
+  <div class="form-row">
+
+    <textarea id="priceComments" name="priceComments" rows="2" cols="80">
+    </textarea>
+
+  </div>
+  <br>
+
+
+  <div class="form-row">
+    <div >
+      <input type="checkbox" id="familyPrices" name="familyPrices">
+      <label for="scales">Family Price applicable?</label>
+    </div>
+  </div>
+
+  
+  <br>
+  <br>
+
+
+  {% if excel == True %}
+
+
+  <hr style="  border-top: solid green; !important;">
+
+
+
+  <br>
+
+
+  <div class="form-row">
+    <label for="priceValidUntil">Price valid until</label>
+  </div>
+
+  <div class="form-row">
+    <select name="priceValidUntil" class="form-control" autocomplete="on" >
+      <option selected>---------</option>
+      <option value=2020>2020</option>
+      <option value=2021>2021</option>
+      <option value=2022>2022</option>
+      <option value=2023>2023</option>
+      <option value=2024>2024</option>
+      <option value=2025>2025</option>
+      <option value=2026>2026</option>
+      <option value=2027>2027</option>
+      <option value=2028>2028</option>
+      <option value=2029>2029</option>
+      <option value=2030>2030</option>
+      <option value=2031>2031</option>
+      <option value=2032>2032</option>
+
+      </select>
+  </div>
+
+
+  <br>
+
+
+  <div class="row justify-content-center">
+    <br>
+
+
+    <h3>Copy and paste your Excel data!</h3>
+  </div>
+
+
+  <div class="form-row">
+    <!-- <input type="textArea" id="excelData" name="excelData"><br>-->
+    <textarea id="excelData" name="excelData" rows="8" cols="80">
+    </textarea>
+
+  </div>
+
+  <br>
+
+  <div class="form-row">
+    <label for="form_1.diagnose">Price currency</label>
+  </div>
+
+  <div class="form-row">
+    <select name="currency" class="form-control form-control" autocomplete="off" id="currency">
+      <option value="EUR">EUR</option>
+    
+      <option value="USD">USD</option>
+    
+      <option value="JPY">JPY</option>
+    
+      <option value="MXN">MXN</option>
+    
+      <option value="CHF">CHF</option>
+    
+    </select>
+  </div>
+
+
+  <br>
+
+  <button type="submit" class="btn btn-success">Submit and review data</button>
+
+  {% else %}
+  <hr style="  border-top: solid green; !important;">
+  <br>
+
+  <button type="submit" class="btn btn-success">Select source and modify or confirm price data</button>
+
+
+
+  {% endif %}
+
+
+</div>
+
+
+
+
+
+
+
+<!-- general patient data end -->
+
+
+
+      
+    </div>
+  </form>
+
+
+
+
+
+
+
+
+
+

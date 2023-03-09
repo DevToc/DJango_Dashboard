@@ -1,0 +1,1903 @@
+{% load render_table from django_tables2 %}
+
+
+{% block contents %}{% load widget_tweaks %}
+
+<!-- Body -->
+
+
+
+<div class="card-profile-stats justify-content-center">  <!-- it was d-flex-->
+<br>
+
+<h1> {{ test }} </h1>
+
+
+<canvas id="chartAspFamily" width="10" height="10"></canvas>
+<canvas id="chartAspSilicon" width="10" height="10"></canvas>
+<canvas id="chartAspPackage" width="10" height="10"></canvas>
+<canvas id="chartAspByCustomerAndDevice" width="10" height="10"></canvas>
+<canvas id="chartAspPriceByDevice" width="10" height="10"></canvas>
+<canvas id="chartAspByCustomerAndDevice1" width="10" height="10"></canvas>
+<canvas id="chartVolumeForecast" width="10" height="10"></canvas>  
+<canvas id="chartGMRevenue" width="10" height="10"></canvas>
+<canvas id="chartASPPackage1" width="10" height="10"></canvas>
+<canvas id="chartVHKbyProductLevelPackage" width="10" height="10"></canvas>
+<canvas id="chartGMRevenueByCustomer" width="10" height="10"></canvas>
+<canvas id="chartNumberOfProjectsAndGMHypothesis" width="10" height="10"></canvas>
+<canvas id="chartBusinessPerformanceByDevice" width="10" height="10"></canvas>
+<canvas id="chartBusinessPerformanceByDevice" width="10" height="10"></canvas>
+<canvas id="chartBusinessPerformanceByCustomer" width="10" height="10"></canvas>
+<canvas id="chartBusinessPerformanceByDeviceAndCustomer" width="10" height="10"></canvas>
+
+<script>
+
+// Mid-low-level Analyzer: Same customer, Same Family, Different Prices
+const dataAspFamily = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgba(110, 179, 174, 1)',
+        borderColor: 'rgba(110, 179, 174, 1)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgba(110, 179, 174, 1)',
+    borderColor: 'rgba(110, 179, 174, 1)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    }]
+    };
+
+const dataAspSilicon = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgb(116, 158, 58)',
+        borderColor: 'rgb(116, 158, 58)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(116, 158, 58)',
+    borderColor: 'rgb(116, 158, 58)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    }]
+    };
+
+const dataAspPackage = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgb(146, 130, 133)',
+        borderColor: 'rgb(146, 130, 133)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(146, 130, 133)',
+    borderColor: 'rgb(146, 130, 133)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    },
+    {
+    label: 'Endcustomer 3',
+    backgroundColor: 'rgb(212, 166, 200)',
+    borderColor: 'rgb(212, 166, 200)',
+    data: [{
+        x: '2022',
+        y: 5
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 5
+        }, {
+        x: '2025',
+        y: 5
+        },
+        {
+        x: '2026',
+        y: 5
+        }, {
+        x: '2027',
+        y: 5
+        }, {
+        x: '2028',
+        y: 5
+        }, {
+        x: '2029',
+        y: 5
+        },
+        {
+        x: '2030',
+        y: 5
+        }],
+    }]
+    };
+    
+const configAspFamily = {
+    type: 'line',
+    data: dataAspFamily,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "ASP €"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'ASP family level',
+                }
+            }
+        }
+    };
+
+const configAspSilicon = {
+    type: 'line',
+    data: dataAspSilicon,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "ASP €"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'ASP silicon level',
+                }
+            }
+        }
+    };
+
+const configAspPackage = {
+    type: 'line',
+    data: dataAspPackage,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "ASP €"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'ASP package level',
+                }
+            }
+        }
+    };
+
+const chartAspFamily = new Chart(
+    document.getElementById('chartAspFamily'),
+    configAspFamily
+    );
+
+const chartAspSilicon = new Chart(
+    document.getElementById('chartAspSilicon'),
+    configAspSilicon
+    );
+
+const chartAspPackage = new Chart(
+    document.getElementById('chartAspPackage'),
+    configAspPackage
+    );
+
+// Mid-low-level Analyzer: Which Customer Pays Less?
+
+const dataAspByCustomerAndDevice = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgb(129, 33, 97)',
+        borderColor: 'rgb(129, 33, 97)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(155, 195, 183)',
+    borderColor: 'rgb(155, 195, 183)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    }]
+    };
+
+const dataAspPriceByDevice = {
+    datasets: [{
+    label: 'ASP €',
+    backgroundColor: 'rgb(155, 195, 183)',
+        borderColor: 'rgb(155, 195, 183)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Max Price €',
+    backgroundColor: 'rgb(118, 159, 59)',
+    borderColor: 'rgb(118, 159, 59)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    },
+    {
+    label: 'Min Price €',
+    backgroundColor: 'rgb(227, 0, 52)',
+    borderColor: 'rgb(227, 0, 52)',
+    data: [{
+        x: '2022',
+        y: 5
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 5
+        }, {
+        x: '2025',
+        y: 5
+        },
+        {
+        x: '2026',
+        y: 5
+        }, {
+        x: '2027',
+        y: 5
+        }, {
+        x: '2028',
+        y: 5
+        }, {
+        x: '2029',
+        y: 5
+        },
+        {
+        x: '2030',
+        y: 5
+        }],
+    }]
+    };
+
+const configAspByCustomerAndDevice = {
+    type: 'line',
+    data: dataAspByCustomerAndDevice,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "ASP €"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'ASP by Customer and Device',
+                }
+            }
+        }
+    };
+
+const configAspPriceByDevice = {
+    type: 'line',
+    data: dataAspPriceByDevice,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Price €"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'Max./Min./ASP Price by Device',
+                }
+            }
+        }
+    };
+
+const chartAspByCustomerAndDevice = new Chart(
+    document.getElementById('chartAspByCustomerAndDevice'),
+    configAspByCustomerAndDevice
+    );
+
+const chartAspPriceByDevice = new Chart(
+    document.getElementById('chartAspPriceByDevice'),
+    configAspPriceByDevice
+    );
+
+// Mid-low Level Analyzer: At Which Customer Does a Device Have More Business
+
+const dataVolumeForecast = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgb(129, 33, 97)',
+        borderColor: 'rgb(129, 33, 97)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(155, 195, 183)',
+    borderColor: 'rgb(155, 195, 183)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    }]
+    };
+
+    const dataGMRevenue = {
+    datasets: [{
+        type: 'line',
+        label: 'Endcustomer 1',
+        data: [
+        {x: '2022',
+        y: 0.71
+        }, {
+        x: '2023',
+        y: 0.50
+        }, {
+        x: '2024',
+        y: 0.46
+        }, {
+        x: '2025',
+        y: 0.45
+        },
+        {
+        x: '2026',
+        y: 0.42
+        }, {
+        x: '2027',
+        y: 0.3
+        }, {
+        x: '2028',
+        y: 0.3
+        }, {
+        x: '2029',
+        y: 0.3
+        },
+        {
+        x: '2030',
+        y: 0.3
+        }],
+        fill: false,
+        borderColor: 'rgb(110, 179, 174)',
+        yAxisID: 'y1'
+        }, 
+        {
+        type: 'line',
+        label: 'Endcustomer 2',
+        data: [
+        {x: '2022',
+        y: 0.55
+        }, {
+        x: '2023',
+        y: 0.5
+        }, {
+        x: '2024',
+        y: 0.85
+        }, {
+        x: '2025',
+        y: 0.65
+        },
+        {
+        x: '2026',
+        y: 0.2
+        }, {
+        x: '2027',
+        y: 0.3
+        }, {
+        x: '2028',
+        y: 0.4
+        }, {
+        x: '2029',
+        y: 0.5
+        },
+        {
+        x: '2030',
+        y: 0.3
+        }],
+        fill: false,
+        borderColor: 'rgb(121, 19, 87)',
+        yAxisID: 'y1'
+        },
+        {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(121, 19, 87)',
+    borderColor: 'rgb(121, 19, 87)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+        yAxisID: 'y'
+    }, {
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgba(110, 179, 174, 1)',
+        borderColor: 'rgba(110, 179, 174, 1)',
+    data: [
+        {
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+        yAxisID: 'y'
+    }
+    ]
+    };
+
+const configVolumeForecast = {
+    type: 'line',
+    data: dataVolumeForecast,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Vol_w"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'Volume Forecast',
+                }
+            }
+        }
+    };
+
+const configGMRevenue = {
+    type: 'bar',
+    data: dataGMRevenue,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+            x: {title: {
+                        display: true,
+                        text: "Year"
+                        },
+                stacked: true
+                    },
+            y: {
+                position: 'right',
+                title: {
+                        display: true,
+                        text: "Rev_€_bar"
+                        },
+                ticks: {
+                // Include a dollar sign in the ticks
+                callback: function(value, index, ticks) {
+                    return value + 'M';
+                        }
+                    },
+                stacked: true
+            },
+            y1: {
+                position: 'left',
+                title: {
+                        display: true,
+                        text: "GM %_line"
+                },
+                ticks: {
+                // Include a dollar sign in the ticks
+                callback: function(value, index, ticks) {
+                    return value*100 + '%';
+                        }
+                    },
+                stacked: false
+            }
+        },
+        plugins: {
+            title: {
+            display: true,
+            text: 'GM %-Revenue',
+                }
+            }
+    }
+}
+
+const chartAspByCustomerAndDevice1 = new Chart(
+    document.getElementById('chartAspByCustomerAndDevice1'),
+    configAspByCustomerAndDevice
+    );
+
+const chartVolumeForecast = new Chart(
+    document.getElementById('chartVolumeForecast'),
+    configVolumeForecast
+    );
+
+const chartGMRevenue = new Chart(
+    document.getElementById('chartGMRevenue'),
+    configGMRevenue
+    );
+
+
+// Mid-low-level Analyzer: At Which Customer is a Device More Profitable?
+
+const dataASPPackage1 = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgb(146, 130, 133)',
+        borderColor: 'rgb(146, 130, 133)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(212, 166, 200)',
+    borderColor: 'rgb(212, 166, 200)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    }]
+    };
+
+    const dataVHKbyProductLevelPackage = {
+    datasets: [{
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgb(146, 130, 133)',
+        borderColor: 'rgb(146, 130, 133)',
+    data: [{
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+    }, 
+    {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(212, 166, 200)',
+    borderColor: 'rgb(212, 166, 200)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+    }]
+    };
+
+    const dataGMRevenueByCustomer = {
+    datasets: [{
+        type: 'line',
+        label: 'Endcustomer 1',
+        data: [
+        {x: '2022',
+        y: 0.71
+        }, {
+        x: '2023',
+        y: 0.50
+        }, {
+        x: '2024',
+        y: 0.46
+        }, {
+        x: '2025',
+        y: 0.45
+        },
+        {
+        x: '2026',
+        y: 0.42
+        }, {
+        x: '2027',
+        y: 0.3
+        }, {
+        x: '2028',
+        y: 0.3
+        }, {
+        x: '2029',
+        y: 0.3
+        },
+        {
+        x: '2030',
+        y: 0.3
+        }],
+        fill: false,
+        borderColor: 'rgb(146, 130, 133)',
+        yAxisID: 'y1'
+        }, 
+        {
+        type: 'line',
+        label: 'Endcustomer 2',
+        data: [
+        {x: '2022',
+        y: 0.55
+        }, {
+        x: '2023',
+        y: 0.5
+        }, {
+        x: '2024',
+        y: 0.85
+        }, {
+        x: '2025',
+        y: 0.65
+        },
+        {
+        x: '2026',
+        y: 0.2
+        }, {
+        x: '2027',
+        y: 0.3
+        }, {
+        x: '2028',
+        y: 0.4
+        }, {
+        x: '2029',
+        y: 0.5
+        },
+        {
+        x: '2030',
+        y: 0.3
+        }],
+        fill: false,
+        borderColor: 'rgb(212, 166, 200)',
+        yAxisID: 'y1'
+        },
+        {
+    label: 'Endcustomer 2',
+    backgroundColor: 'rgb(212, 166, 200)',
+    borderColor: 'rgb(212, 166, 200)',
+    data: [{
+        x: '2022',
+        y: 7.1
+        }, {
+        x: '2023',
+        y: 5
+        }, {
+        x: '2024',
+        y: 4.6
+        }, {
+        x: '2025',
+        y: 4.5
+        },
+        {
+        x: '2026',
+        y: 4.2
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+        yAxisID: 'y'
+    }, {
+    label: 'Endcustomer 1',
+    backgroundColor: 'rgba(146, 130, 133)',
+        borderColor: 'rgba(146, 130, 133)',
+    data: [
+        {
+        x: '2022',
+        y: 7.2
+        }, {
+        x: '2023',
+        y: 7.8
+        }, {
+        x: '2024',
+        y: 7.6
+        }, {
+        x: '2025',
+        y: 7.5
+        },
+        {
+        x: '2026',
+        y: 7.2
+        }, {
+        x: '2027',
+        y: 6.8
+        }, {
+        x: '2028',
+        y: 6.7
+        }, {
+        x: '2029',
+        y: 6.2
+        },
+        {
+        x: '2030',
+        y: 6.0
+        }],
+        yAxisID: 'y'
+    }
+    ]
+    };
+
+const configASPPackage1 = {
+    type: 'line',
+    data: dataASPPackage1,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "ASP €"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'ASP PAckage level',
+                }
+            }
+        }
+    };
+
+    const configVHKbyProductLevelPackage = {
+    type: 'line',
+    data: dataVHKbyProductLevelPackage,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "VHK_€"
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Year"
+                        }
+                    }
+                },
+        plugins: {
+            title: {
+            display: true,
+            text: 'VHK by product level package',
+                }
+            }
+        }
+    };
+
+const configGMRevenueByCustomer = {
+    type: 'bar',
+    data: dataGMRevenueByCustomer,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+            x: {title: {
+                        display: true,
+                        text: "Year"
+                        },
+                stacked: true
+                    },
+            y: {
+                position: 'right',
+                title: {
+                        display: true,
+                        text: "Rev_€_bar"
+                        },
+                ticks: {
+                // Include a dollar sign in the ticks
+                callback: function(value, index, ticks) {
+                    return value + 'M';
+                        }
+                    },
+                stacked: true
+            },
+            y1: {
+                position: 'left',
+                title: {
+                        display: true,
+                        text: "GM %_line"
+                },
+                ticks: {
+                // Include a dollar sign in the ticks
+                callback: function(value, index, ticks) {
+                    return value*100 + '%';
+                        }
+                    },
+                stacked: false
+            }
+        },
+        plugins: {
+            title: {
+            display: true,
+            text: 'GM %-Revenue by Customer',
+                }
+            }
+    }
+}
+
+const chartASPPackage1 = new Chart(
+    document.getElementById('chartASPPackage1'),
+    configASPPackage1
+    );
+
+const chartVHKbyProductLevelPackage = new Chart(
+    document.getElementById('chartVHKbyProductLevelPackage'),
+    configVHKbyProductLevelPackage
+    );
+
+const chartGMRevenueByCustomer = new Chart(
+    document.getElementById('chartGMRevenueByCustomer'),
+    configGMRevenueByCustomer
+    );
+
+// Mid-low-level Analyzer: Assuming that the Max. Price Is Used, GM Will Be Like...?
+
+const dataNumberOfProjectsAndGMHypothesis = {
+    datasets: [{
+        type: 'line',
+        label: 'GM@Pmax.',
+        data: [
+        {x: '2022',
+        y: 0.71
+        }, {
+        x: '2023',
+        y: 0.50
+        }, {
+        x: '2024',
+        y: 0.46
+        }, {
+        x: '2025',
+        y: 0.45
+        },
+        {
+        x: '2026',
+        y: 0.42
+        }, {
+        x: '2027',
+        y: 0.3
+        }, {
+        x: '2028',
+        y: 0.3
+        }, {
+        x: '2029',
+        y: 0.3
+        },
+        {
+        x: '2030',
+        y: 0.3
+        }],
+        fill: false,
+        borderColor: 'rgb(118, 159, 59)',
+        yAxisID: 'y1'
+        }, 
+        {
+        type: 'line',
+        label: 'GM%',
+        data: [
+        {x: '2022',
+        y: 0.55
+        }, {
+        x: '2023',
+        y: 0.5
+        }, {
+        x: '2024',
+        y: 0.85
+        }, {
+        x: '2025',
+        y: 0.65
+        },
+        {
+        x: '2026',
+        y: 0.2
+        }, {
+        x: '2027',
+        y: 0.3
+        }, {
+        x: '2028',
+        y: 0.4
+        }, {
+        x: '2029',
+        y: 0.5
+        },
+        {
+        x: '2030',
+        y: 0.3
+        }],
+        fill: false,
+        borderColor: 'rgb(78, 121, 167)',
+        yAxisID: 'y1'
+        },
+        {
+        type: 'line',
+        label: 'GM@Pmin.',
+        data: [
+        {x: '2022',
+        y: 0.65
+        }, {
+        x: '2023',
+        y: 0.3
+        }, {
+        x: '2024',
+        y: 0.55
+        }, {
+        x: '2025',
+        y: 0.75
+        },
+        {
+        x: '2026',
+        y: 0.2
+        }, {
+        x: '2027',
+        y: 0.35
+        }, {
+        x: '2028',
+        y: 0.5
+        }, {
+        x: '2029',
+        y: 0.4
+        },
+        {
+        x: '2030',
+        y: 0.4
+        }],
+        fill: false,
+        borderColor: 'rgb(227, 0, 52)',
+        yAxisID: 'y1'
+        },
+        {
+    label: 'Number of Projects',
+    backgroundColor: 'rgb(110, 179, 174)',
+    borderColor: 'rgb(110, 179, 174)',
+    data: [{
+        x: '2022',
+        y: 7
+        }, {
+        x: '2023',
+        y: 7
+        }, {
+        x: '2024',
+        y: 7
+        }, {
+        x: '2025',
+        y: 7
+        },
+        {
+        x: '2026',
+        y: 7
+        }, {
+        x: '2027',
+        y: 3
+        }, {
+        x: '2028',
+        y: 3
+        }, {
+        x: '2029',
+        y: 3
+        },
+        {
+        x: '2030',
+        y: 3
+        }],
+        yAxisID: 'y'
+    },]
+    };
+
+const configNumberOfProjectsAndGMHypothesis = {
+    type: 'bar',
+    data: dataNumberOfProjectsAndGMHypothesis,
+    options: {
+        layout: { padding: 300 },
+        scales: {
+            x: {title: {
+                        display: true,
+                        text: "Year"
+                        },
+                    },
+            y: {
+                position: 'left',
+                title: {
+                        display: true,
+                        text: "Number of Projects"
+                        },
+                stacked: false
+            },
+            y1: {
+                position: 'right',
+                title: {
+                        display: true,
+                        text: "GM %"
+                },
+                ticks: {
+                // Include a dollar sign in the ticks
+                callback: function(value, index, ticks) {
+                    return value*100 + '%';
+                        }
+                    },
+                stacked: false
+            }
+        },
+    plugins: {
+            title: {
+            display: true,
+            text: 'Number of Projects & GM Hypothesis',
+                }
+            }
+}}
+
+const chartNumberOfProjectsAndGMHypothesis = new Chart(
+    document.getElementById('chartNumberOfProjectsAndGMHypothesis'),
+    configNumberOfProjectsAndGMHypothesis
+    );
+
+// High-level Analyzer: Cash Cow or Poor Dog - Business Performance by Device
+
+
+const dataBusinessPerformanceByDevice = {
+    datasets: [{
+        label: 'Silicon1',
+        data: [{
+        x: -10,
+        y: 0,
+        r: 80
+        }],
+        backgroundColor: 'rgb(110, 179, 174)'
+        }, {
+        label: 'Silicon2',
+        data: [{
+        x: -5,
+        y: 8,
+        r: 60
+        }],
+        backgroundColor: 'rgb(78, 121, 167)'
+        },
+        {
+        label: 'Silicon3',
+        data: [{
+        x: 5,
+        y: 23,
+        r: 8
+        }],
+        backgroundColor: 'rgb(118, 159, 59)'
+        },
+        {
+        label: 'Silicon4',
+        data: [{
+        x: 48,
+        y: 3,
+        r: 28
+        }],
+        backgroundColor: 'rgb(155, 99, 132)'
+        }],
+    }
+
+const configBusinessPerformanceByDevice = {
+                type: 'bubble',
+                data: dataBusinessPerformanceByDevice,
+                options: {
+                    layout: { padding: 300 },
+                    scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                        display: true,
+                        text: "Cum. Vol_w"
+                        },
+                        ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return value + "M";
+                                    }
+
+                    },},
+                    y: {
+                        title: {
+                        display: true,
+                        text: "5 year GM%"
+                        },
+                                ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return value + "%";
+                                    }
+                                }
+                            }
+                    },
+                    plugins: {
+                        title: {
+                        display: true,
+                        text: 'Cum. Vol. and 5-Year-GM% by Device',
+                            }
+                        }
+                }
+                };
+
+    const chartBusinessPerformanceByDevice = new Chart(
+        document.getElementById('chartBusinessPerformanceByDevice'),
+        configBusinessPerformanceByDevice
+    );
+
+                
+// High-level Analyzer: Cash Cow or Poor Dog - Business Performance by Customer
+
+const dataBusinessPerformanceByCustomer = {
+    datasets: [{
+        label: 'Customer1',
+        data: [{
+        x: -10,
+        y: 0,
+        r: 80
+        }],
+        backgroundColor: 'rgb(110, 179, 174)'
+        }, {
+        label: 'Customer2',
+        data: [{
+        x: -5,
+        y: 8,
+        r: 60
+        }],
+        backgroundColor: 'rgb(78, 121, 167)'
+        },
+        {
+        label: 'Customer3',
+        data: [{
+        x: 5,
+        y: 23,
+        r: 8
+        }],
+        backgroundColor: 'rgb(118, 159, 59)'
+        },
+        {
+        label: 'Customer4',
+        data: [{
+        x: 48,
+        y: 3,
+        r: 28
+        }],
+        backgroundColor: 'rgb(155, 99, 132)'
+        }],
+    }
+
+const configBusinessPerformanceByCustomer = {
+                type: 'bubble',
+                data: dataBusinessPerformanceByCustomer,
+                options: {
+                    layout: { padding: 300 },
+                    scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                        display: true,
+                        text: "Cum. Vol_w"
+                        },
+                        ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return value + "M";
+                                    }
+
+                    },},
+                    y: {
+                        title: {
+                        display: true,
+                        text: "5 year GM%"
+                        },
+                                ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return value + "%";
+                                    }
+                                }
+                            }
+                    },
+                    plugins: {
+                        title: {
+                        display: true,
+                        text: 'Cum. Vol. and 5-Year-GM% by Customer',
+                            }
+                        }
+                }
+                };
+
+    const chartBusinessPerformanceByCustomer = new Chart(
+        document.getElementById('chartBusinessPerformanceByCustomer'),
+        configBusinessPerformanceByCustomer
+    );
+
+        // High-level Analyzer: Cash Cow or Poor Dog - Business Performance by Customer
+
+    const dataBusinessPerformanceByDeviceAndCustomer = {
+        datasets: [{
+            label: 'Name1',
+            data: [{
+            x: -10,
+            y: 0,
+            r: 80
+            },{
+            x: -5,
+            y: 8,
+            r: 60
+            },{
+            x: 5,
+            y: 23,
+            r: 8
+            },{
+            x: 48,
+            y: 3,
+            r: 28
+            }],
+            backgroundColor: 'rgb(155, 99, 132)'
+            }],
+        }
+
+    const configBusinessPerformanceByDeviceAndCustomer = {
+            type: 'bubble',
+            data: dataBusinessPerformanceByDeviceAndCustomer,
+            options: {
+                layout: { padding: 300 },
+                scales: {
+                x: {
+                    type: 'linear',
+                    title: {
+                    display: true,
+                    text: "Cum. Vol_w"
+                    },
+                    ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return value + "M";
+                                }
+
+                },},
+                y: {
+                    title: {
+                    display: true,
+                    text: "5 year GM%"
+                    },
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return value + "%";
+                                }
+                            }
+                        }
+                },
+                plugins: {
+                    title: {
+                    display: true,
+                    text: 'Cum. Vol. and 5-Year-GM% by Device and Customer',
+                        }
+                    }
+            }
+            };
+
+    const chartBusinessPerformanceByDeviceAndCustomer = new Chart(
+        document.getElementById('chartBusinessPerformanceByDeviceAndCustomer'),
+        configBusinessPerformanceByDeviceAndCustomer
+    );
+</script>
+
+<!--
+<table id="testTable" class="display">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Stadium</th>
+            <th>Capacity</th>
+            <th>Established on</th>
+            <th>Record created on</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>NAC Breda</td>
+            <td>NL</td>
+            <td>Breda</td>
+            <td>Rat Verlegh Stadion</td>
+            <td>19000</td>
+            <td>19-9-1912</td>
+            <td>28-02-2022 14:00:00</td>
+        
+        </tr>
+
+        <tr>
+            <td>Union Sint-Gillis</td>
+            <td>BE</td>
+            <td>Vorst</td>
+            <td>Joseph Marien Stadion</td>
+            <td>8081</td>
+            <td>01-11-1897</td>
+            <td>28-02-2022 13:30:00</td>
+        
+        </tr>
+
+        <tr>
+            <td>Go Ahead Eagles</td>
+            <td>NL</td>
+            <td>Deventer</td>
+            <td>De Adelaarshorst</td>
+            <td>10400</td>
+            <td>02-12-1902</td>
+            <td>27-11-2021 13:30:00</td>
+        
+        </tr>
+
+    </tbody>
+</table>
+-->
+
+
+<!--<table id="boupTable" class="beheertable dezetabel"> --> 
+
+
+<br>
+</div>
+
+
+
+
+
+
+
+{% endblock contents %}
+<!-- Specific JS goes HERE -->
+{% block extra_javascript %}
+
+
+
+
+{% endblock extra_javascript %}
+
+
